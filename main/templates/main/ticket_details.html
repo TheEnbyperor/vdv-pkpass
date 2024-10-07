@@ -1,0 +1,252 @@
+<h2 class="govuk-heading-m">Ticket Data</h2>
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Version</dt>
+        <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.version }}</code></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Ticket ID</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.ticket_id }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Organisation ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.ticket_org_id }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Product</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                {% with product_name=ticket.ticket.product_name %}
+                    {% if product_name %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Name</dt>
+                            <dd class="govuk-summary-list__value">{{ product_name }}</dd>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Number</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.product_number }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Organisation ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.product_org_id }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Validity</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Start</dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ ticket.ticket.validity_start.as_datetime|date:"F d, Y H:i:s" }}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">End</dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ ticket.ticket.validity_end.as_datetime|date:"F d, Y H:i:s" }}
+                    </dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Transaction</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Time</dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ ticket.ticket.transaction_time.as_datetime|date:"F d, Y H:i:s" }}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">KVP Organization ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.kvp_org_id }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Terminal</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Type</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.terminal_type }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Number</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.terminal_number }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Owner ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.terminal_owner_id }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Location</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Type</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.location_type }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Number</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.location_number }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Owner ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.location_owner_id }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">SAM</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Version</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.sam_version }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.sam_id }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Sequence number 1</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.sam_sequence_number_1 }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Sequence number 2</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.sam_sequence_number_2 }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+</dl>
+
+<h3 class="govuk-heading-s">Product Data</h3>
+{% if ticket.ticket.product_data %}
+    {% for elm in ticket.ticket.product_data %}
+        {% if elm.TYPE == "passenger-data" %}
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">Passenger data</h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Forename</dt>
+                            <dd class="govuk-summary-list__value">{{ elm.forename }}</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Surname</dt>
+                            <dd class="govuk-summary-list__value">{{ elm.surname }}</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Date of birth</dt>
+                            <dd class="govuk-summary-list__value">{{ elm.date_of_birth.as_date|date:"F d, Y" }}</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Gender</dt>
+                            <dd class="govuk-summary-list__value"><code>{{ elm.gender }}</code></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        {% elif elm.TYPE == "spacial-validity" %}
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">Spacial validity</h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Organisation ID</dt>
+                            <dd class="govuk-summary-list__value"><code>{{ elm.organization_id }}</code></dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Areas</dt>
+                            <dd class="govuk-summary-list__value">
+                                <ul class="govuk-list">
+                                    {% for area in elm.area_ids %}
+                                        <li><code>{{ area }}</code></li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        {% elif elm.TYPE == "unknown-spacial-validity" %}
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">Unknown spacial validity <code>{{ elm.type_hex }}</code></h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <p class="govuk-body"><code>{{ elm.data_hex }}</code></p>
+                </div>
+            </div>
+        {% elif elm.TYPE == "unknown" %}
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">Unknown element <code>{{ elm.tag_hex }}</code></h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <p class="govuk-body"><code>{{ elm.data_hex }}</code></p>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <p class="govuk-body">N/A</p>
+{% endif %}
+
+<h3 class="govuk-heading-s">Product Transaction Data</h3>
+{% if ticket.ticket.product_transaction_data %}
+    {# TODO #}
+{% else %}
+    <p class="govuk-body">N/A</p>
+{% endif %}
+
+<h2 class="govuk-heading-m">Certificate chain</h2>
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Root CA</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+        {% include "main/certificate.html" with cert=ticket.root_ca %}
+    </div>
+</div>
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Issuing CA</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+        {% include "main/certificate.html" with cert=ticket.issuing_ca %}
+    </div>
+</div>
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Envelope Certificate</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+        {% include "main/certificate.html" with cert=ticket.envelope_certificate %}
+    </div>
+</div>

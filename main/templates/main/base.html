@@ -1,0 +1,75 @@
+{% load static govuk_frontend_django %}
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}VDV to Apple Wallet{% endblock title %} </title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0c0c">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href='{% static "govuk/assets/images/favicon.ico" %}' type="image/x-icon">
+    <link rel="mask-icon" href='{% static "govuk/assets/images/govuk-icon-mask.svg" %}' color="#0b0c0c">
+    <link rel="apple-touch-icon" sizes="180x180" href='{% static "govuk/assets/images/govuk-icon-180.png" %}'>
+    <link rel="apple-touch-icon" sizes="192x192" href='{% static "govuk/assets/images/govuk-icon-192.png" %}'>
+    <link rel="apple-touch-icon" sizes="512x512" href='{% static "govuk/assets/images/govuk-icon-512.png" %}'>
+    <link href='{% static "govuk/govuk-frontend-5.6.0.min.css" %}' rel="stylesheet">
+    <link href='{% static "main/style.css" %}' rel="stylesheet">
+
+    <meta name="description" content="Turn your German local public transport ticket into an Apple Wallet pass.">
+</head>
+<body class="govuk-template__body ">
+<script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+{% block body_start %}
+{% endblock body_start %}
+{% gds_component "skip-link" text="Skip to main content" %}
+<header class="govuk-header" data-module="govuk-header">
+    <div class="govuk-header__container govuk-width-container">
+        <div class="govuk-header__content">
+            <a href="{% url 'index' %}" class="govuk-header__link govuk-header__service-name">
+                VDV to Apple Wallet
+            </a>
+        </div>
+    </div>
+</header>
+<div class="govuk-width-container">
+    <div class="govuk-phase-banner">
+        <p class="govuk-phase-banner__content">
+            <strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
+            <span class="govuk-phase-banner__text">
+              This is a new service - it may break in any number of ways. Please report any issues you find.
+            </span>
+        </p>
+    </div>
+    <main class="govuk-main-wrapper" id="content" role="main">
+        {% block content %}{% endblock content %}
+    </main>
+</div>
+<footer class="govuk-footer">
+    <div class="govuk-width-container">
+        <div class="govuk-footer__meta">
+            <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+                <div class="govuk-footer__meta-custom">
+                    Not affiliated with the Verband Deutscher Verkehrsunternehmen (VDV) or any of its members.
+                </div>
+                <div class="govuk-footer__meta-custom">
+                    <a class="govuk-footer__link" href="https://github.com/alphagov/govuk-frontend">GOV.UK Design System</a>
+                    used under license.
+                </div>
+                <span class="govuk-footer__licence-description">
+                    Licensed under the MIT license. &copy; <a class="govuk-footer__link" href="https://magicalcodewit.ch">Q Misell</a>, {% now "Y" %}
+                </span>
+            </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="module" src='{% static "govuk/govuk-frontend-5.6.0.min.js" %}'></script>
+<script type="module">
+    import { initAll } from '{% static "govuk/govuk-frontend-5.6.0.min.js" %}'
+    initAll()
+</script>
+<script src='{% static "zxing/index.min.js" %}'></script>
+</body>
+</html>

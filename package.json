@@ -1,0 +1,13 @@
+{
+  "name": "vdv_pkpass",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Q Misell",
+    "email": "q@magicalcodewit.ch"
+  },
+  "dependencies": {
+    "@zxing/library": "^0.21.3"
+  }
+}

@@ -1,0 +1,54 @@
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Certificate Profile Identifier</dt>
+        <dd class="govuk-summary-list__value">
+            <code>{{ cert.certificate_profile_identifier }}</code>
+            {% if cert.certificate_profile_identifier == 3 %}
+                (RSA-1536)
+            {% elif cert.certificate_profile_identifier == 4 %}
+                (RSA-1024)
+            {% elif cert.certificate_profile_identifier == 7 %}
+                (RSA-1984)
+            {% endif %}
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">CA Reference</dt>
+        <dd class="govuk-summary-list__value">
+            {% include "main/certificate_reference.html" with ref=cert.ca_reference %}
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Certificate Holder Reference</dt>
+        <dd class="govuk-summary-list__value">
+            {% include "main/certificate_reference.html" with ref=cert.certificate_holder_reference %}
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Certificate Holder Authorization</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Name</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ cert.certificate_holder_authorization.name }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Service indicator</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ cert.certificate_holder_authorization.service_indicator }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Expiry Date</dt>
+        <dd class="govuk-summary-list__value">
+            {{ cert.expiry_date.as_date|date:"F d, Y" }}
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Public Key</dt>
+        <dd class="govuk-summary-list__value">
+            <code>{{ cert.public_key }}</code>
+        </dd>
+    </div>
+</dl>

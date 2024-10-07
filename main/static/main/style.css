@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'GDS Transport';
+    font-weight: 400;
+    src: url(db-sans-regular.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'GDS Transport';
+    font-weight: 700;
+    src: url(db-sans-bold.otf) format('opentype');
+}

@@ -1,0 +1,40 @@
+{% extends "main/base.html" %}
+{% load static govuk_frontend_django crispy_forms_tags %}
+
+{% block title %}Ticket {{ ticket_id }} - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">
+        Ticket #{{ ticket_id }}
+        <span class="govuk-caption-xl">{{ ticket.get_ticket_type_display }}</span>
+    </h1>
+
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+            Download your pass
+        </h1>
+        <div class="govuk-panel__body">
+            <a href="{% url 'ticket_pkpass' ticket.id %}" class="govuk-button govuk-button--start govuk-button--inverse govuk-!-margin-0">Download</a>
+        </div>
+    </div>
+
+    <h2 class="govuk-heading-l">Ticket details</h2>
+    {% if not ticket.instances.count %}
+        <p class="govuk-body">No instances found for this ticket.</p>
+    {% else %}
+        {% for instance in ticket.instances.all %}
+            {% with ticket_obj=instance.as_ticket %}
+                <details class="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">Ticket #{{ instance.ticket_number }}</span>
+                        <span>{{ instance.validity_start|date:"F d, Y H:i:s" }} - {{ instance.validity_end|date:"F d, Y H:i:s" }}</span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        {% include 'main/ticket_details.html' with ticket=ticket_obj %}
+                    </div>
+                </details>
+            {% endwith %}
+        {% endfor %}
+    {% endif %}
+
+{% endblock content %}

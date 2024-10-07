@@ -1,0 +1,7 @@
+/venv/
+/static/
+/priv/
+/db.sqlite3
+/node_modules
+/vdv-certs
+__pycache__

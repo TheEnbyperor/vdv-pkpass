@@ -1,0 +1,200 @@
+{% extends "main/base.html" %}
+{% load static govuk_frontend_django crispy_forms_tags %}
+
+{% block title %}VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">VDV to Apple Wallet Pass</h1>
+    <p class="govuk-body-l">
+        Turn your German local public transport ticket into an Apple Wallet pass.
+    </p>
+    <p class="govuk-body">
+        Only VDV tickets are supported at the moment, UIC tickets are unsupported.
+        The Deutschlandticket is almost always issued as a VDV ticket.
+    </p>
+
+    {% if error %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+            <div role="alert">
+                <h2 class="govuk-error-summary__title">{{ error.title }}</h2>
+                <div class="govuk-error-summary__body">
+                    <p class="govuk-body">{{ error.message }}</p>
+                    {% if error.exception %}
+                        <p class="govuk-body-s">
+                            Exception:<br/>
+                        <pre>{{ error.exception }}</pre>
+                        </p>
+                    {% endif %}
+                    {% if error.ticket_contents %}
+                        <p class="govuk-body-s">
+                            Ticket contents, please send this when asking for support:
+                            <code style="line-break: anywhere">{{ error.ticket_contents }}</code>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <noscript>
+        <div class="govuk-error-summary" data-module="govuk-error-summary" id="error-banner">
+            <div role="alert">
+                <h2 class="govuk-error-summary__title">
+                    JavaScript is required to scan tickets
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p class="govuk-body">
+                        JavaScript is required to scan tickets in your browser.
+                        You can still upload a picture of your ticket to have it processed server-side.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </noscript>
+
+    <button id="scan-button" class="govuk-button govuk-button--start" disabled>
+        Scan your ticket
+        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19"
+             viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+        </svg>
+    </button>
+
+    <div id="video-container" style="display: none;">
+        <video id="video" width="100%" height="300" style="border: 1px solid gray"></video>
+    </div>
+
+    <form action="" method="post" style="display: none" id="scan-form">
+        {% csrf_token %}
+        <input type="hidden" name="type" value="scan">
+        <input type="hidden" name="ticket_hex" id="data">
+    </form>
+
+    <h2 class="govuk-heading-l">Upload a picture instead</h2>
+    {% crispy image_form %}
+
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+    <h3 class="govuk-heading-m">Not working?</h3>
+    <p class="govuk-body">
+        Get in touch with a picture of your ticket and I'll see what I can do.
+    </p>
+    <ul class="govuk-list">
+        <li>Fedi: <a href="https://glauca.space/@q" class="govuk-link">@q@glauca.space</a></li>
+        <li>Email: <a href="mailto:q@magicalcodewit.ch" class="govuk-link">q@magicalcodewit.ch</a></li>
+    </ul>
+    <h3 class="govuk-heading-m">Privacy</h3>
+    <p class="govuk-body">
+        Your ticket barcode will be stored to allow automatic updates to subscription tickets.
+        Tickets commonly include your name and date of birth - this information is not processed except to
+        generate the pass. Ticket data may be inspected by a human if you ask for help.
+    </p>
+
+    <script>
+        function ready() {
+            const codeReader = new ZXing.BrowserAztecCodeReader();
+
+            const scanButton = document.getElementById("scan-button");
+            const videoContainer = document.getElementById("video-container");
+            const scanForm = document.getElementById("scan-form");
+            const dataInput = document.getElementById("data");
+
+            let videoDeviceId = null;
+
+            codeReader.listVideoInputDevices()
+                .then((videoInputDevices) => {
+                    console.log("Detected " + videoInputDevices.length + " video sources");
+                    if (videoInputDevices.length >= 1) {
+                        videoDeviceId = videoInputDevices[0].deviceId;
+                        scanButton.disabled = false;
+                    }
+                });
+
+            scanButton.addEventListener('click', () => {
+                codeReader.decodeFromVideoDevice(videoDeviceId, 'video', (result) => {
+                    if (result) {
+                        console.log(result);
+                        codeReader.stopContinuousDecode();
+                        videoContainer.style.display = "none";
+                        const rawBytes = getEncodedData(result)
+                        const hexOctets = new Array(rawBytes.length * 2);
+                        for (let i = 0; i < rawBytes.length; ++i)
+                            hexOctets.push(("0" + rawBytes[i].toString(16)).slice(-2));
+                        dataInput.value = hexOctets.join("");
+                        console.log(dataInput.value);
+                        scanForm.submit();
+                    }
+                })
+                videoContainer.style.display = "block";
+            });
+        }
+
+        window.addEventListener('load', ready);
+
+        UPPER = 0;
+        LOWER = 1;
+        MIXED = 2;
+        DIGIT = 3;
+        PUNCT = 4;
+        BINARY = 5;
+
+        function getEncodedData(result) {
+            let correctedBits = [];
+            let endIndex = result.getNumBits();
+            for (let i = 0; i < endIndex; i++) {
+                let byte = result.rawBytes[Math.floor(i / 8)];
+                correctedBits.push((byte >> (7 - (i % 8)) & 1) === 1);
+            }
+            let latchTable = UPPER;
+            let shiftTable = UPPER;
+            let output = [];
+            let index = 0;
+            while (index < endIndex) {
+                if (shiftTable === BINARY) {
+                    if (endIndex - index < 5) {
+                        break;
+                    }
+                    let length = ZXing.AztecDecoder.readCode(correctedBits, index, 5);
+                    index += 5;
+                    if (length === 0) {
+                        if (endIndex - index < 11) {
+                            break;
+                        }
+                        length = ZXing.AztecDecoder.readCode(correctedBits, index, 11) + 31;
+                        index += 11;
+                    }
+                    for (let charCount = 0; charCount < length; charCount++) {
+                        if (endIndex - index < 8) {
+                            index = endIndex;
+                            break;
+                        }
+                        const code = ZXing.AztecDecoder.readCode(correctedBits, index, 8);
+                        console.log(code);
+                        output.push(code);
+                        index += 8;
+                    }
+                    shiftTable = latchTable;
+                } else {
+                    let size = shiftTable === DIGIT ? 4 : 5;
+                    if (endIndex - index < size) {
+                        break;
+                    }
+                    let code = ZXing.AztecDecoder.readCode(correctedBits, index, size);
+                    index += size;
+                    let str = ZXing.AztecDecoder.getCharacter(shiftTable, code);
+                    if (str.startsWith('CTRL_')) {
+                        latchTable = shiftTable;
+                        shiftTable = ZXing.AztecDecoder.getTable(str.charAt(5));
+                        if (str.charAt(6) === 'L') {
+                            latchTable = shiftTable;
+                        }
+                    } else {
+                        output.push(str.charCodeAt(0));
+                        shiftTable = latchTable;
+                    }
+                }
+            }
+            return output;
+        }
+    </script>
+{% endblock content %}

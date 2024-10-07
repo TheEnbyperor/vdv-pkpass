@@ -1,0 +1,12 @@
+django
+govuk-frontend-django
+zxing==1.0
+ber-tlv
+python-ldap
+crispy-forms-gds
+Pillow
+python-ldap
+pycryptodome
+dacite
+cryptography
+pytz
