@@ -1,4 +1,4 @@
-{% load static govuk_frontend_django %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
 <head>
@@ -18,7 +18,6 @@
 <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
 {% block body_start %}
 {% endblock body_start %}
-{% gds_component "skip-link" text="Skip to main content" %}
 <header class="govuk-header" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__content">

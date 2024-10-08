@@ -1,5 +1,4 @@
 Django==5.0.*
-govuk-frontend-django
 zxing==1.0
 ber-tlv
 python-ldap

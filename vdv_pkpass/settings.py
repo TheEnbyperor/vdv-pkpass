@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "govuk_frontend_django",
     "crispy_forms",
     "crispy_forms_gds",
     "main"
