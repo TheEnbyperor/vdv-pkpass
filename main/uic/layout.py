@@ -74,15 +74,6 @@ class LayoutV1:
             except (UnicodeDecodeError, ValueError) as e:
                 raise util.UICException("Invalid UIC ticket layout field position") from e
 
-            if field_line > 14:
-                raise util.UICException("UIC ticket layout field line out of bounds")
-            if field_column > 71:
-                raise util.UICException("UIC ticket layout field column out of bounds")
-            if field_height + field_line > 14:
-                raise util.UICException("UIC ticket layout field height out of bounds")
-            if field_width + field_column > 71:
-                raise util.UICException("UIC ticket layout field width out of bounds")
-
             try:
                 field_formatting_str = data[offset + 8:offset + 9].decode("ascii")
                 field_formatting = LayoutV1FieldFormatting(int(field_formatting_str, 10))

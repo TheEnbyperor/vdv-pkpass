@@ -75,8 +75,8 @@ class UICTicket:
 
     def type(self) -> str:
         if self.flex and self.flex.version == 3 and \
-                self.flex.data["issuingDetail"]["issuerNum"] == 1080 and \
-                len(self.flex.data["transportDocument"]) >= 1 and \
+                self.flex.data["issuingDetail"].get("issuerNum") == 1080 and \
+                len(self.flex.data.get("transportDocument", [])) >= 1 and \
                 len(self.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
             ticket = self.flex.data["transportDocument"][0]["ticket"]
             if ticket[0] == "openTicket" and ticket[1]["productIdNum"] in (
