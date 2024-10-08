@@ -73,13 +73,13 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Start</dt>
                     <dd class="govuk-summary-list__value">
-                        {{ ticket.ticket.validity_start.as_datetime|date:"F d, Y H:i:s" }}
+                        {{ ticket.ticket.validity_start.as_datetime|date:"F d, Y H:i:s" }} UTC
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">End</dt>
                     <dd class="govuk-summary-list__value">
-                        {{ ticket.ticket.validity_end.as_datetime|date:"F d, Y H:i:s" }}
+                        {{ ticket.ticket.validity_end.as_datetime|date:"F d, Y H:i:s" }} UTC
                     </dd>
                 </div>
             </dl>
@@ -92,7 +92,7 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Time</dt>
                     <dd class="govuk-summary-list__value">
-                        {{ ticket.ticket.transaction_time.as_datetime|date:"F d, Y H:i:s" }}
+                        {{ ticket.ticket.transaction_time.as_datetime|date:"F d, Y H:i:s" }} UTC
                     </dd>
                 </div>
                 {% with org_name=ticket.ticket.kvp_org_name_opt %}
@@ -171,6 +171,7 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Owner ID</dt>
                     <dd class="govuk-summary-list__value">
+                        {{ ticket.ticket.location_org_name }}
                         <code>{{ ticket.ticket.location_org_id }}</code>
                     </dd>
                 </div>

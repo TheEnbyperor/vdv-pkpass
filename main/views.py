@@ -155,7 +155,7 @@ def ticket_pkpass(request, pk):
         }
         pass_json["barcodes"] = [{
             "format": "PKBarcodeFormatAztec",
-            "message": ticket_instance.barcode_data.decode("iso-8859-1"),
+            "message": bytes(ticket_instance.barcode_data).decode("iso-8859-1"),
             "messageEncoding": "iso-8859-1"
         }]
 
@@ -333,7 +333,7 @@ def ticket_pkpass(request, pk):
         }
         pass_json["barcodes"] = [{
             "format": "PKBarcodeFormatAztec",
-            "message": ticket_instance.barcode_data.decode("iso-8859-1"),
+            "message": bytes(ticket_instance.barcode_data).decode("iso-8859-1"),
             "messageEncoding": "iso-8859-1"
         }]
 
