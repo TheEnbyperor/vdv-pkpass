@@ -206,6 +206,7 @@ def ticket_pkpass(request, pk):
                         "label": "validity-end-label",
                         "dateStyle": "PKDateStyleMedium",
                         "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        "changeMessage": "validity-end-change"
                     })
                     pass_json["generic"]["backFields"].append({
                         "key": "validity-start-back",
@@ -288,6 +289,7 @@ def ticket_pkpass(request, pk):
                 "label": "validity-end-label",
                 "dateStyle": "PKDateStyleMedium",
                 "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "changeMessage": "validity-end-change"
             }],
             "backFields": [{
                 "key": "validity-start-back",
@@ -402,6 +404,7 @@ PASS_STRINGS = {
 "ticketing-organisation-label" = "Ticketing Organisation";
 "validity-start-label" = "Valid from";
 "validity-end-label" = "Valid until";
+"validity-end-change" = "Validity extended to %@";
 "issued-at-label" = "Issued at";
 "passenger-label" = "Passenger";
 "date-of-birth-label" = "Date of birth";
@@ -413,8 +416,9 @@ PASS_STRINGS = {
 "product-organisation-label" = "Produktorganisation";
 "issuing-organisation-label" = "Ausstellende Organisation";
 "ticketing-organisation-label" = "Ticketverkaufsorganisation";
-"validity-start-label" = "Gültig von";
+"validity-start-label" = "Gültig vom";
 "validity-end-label" = "Gültig bis";
+"validity-end-change" = "Verlängert bis %@";
 "issued-at-label" = "Ausgestellt am";
 "passenger-label" = "Fahrgast";
 "date-of-birth-label" = "Geburtsdatum";
