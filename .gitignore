@@ -1,7 +1,8 @@
-/venv/
-/static/
-/priv/
+/venv
+/static
+/priv
 /db.sqlite3
 /node_modules
 /vdv-certs
+/uic-data
 __pycache__

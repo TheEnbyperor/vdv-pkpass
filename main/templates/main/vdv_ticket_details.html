@@ -12,9 +12,21 @@
                     <dt class="govuk-summary-list__key">ID</dt>
                     <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.ticket_id }}</code></dd>
                 </div>
+                {% with org_name=ticket.ticket.ticket_org_name_opt %}
+                    {% if org_name %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Organisation Name</dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ org_name }}
+                            </dd>
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Organisation ID</dt>
-                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.ticket_org_id }}</code></dd>
+                    <dd class="govuk-summary-list__value">
+                        <code>{{ ticket.ticket.ticket_org_id }}</code>
+                    </dd>
                 </div>
             </dl>
         </dd>
@@ -23,7 +35,7 @@
         <dt class="govuk-summary-list__key">Product</dt>
         <dd class="govuk-summary-list__value">
             <dl class="govuk-summary-list govuk-summary-list--no-border">
-                {% with product_name=ticket.ticket.product_name %}
+                {% with product_name=ticket.ticket.product_name_opt %}
                     {% if product_name %}
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">Name</dt>
@@ -35,9 +47,21 @@
                     <dt class="govuk-summary-list__key">Number</dt>
                     <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.product_number }}</code></dd>
                 </div>
+                {% with org_name=ticket.ticket.product_org_name_opt %}
+                    {% if org_name %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Organisation Name</dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ org_name }}
+                            </dd>
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Organisation ID</dt>
-                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.product_org_id }}</code></dd>
+                    <dd class="govuk-summary-list__value">
+                        <code>{{ ticket.ticket.product_org_id }}</code>
+                    </dd>
                 </div>
             </dl>
         </dd>
@@ -71,9 +95,21 @@
                         {{ ticket.ticket.transaction_time.as_datetime|date:"F d, Y H:i:s" }}
                     </dd>
                 </div>
+                {% with org_name=ticket.ticket.kvp_org_name_opt %}
+                    {% if org_name %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">KVP Organisation Name</dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ org_name }}
+                            </dd>
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">KVP Organization ID</dt>
-                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.kvp_org_id }}</code></dd>
+                    <dd class="govuk-summary-list__value">
+                        <code>{{ ticket.ticket.kvp_org_id }}</code>
+                    </dd>
                 </div>
             </dl>
         </dd>
@@ -90,9 +126,22 @@
                     <dt class="govuk-summary-list__key">Number</dt>
                     <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.terminal_number }}</code></dd>
                 </div>
+                {% with org_name=ticket.ticket.terminal_owner_name_opt %}
+                    {% if org_name %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Owner Name</dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ org_name }}
+                            </dd>
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Owner ID</dt>
-                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.terminal_owner_id }}</code></dd>
+                    <dd class="govuk-summary-list__value">
+                        {{ ticket.ticket.terminal_owner_name }}
+                        <code>{{ ticket.ticket.terminal_owner_id }}</code>
+                    </dd>
                 </div>
             </dl>
         </dd>
@@ -109,9 +158,21 @@
                     <dt class="govuk-summary-list__key">Number</dt>
                     <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.location_number }}</code></dd>
                 </div>
+                {% with org_name=ticket.ticket.location_org_name_opt %}
+                    {% if org_name %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Owner Name</dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ org_name }}
+                            </dd>
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Owner ID</dt>
-                    <dd class="govuk-summary-list__value"><code>{{ ticket.ticket.location_owner_id }}</code></dd>
+                    <dd class="govuk-summary-list__value">
+                        <code>{{ ticket.ticket.location_org_id }}</code>
+                    </dd>
                 </div>
             </dl>
         </dd>

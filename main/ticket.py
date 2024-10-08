@@ -1,8 +1,11 @@
+import base64
 import dataclasses
 import traceback
+import typing
+import datetime
 import Crypto.Hash.TupleHash128
 
-from . import models, vdv
+from . import models, vdv, uic
 
 
 class TicketError(Exception):
@@ -13,12 +16,16 @@ class TicketError(Exception):
 
 
 @dataclasses.dataclass
-class Ticket:
+class VDVTicket:
     root_ca: vdv.CertificateData
     issuing_ca: vdv.CertificateData
     envelope_certificate: vdv.CertificateData
     raw_ticket: bytes
     ticket: vdv.VDVTicket
+
+    @property
+    def ticket_type(self) -> str:
+        return "VDV"
 
     def type(self) -> str:
         if self.ticket.product_number in (
@@ -45,15 +52,100 @@ class Ticket:
                 hd.update(passenger_data.forename.encode("utf-8"))
                 hd.update(passenger_data.surname.encode("utf-8"))
                 hd.update(str(passenger_data.date_of_birth).encode("utf-8"))
-                return hd.hexdigest()
+                return base64.b32hexencode(hd.digest()).decode("utf-8")
 
-        hd.update(b"unknown")
+        hd.update(b"unknown-vdv")
         hd.update(self.ticket.ticket_id.to_bytes(8, "big"))
         hd.update(self.ticket.ticket_org_id.to_bytes(8, "big"))
-        return hd.hexdigest()
+        return base64.b32encode(hd.digest()).decode("utf-8")
 
 
-def parse_ticket(ticket_bytes: bytes) -> Ticket:
+@dataclasses.dataclass
+class UICTicket:
+    raw_bytes: bytes
+    envelope: uic.Envelope
+    head: uic.HeadV1
+    layout: typing.Optional[uic.LayoutV1]
+    flex: typing.Optional[uic.Flex]
+    other_records: typing.List[uic.envelope.Record]
+
+    @property
+    def ticket_type(self) -> str:
+        return "UIC"
+
+    def type(self) -> str:
+        if self.flex and self.flex.version == 3 and \
+                self.flex.data["issuingDetail"]["issuerNum"] == 1080 and \
+                len(self.flex.data["transportDocument"]) >= 1 and \
+                len(self.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
+            ticket = self.flex.data["transportDocument"][0]["ticket"]
+            if ticket[0] == "openTicket" and ticket[1]["productIdNum"] in (
+                    9999, # Deutschlandticket subscription
+                    9998, # Deutschlandjobticket subscription
+                    9997, # Startkarte Deutschlandticket
+                    9996, # Semesterticket Deutschlandticket Upgrade subscription
+                    9995, # Semesterdeutschlandticket subscription
+            ):
+                return models.Ticket.TYPE_DEUTCHLANDTICKET
+        return models.Ticket.TYPE_UNKNOWN
+
+    def pk(self) -> str:
+        hd = Crypto.Hash.TupleHash128.new(digest_bytes=16)
+
+        if self.type() == models.Ticket.TYPE_DEUTCHLANDTICKET:
+            passenger = self.flex.data.get("travelerDetail", {}).get("traveler", [{}])[0]
+            dob_year = passenger.get("yearOfBirth", 0)
+            dob_month = passenger.get("monthOfBirth", 0)
+            dob_day = passenger.get("dayOfBirthInMonth", 0)
+            hd.update(b"deutschlandticket")
+            hd.update(self.flex.data["issuingDetail"]["issuerNum"].to_bytes(8, "big"))
+            hd.update(passenger.get("firstName").encode("utf-8"))
+            hd.update(passenger.get("lastName").encode("utf-8"))
+            hd.update(f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}".encode("utf-8"))
+            return base64.b32hexencode(hd.digest()).decode("utf-8")
+
+        hd.update(b"unknown-uic")
+        hd.update(self.issuing_rics().to_bytes(4, "big"))
+        hd.update(self.ticket_id().encode("utf-8"))
+        return base64.b32encode(hd.digest()).decode("utf-8")
+
+    def issuing_rics(self) -> int:
+        if self.head:
+            return self.head.distributing_rics
+        elif self.flex:
+            return self.flex.issuing_rics()
+        else:
+            return 0
+
+    def distributor(self):
+        return uic.rics.get_rics(self.issuing_rics())
+
+    def ticket_id(self) -> str:
+        if self.head:
+            return self.head.ticket_id
+        elif self.flex:
+            return self.flex.ticket_id()
+        else:
+            return ""
+
+    def issuing_time(self) -> typing.Optional[datetime.datetime]:
+        if self.head:
+            return self.head.issuing_time.as_datetime()
+        elif self.flex:
+            return self.flex.issuing_time()
+        else:
+            return None
+
+    def specimen(self) -> bool:
+        if self.head:
+            return self.head.flags.specimen
+        elif self.flex:
+            return self.flex.specimen()
+        else:
+            return False
+
+
+def parse_ticket_vdv(ticket_bytes: bytes) -> VDVTicket:
     pki_store = vdv.CertificateStore()
     try:
         pki_store.load_certificates()
@@ -116,7 +208,7 @@ def parse_ticket(ticket_bytes: bytes) -> Ticket:
     except vdv.util.VDVException:
         raise TicketError(
             title="This doesn't look like a valid VDV ticket",
-            message="You may have scanned something that is not a VDV ticket, the ticket is corrupted, or there"
+            message="You may have scanned something that is not a VDV ticket, the ticket is corrupted, or there "
                     "is a bug in this program.",
             exception=traceback.format_exc()
         )
@@ -223,10 +315,94 @@ def parse_ticket(ticket_bytes: bytes) -> Ticket:
             exception=traceback.format_exc()
         )
 
-    return Ticket(
+    return VDVTicket(
         root_ca=root_ca_data,
         issuing_ca=issuing_ca_data,
         envelope_certificate=envelope_certificate_data,
         raw_ticket=ticket_data,
         ticket=ticket
     )
+
+
+def parse_ticket_uic_head(ticket_envelope: uic.Envelope) -> typing.Optional[uic.HeadV1]:
+    head_record = next(filter(lambda r: r.id == "U_HEAD", ticket_envelope.records), None)
+    if not head_record:
+        return None
+
+    if head_record.version != 1:
+        raise TicketError(
+            title="Unsupported header record version",
+            message=f"The header record version {head_record.version} is not supported."
+        )
+
+    try:
+        return uic.HeadV1.parse(head_record.data)
+    except uic.util.UICException:
+        raise TicketError(
+            title="Invalid header record",
+            message="The header record is invalid - the ticket is likely invalid.",
+            exception=traceback.format_exc()
+        )
+
+
+def parse_ticket_uic_layout(ticket_envelope: uic.Envelope) -> typing.Optional[uic.LayoutV1]:
+    layout_record = next(filter(lambda r: r.id == "U_TLAY", ticket_envelope.records), None)
+    if not layout_record:
+        return None
+
+    if layout_record.version != 1:
+        raise TicketError(
+            title="Unsupported layout record version",
+            message=f"The layout record version {layout_record.version} is not supported."
+        )
+
+    try:
+        return uic.LayoutV1.parse(layout_record.data)
+    except uic.util.UICException:
+        raise TicketError(
+            title="Invalid layout record",
+            message="The layout record is invalid - the ticket is likely invalid.",
+            exception=traceback.format_exc()
+        )
+
+
+def parse_ticket_uic_flex(ticket_envelope: uic.Envelope) -> typing.Optional[uic.Flex]:
+    flex_record = next(filter(lambda r: r.id == "U_FLEX", ticket_envelope.records), None)
+    if not flex_record:
+        return None
+
+    try:
+        return uic.Flex.parse(flex_record.version, flex_record.data)
+    except uic.util.UICException:
+        raise TicketError(
+            title="Invalid flexible data record",
+            message="The flexible record is invalid - the ticket is likely invalid.",
+            exception=traceback.format_exc()
+        )
+
+
+def parse_ticket_uic(ticket_bytes: bytes) -> UICTicket:
+    try:
+        ticket_envelope = uic.Envelope.parse(ticket_bytes)
+    except uic.util.UICException:
+        raise TicketError(
+            title="This doesn't look like a valid UIC ticket",
+            message="You may have scanned something that is not a UIC ticket, the ticket is corrupted, or there "
+                    "is a bug in this program.",
+            exception=traceback.format_exc()
+        )
+
+    return UICTicket(
+        raw_bytes=ticket_bytes,
+        envelope=ticket_envelope,
+        head=parse_ticket_uic_head(ticket_envelope),
+        layout=parse_ticket_uic_layout(ticket_envelope),
+        flex=parse_ticket_uic_flex(ticket_envelope),
+        other_records=[r for r in ticket_envelope.records if not r.id.startswith("U_")]
+    )
+
+def parse_ticket(ticket_bytes: bytes) -> typing.Union[VDVTicket, UICTicket]:
+    if ticket_bytes[:3] == b"#UT":
+        return parse_ticket_uic(ticket_bytes)
+    else:
+        return parse_ticket_vdv(ticket_bytes)

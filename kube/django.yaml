@@ -1,0 +1,102 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: vdv-pkpass
+  namespace: q-personal
+data:
+  HOST: "vdv-pkpass.magicalcodewit.ch"
+  DJANGO_SETTINGS_MODULE: "vdv_pkpass.settings"
+  EXTERNAL_URL: "https://vdv-pkpass.magicalcodewit.ch"
+  DB_HOST: "cockroachdb.default"
+  DB_NAME: "vdv-pkpass"
+  S3_ENDPOINT: "https://s3.as207960.net"
+  S3_REGION: "garage"
+  S3_BUCKET: "vdv-pkpass-django"
+  S3_ACCESS_KEY_ID: ""
+  S3_CUSTOM_DOMAIN: "vdv-pkpass-django.content.as207960.net"
+  STATIC_URL: "https://vdv-pkpass-django.content.as207960.net/"
+  MEDIA_URL: "https://vdv-pkpass-django.content.as207960.net/"
+  PKPASS_ORGANIZATION_NAME: "Q Misell"
+  PKPASS_PASS_TYPE_IDENTIFIER: "pass.pass.ch.magicalcodewit.vdv.ticket"
+  PKPASS_TEAM_ID: "MQ9TN9772U"
+  WWDR_CERTIFICATE_LOCATION: "/certs/wwdrg4.der"
+  PKPASS_CERTIFICATE_LOCATION: "/certs/pass.crt"
+  PKPASS_KEY_LOCATION: "/certs/pass.key"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vdv-pkpass-django
+  namespace: q-personal
+  labels:
+    app: vdv-pkpass
+    part: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vdv-pkpass
+      part: django
+  template:
+    metadata:
+      annotations:
+        cni.projectcalico.org/ipv6pools: "[\"default-ipv6-ippool\"]"
+      labels:
+        app: vdv-pkpass
+        part: django
+    spec:
+      volumes:
+        - name: certs
+          secret:
+            secretName: vdv-pkpass-certs
+      initContainers:
+        - name: django
+          image: theenbyperor/vdv-pkpass-django:(version)
+          imagePullPolicy: Always
+          command: ["sh", "-c", "python3 manage.py collectstatic --noinput && python3 manage.py migrate"]
+          volumeMounts: &volumeMounts
+            - mountPath: "/certs"
+              name: certs
+          envFrom: &envFrom
+            - configMapRef:
+                name: vdv-pkpass
+            - secretRef:
+                name: vdv-pkpass-db-creds
+              prefix: "DB_"
+            - secretRef:
+                name: vdv-pkpass-django-secret
+            - secretRef:
+                name: vdv-pkpass-s3
+      containers:
+        - name: gunicorn
+          image: theenbyperor/vdv-pkpass-django:(version)
+          imagePullPolicy: Always
+          command: ["gunicorn", "-w", "4", "-b", "[::]:8000", "--forwarded-allow-ips", "*", "--access-logfile", "-", "--log-level=debug", "--timeout=90", "vdv_pkpass.wsgi:application"]
+          volumeMounts: *volumeMounts
+          ports:
+            - containerPort: 8000
+          envFrom: *envFrom
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: vdv-pkpass-django
+  namespace: q-personal
+spec:
+  podSelector:
+    matchLabels:
+      app: vdv-pkpass
+      part: django
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8000

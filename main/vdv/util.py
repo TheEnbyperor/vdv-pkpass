@@ -1,5 +1,6 @@
 import dataclasses
 import datetime
+import pytz
 
 TAG_OCTET_STRING = 0x04
 TAG_NULL = 0x05
@@ -14,6 +15,9 @@ TAG_CERTIFICATE = 0x7F21
 TAG_CERTIFICATE_SIGNATURE = 0x5F37
 TAG_CERTIFICATE_SIGNATURE_REMAINDER = 0x5F38
 TAG_CERTIFICATE_CONTENT = 0x5F4E
+
+VDV_TZ = pytz.timezone("Europe/Berlin")
+
 
 class VDVException(Exception):
     pass
@@ -56,7 +60,7 @@ class DateTime:
         return f"{self.year:04d}-{self.month:02d}-{self.day:02d} {self.hour:02d}:{self.minute:02d}:{self.second:02d}"
 
     def as_datetime(self):
-        return datetime.datetime(self.year, self.month, self.day, self.hour, self.minute, self.second)
+        return VDV_TZ.localize(datetime.datetime(self.year, self.month, self.day, self.hour, self.minute, self.second))
 
     @classmethod
     def from_bytes(cls, data: bytes) -> "DateTime":

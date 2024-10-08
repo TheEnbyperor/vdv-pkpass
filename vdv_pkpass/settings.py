@@ -10,27 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 import cryptography.x509
 import cryptography.hazmat.primitives.serialization
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.getenv("SECRET_KEY", "")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+DEBUG = False
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-%d$d(=tg6tengouqane%hj*_fr8r-w^g7vf@z_cmxmr!v9&)#a"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-# Application definition
+ALLOWED_HOSTS = os.getenv("HOST", "vdv-pkpass.magicalcodewit.ch").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -46,6 +37,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "xff.middleware.XForwardedForMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -75,41 +67,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "vdv_pkpass.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        "ENGINE": "django_cockroachdb",
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "NAME": os.getenv("DB_NAME", "vdv-pkpass"),
+        "USER": os.getenv("DB_USER", "vdv-pkpass"),
+        "PASSWORD": os.getenv("DB_PASS"),
+        "PORT": '26257',
+        "OPTIONS": {
+            "application_name": os.getenv("APP_NAME", "vdv-pkpass"),
+        }
     }
 }
 
+AUTH_PASSWORD_VALIDATORS = [{
+    "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+}, {
+    "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+}, {
+    "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+}, {
+    "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+}]
 
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-gb"
 
 TIME_ZONE = "UTC"
 
@@ -117,45 +99,106 @@ USE_I18N = True
 
 USE_TZ = True
 
+EXTERNAL_URL_BASE = os.getenv("EXTERNAL_URL", f"https://{ALLOWED_HOSTS[0]}")
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "static"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+STATIC_URL = os.getenv("STATIC_URL", f"{EXTERNAL_URL_BASE}/static/")
+MEDIA_URL = os.getenv("MEDIA_URL", f"{EXTERNAL_URL_BASE}/media/")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["gds"]
 CRISPY_TEMPLATE_PACK = "gds"
 
-with open(BASE_DIR / "priv" / "wwdrg4.crt", "rb") as f:
+XFF_TRUSTED_PROXY_DEPTH = 1
+XFF_NO_SPOOFING = True
+XFF_HEADER_REQUIRED = True
+
+AWS_S3_CUSTOM_DOMAIN = os.getenv("S3_CUSTOM_DOMAIN", "")
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = False
+AWS_S3_REGION_NAME = os.getenv("S3_REGION", "")
+AWS_S3_ENDPOINT_URL = os.getenv("S3_ENDPOINT", "")
+AWS_STORAGE_BUCKET_NAME = os.getenv("S3_BUCKET", "")
+AWS_S3_ACCESS_KEY_ID = os.getenv("S3_ACCESS_KEY_ID", "")
+AWS_S3_SECRET_ACCESS_KEY = os.getenv("S3_SECRET_ACCESS_KEY", "")
+AWS_S3_ADDRESSING_STYLE = "virtual"
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+
+STORAGES = {
+    "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+    "staticfiles": {"BACKEND": "storages.backends.s3boto3.S3ManifestStaticStorage"},
+    "vdv-certs": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": "vdv-certs",
+        }
+    },
+    "uic-data": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": "uic-data",
+        }
+    },
+}
+
+with open(os.getenv("WWDR_CERTIFICATE_LOCATION"), "rb") as f:
     WWDR_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
-with open(BASE_DIR / "priv" / "pass.crt", "rb") as f:
+with open(os.getenv("PKPASS_CERTIFICATE_LOCATION"), "rb") as f:
     PKPASS_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
-with open(BASE_DIR / "priv" / "pass.key", "rb") as f:
+with open(os.getenv("PKPASS_KEY_LOCATION"), "rb") as f:
     PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), None)
 
 PKPASS_CONF = {
-    "organization_name": "Q Misell",
-    "pass_type": "pass.ch.magicalcodewit.vdv.ticket",
-    "team_id": "MQ9TN9772U"
+    "organization_name": os.getenv("PKPASS_ORGANIZATION_NAME"),
+    "pass_type": os.getenv("PKPASS_PASS_TYPE"),
+    "team_id": os.getenv("PKPASS_TEAM_ID"),
 }
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+AZTEC_JAR_PATH = BASE_DIR / "aztec-1.0.jar"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
     },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-    "vdv-certs": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-        "OPTIONS": {
-            "location": BASE_DIR / "vdv-certs",
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[%(server_time)s] %(message)s',
         }
     },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        'console_debug_false': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'logging.StreamHandler',
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'console_debug_false'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        }
+    }
 }

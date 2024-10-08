@@ -4,10 +4,34 @@
 {% block title %}Ticket {{ ticket_id }} - VDV to Apple Wallet{% endblock title %}
 
 {% block content %}
+    <div class="govuk-width-container">
     <h1 class="govuk-heading-xl">
         Ticket #{{ ticket_id }}
         <span class="govuk-caption-xl">{{ ticket.get_ticket_type_display }}</span>
     </h1>
+
+    {% if ticket_updated %}
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="region" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    {% if ticket_created %}
+                        Ticket created
+                    {% else %}
+                        Ticket updated
+                    {% endif %}
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-body">
+                    {% if ticket_created %}
+                        Your ticket has been created successfully; download your pass below to add it to your Apple Wallet.
+                    {% else %}
+                        Your ticket has been updated successfully; download your pass below to update it in your Apple Wallet.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    {% endif %}
 
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
@@ -17,12 +41,14 @@
             <a href="{% url 'ticket_pkpass' ticket.id %}" class="govuk-button govuk-button--start govuk-button--inverse govuk-!-margin-0">Download</a>
         </div>
     </div>
+    </div>
 
+    <div class="govuk-!-margin-9">
     <h2 class="govuk-heading-l">Ticket details</h2>
-    {% if not ticket.instances.count %}
+    {% if not ticket.vdv_instances.count and not ticket.uic_instances.count %}
         <p class="govuk-body">No instances found for this ticket.</p>
     {% else %}
-        {% for instance in ticket.instances.all %}
+        {% for instance in ticket.vdv_instances.all %}
             {% with ticket_obj=instance.as_ticket %}
                 <details class="govuk-details">
                     <summary class="govuk-details__summary">
@@ -30,11 +56,29 @@
                         <span>{{ instance.validity_start|date:"F d, Y H:i:s" }} - {{ instance.validity_end|date:"F d, Y H:i:s" }}</span>
                     </summary>
                     <div class="govuk-details__text">
-                        {% include 'main/ticket_details.html' with ticket=ticket_obj %}
+                        {% include 'main/vdv_ticket_details.html' with ticket=ticket_obj %}
+                    </div>
+                </details>
+            {% endwith %}
+        {% endfor %}
+        {% for instance in ticket.uic_instances.all %}
+            {% with ticket_obj=instance.as_ticket %}
+                <details class="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">Ticket #{{ instance.reference }}</span>
+                        {% with distributor=ticket_obj.distributor %}
+                            {% if distributor %}
+                                <span>{{ distributor.full_name }} - {{ distributor.country }}</span>
+                            {% endif %}
+                        {% endwith %}
+                    </summary>
+                    <div class="govuk-details__text">
+                        {% include 'main/uic_ticket_details.html' with ticket=ticket_obj %}
                     </div>
                 </details>
             {% endwith %}
         {% endfor %}
     {% endif %}
+    </div>
 
 {% endblock content %}

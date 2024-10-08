@@ -1,0 +1,6 @@
+{% if org.url %}
+    <a href="{{ org.url }}" class="govuk-link" target="_blank">{{ org.full_name }}</a>
+{% else %}
+    {{ org.full_name }}
+{% endif %}
+- {{ org.country }}

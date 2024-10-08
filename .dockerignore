@@ -1,0 +1,11 @@
+/priv
+/node_modules
+/static
+/uic-data
+/vdv-certs
+/venv
+/db.sqlite3
+/package.json
+/yarn.lock
+/.gitignore
+/kube

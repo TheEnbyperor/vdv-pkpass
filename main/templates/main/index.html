@@ -4,13 +4,15 @@
 {% block title %}VDV to Apple Wallet{% endblock title %}
 
 {% block content %}
-    <h1 class="govuk-heading-xl">VDV to Apple Wallet Pass</h1>
+    <div class="govuk-width-container">
+    <h1 class="govuk-heading-xl">VDV/UIC to Apple Wallet Pass</h1>
     <p class="govuk-body-l">
-        Turn your German local public transport ticket into an Apple Wallet pass.
+        Turn your German public transport ticket into an Apple Wallet pass.
     </p>
     <p class="govuk-body">
-        Only VDV tickets are supported at the moment, UIC tickets are unsupported.
-        The Deutschlandticket is almost always issued as a VDV ticket.
+        Both VDV and UIC tickets are supported. UIC tickets are usually issued by Deutsche Bahn and other long-distance
+        operators, while VDV tickets are issued by local transport operators.
+        UIC tickets may not work as reliably as VDV tickets - they're a lot more complicated.
     </p>
 
     {% if error %}
@@ -20,15 +22,19 @@
                 <div class="govuk-error-summary__body">
                     <p class="govuk-body">{{ error.message }}</p>
                     {% if error.exception %}
-                        <p class="govuk-body-s">
-                            Exception:<br/>
-                        <pre>{{ error.exception }}</pre>
-                        </p>
+                        <details class="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">Full exception</span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <pre style="overflow-x: auto;font-size: 1rem;">{{ error.exception }}</pre>
+                            </div>
+                        </details>
                     {% endif %}
                     {% if error.ticket_contents %}
                         <p class="govuk-body-s">
-                            Ticket contents, please send this when asking for support:
-                            <code style="line-break: anywhere">{{ error.ticket_contents }}</code>
+                            Ticket contents; please send this when asking for support:<br/>
+                            <code style="line-break: anywhere;">{{ error.ticket_contents }}</code>
                         </p>
                     {% endif %}
                 </div>
@@ -70,6 +76,11 @@
         <input type="hidden" name="ticket_hex" id="data">
     </form>
 
+    <p class="govuk-body">
+        If you're having trouble scanning your ticket uploading a picture/screenshot of your ticket usually works better.
+        The decoder on the server is better than the one in your browser.
+    </p>
+
     <h2 class="govuk-heading-l">Upload a picture instead</h2>
     {% crispy image_form %}
 
@@ -89,6 +100,7 @@
         Tickets commonly include your name and date of birth - this information is not processed except to
         generate the pass. Ticket data may be inspected by a human if you ask for help.
     </p>
+    </div>
 
     <script>
         function ready() {

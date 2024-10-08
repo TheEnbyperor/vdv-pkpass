@@ -9,3 +9,64 @@
     font-weight: 700;
     src: url(db-sans-bold.otf) format('opentype');
 }
+
+@font-face {
+    font-family: 'DIN Mono';
+    src: url(din-mono.ttf) format('truetype');
+}
+
+.rct2-ticket-container {
+    overflow-x: auto;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.rct2-ticket {
+    font-family: monospace;
+    background-image: linear-gradient(-45deg, #f2d4b6 0% 50%, #b6def2 50% 100%);
+    background-size: 2ch 2ch;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
+
+.rct2-ticket-inner {
+    width: 72ch;
+    height: 15em;
+    position: relative;
+}
+
+.rct2-ticket-field {
+    display: inline-block;
+    position: absolute;
+}
+
+.rct2-ticket-fixed-area {
+    display: inline-block;
+    position: absolute;
+    border: 1px solid black;
+    top: calc(var(--top) + 1px);
+    left: calc(var(--left) - 1px);
+    height: calc(var(--height) - 1px);
+    width: calc(var(--width) + 1px);
+}
+
+.rct2-ticket-fixed-field {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    letter-spacing: -1px;
+}
+
+.rct2-ticket-field.rct2-ticket-field-bold {
+    font-weight: bold;
+}
+
+.rct2-ticket-field.rct2-ticket-field-italic {
+    font-style: italic;
+}

@@ -146,7 +146,7 @@ class VDVTicket:
         else:
             return UnknownElement(elm[0], elm[1])
 
-    def product_name(self):
+    def product_name(self, opt=False):
         if self.product_number == 9999:
             return "Deutschlandticket"
         elif self.product_number == 9998:
@@ -158,13 +158,24 @@ class VDVTicket:
         elif self.product_number == 9995:
             return "Deutschlandsemesterticket"
         else:
+            if opt:
+                return None
             return f"{self.product_org_name()}:{self.product_number}"
+
+    def product_name_opt(self):
+        return self.product_name(True)
 
     def product_org_name(self):
         return self.map_org_id(self.product_org_id)
 
+    def product_org_name_opt(self):
+        return self.map_org_id(self.product_org_id, True)
+
     def ticket_org_name(self):
         return self.map_org_id(self.ticket_org_id)
+
+    def ticket_org_name_opt(self):
+        return self.map_org_id(self.ticket_org_id, True)
 
     def kvp_org_name(self):
         return self.map_org_id(self.kvp_org_id)
@@ -176,20 +187,24 @@ class VDVTicket:
         return self.map_org_id(self.location_org_id)
 
     @staticmethod
-    def map_org_id(org_id):
+    def map_org_id(org_id, opt=False):
         if org_id == 36:
             return "Rhein-Main-Verkehrsverbund GmbH"
         elif org_id == 77:
             return "WestfalenTarif GmbH"
+        elif org_id == 6061:
+            return "DB Mobility Logistics AG"
         elif org_id == 6187:
             return "Offenbacher Verkehrs-Betriebe GmbH"
-        elif org_id == 6260:
+        elif org_id in (6222, 6260, 6312, 6379, 6410):
             return "DB Vertrieb GmbH"
         elif org_id == 6262:
             return "DB Fernverkehr AG"
         elif org_id == 6335:
             return "Rhein-Main-Verkehrsverbund Servicegesellschaft mbH"
         else:
+            if opt:
+                return None
             return str(org_id)
 
 @dataclasses.dataclass

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vdv-pkpass-django
+  namespace: q-personal
+  labels:
+    app: vdv-pkpass
+    part: django
+spec:
+  selector:
+    app: vdv-pkpass
+    part: django
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vdv-pkpass
+  namespace: q-personal
+  annotations:
+    cert-manager.io/cluster-issuer: "gts"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - vdv-pkpass.magicalcodewit.ch
+      secretName: vdv-pkpass-tls
+  rules:
+    - host: vdv-pkpass.magicalcodewit.ch
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vdv-pkpass-django
+                port:
+                  number: 8000
