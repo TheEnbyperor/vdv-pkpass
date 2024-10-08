@@ -15,3 +15,5 @@ django-storages
 boto3
 django-cockroachdb==5.0.*
 django-xff
+psycopg2-binary
+gunicorn
