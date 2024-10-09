@@ -66,7 +66,7 @@ class HeadV1:
             if data[39:41] == b"\x00\x00":
                 second_language = None
             else:
-                second_language = data[39:41].decode("ascii")
+                second_language = data[39:41].decode("ascii").strip()
         except UnicodeDecodeError as e:
             raise util.UICException("Invalid UIC ticket language") from e
 

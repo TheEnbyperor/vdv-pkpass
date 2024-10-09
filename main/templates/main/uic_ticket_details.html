@@ -65,12 +65,12 @@
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Language</dt>
-            <dd class="govuk-summary-list__value"><code>{{ ticket.head.language }}</code></dd>
+            <dd class="govuk-summary-list__value"><code>{{ ticket.head.language|upper }}</code></dd>
         </div>
         {% if ticket.head.second_language %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Second language</dt>
-                <dd class="govuk-summary-list__value"><code>{{ ticket.head.second_language }}</code></dd>
+                <dd class="govuk-summary-list__value"><code>{{ ticket.head.second_language|upper }}</code></dd>
             </div>
         {% endif %}
     </dl>
