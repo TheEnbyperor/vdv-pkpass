@@ -239,23 +239,26 @@ def ticket_pkpass(request, pk):
                 dob_year = passenger.get("yearOfBirth", 0)
                 dob_month = passenger.get("monthOfBirth", 0)
                 dob_day = passenger.get("dayOfBirthInMonth", 0)
+                first_name = passenger.get('firstName', "").strip()
+                last_name = passenger.get('lastName', "").strip()
                 pass_json["generic"]["primaryFields"].append({
                     "key": "passenger",
                     "label": "passenger-label",
-                    "value": f"{passenger.get('firstName')}\n{passenger.get('lastName')}",
+                    "value": f"{first_name}\n{last_name}",
                     "semantics": {
                         "passengerName": {
-                            "familyName": passenger.get('lastName'),
-                            "givenName": passenger.get('firstName')
+                            "familyName": last_name,
+                            "givenName": first_name,
                         }
                     }
                 })
-                pass_json["generic"]["secondaryFields"].append({
-                    "key": "date-of-birth",
-                    "label": "date-of-birth-label",
-                    "dateStyle": "PKDateStyleMedium",
-                    "value": f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}T00:00:00Z",
-                })
+                if dob_year != 0 or dob_month != 0 or dob_day != 0:
+                    pass_json["generic"]["secondaryFields"].append({
+                        "key": "date-of-birth",
+                        "label": "date-of-birth-label",
+                        "dateStyle": "PKDateStyleMedium",
+                        "value": f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}T00:00:00Z",
+                    })
 
         pass_json["generic"]["backFields"].append({
             "key": "issued-date",

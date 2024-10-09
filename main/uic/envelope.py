@@ -50,7 +50,7 @@ class Record:
 class Envelope:
     version: int
     issuer_rics: int
-    signature_key_id: int
+    signature_key_id: typing.Union[int, str]
     signature: bytes
     records: typing.List[Record]
 
@@ -78,9 +78,13 @@ class Envelope:
             provider_str = data[5:9].decode("ascii")
             provider = int(provider_str, 10)
             signature_key_id_str = data[9:14].decode("ascii")
-            signature_key_id = int(signature_key_id_str, 10)
         except (UnicodeDecodeError, ValueError) as e:
             raise util.UICException("Invalid UIC ticket provider or signature key ID") from e
+
+        try:
+            signature_key_id = int(signature_key_id_str, 10)
+        except ValueError:
+            signature_key_id = signature_key_id_str
 
         if version == 1:
             signature, data = data[14:64], data[64:]

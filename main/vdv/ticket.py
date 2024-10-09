@@ -191,8 +191,12 @@ class VDVTicket:
     def map_org_id(org_id, opt=False):
         if org_id == 36:
             return "Rhein-Main-Verkehrsverbund GmbH"
+        elif org_id == 57:
+            return "Dortmunder Stadtwerke AG"
         elif org_id == 77:
             return "WestfalenTarif GmbH"
+        elif org_id == 3000:
+            return "Verband Deutscher Verkehrsunternehmen eV"
         elif org_id == 6061:
             return "DB Mobility Logistics AG"
         elif org_id == 6187:

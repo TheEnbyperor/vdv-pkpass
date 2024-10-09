@@ -3,6 +3,7 @@ import typing
 import pathlib
 import ber_tlv.tlv
 import hashlib
+import string
 import django.core.files.storage
 
 from . import iso9796, util
@@ -39,6 +40,8 @@ class CAReference:
     def ascii_name(self):
         try:
             name = self.name.decode("ascii")
+            if any(c not in string.printable for c in name):
+                return None
             return name[0:2], name[2:]
         except UnicodeDecodeError:
             return None
