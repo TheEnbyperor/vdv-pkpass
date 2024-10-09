@@ -138,6 +138,7 @@ def ticket_pkpass(request, pk):
         "passTypeIdentifier": settings.PKPASS_CONF["pass_type"],
         "teamIdentifier": settings.PKPASS_CONF["team_id"],
         "serialNumber": ticket_obj.pk,
+        "groupingIdentifier": ticket_obj.pk,
         "sharingProhibited": True,
         "backgroundColor": "rgb(255, 255, 255)",
         "foregroundColor": "rgb(0, 0, 0)",
@@ -148,7 +149,7 @@ def ticket_pkpass(request, pk):
         issued_at = ticket_data.issuing_time().astimezone(pytz.utc)
         issuing_rics = ticket_data.issuing_rics()
 
-        pass_json["description"] = "CIV Ticket"
+        pass_json["description"] = "UIC Ticket"
         pass_json["generic"] = {
             "headerFields": [],
             "primaryFields": [],
@@ -189,10 +190,8 @@ def ticket_pkpass(request, pk):
 
         if ticket_data.flex:
             if len(ticket_data.flex.data["transportDocument"]) >= 1:
-                document = ticket_data.flex.data["transportDocument"][0]["ticket"]
-                if document[0] == "openTicket":
-                    document = document[1]
-
+                document_type, document = ticket_data.flex.data["transportDocument"][0]["ticket"]
+                if document_type == "openTicket":
                     validity_start = templatetags.rics.rics_valid_from(document, issued_at)
                     validity_end = templatetags.rics.rics_valid_until(document, issued_at)
 
@@ -201,12 +200,14 @@ def ticket_pkpass(request, pk):
                         "key": "validity-start",
                         "label": "validity-start-label",
                         "dateStyle": "PKDateStyleMedium",
+                        "timeStyle": "PKDateStyleNone",
                         "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     })
                     pass_json["generic"]["secondaryFields"].append({
                         "key": "validity-end",
                         "label": "validity-end-label",
                         "dateStyle": "PKDateStyleMedium",
+                        "timeStyle": "PKDateStyleNone",
                         "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
                         "changeMessage": "validity-end-change"
                     })
@@ -234,6 +235,56 @@ def ticket_pkpass(request, pk):
                                 "value": tariff["tariffDesc"]
                             })
 
+                elif document_type == "customerCard":
+                    validity_start = templatetags.rics.rics_valid_from_date(document)
+                    validity_end = templatetags.rics.rics_valid_until_date(document)
+
+                    if "cardTypeDescr" in document:
+                        pass_json["generic"]["headerFields"].append({
+                            "key": "product",
+                            "label": "product-label",
+                            "value": document["cardTypeDescr"]
+                        })
+
+                    if "cardIdIA5" in document:
+                        pass_json["generic"]["secondaryFields"].append({
+                            "key": "card-id",
+                            "label": "card-id-label",
+                            "value": document["cardIdIA5"],
+                        })
+                    elif "cardIdNum" in document:
+                        pass_json["generic"]["secondaryFields"].append({
+                            "key": "card-id",
+                            "label": "card-id-label",
+                            "value": str(document["cardIdNum"]),
+                        })
+
+                    if "classCode" in document:
+                        pass_json["generic"]["secondaryFields"].append({
+                            "key": "class-code",
+                            "label": "class-code-label",
+                            "value": f"class-code-{document['classCode']}-label",
+                        })
+
+                    if validity_start:
+                        pass_json["generic"]["backFields"].append({
+                            "key": "validity-start-back",
+                            "label": "validity-start-label",
+                            "dateStyle": "PKDateStyleFull",
+                            "timeStyle": "PKDateStyleNone",
+                            "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        })
+                    if validity_end:
+                        pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+                        pass_json["generic"]["backFields"].append({
+                            "key": "validity-end-back",
+                            "label": "validity-end-label",
+                            "dateStyle": "PKDateStyleFull",
+                            "timeStyle": "PKDateStyleNone",
+                            "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        })
+
+
             if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
                 passenger = ticket_data.flex.data["travelerDetail"]["traveler"][0]
                 dob_year = passenger.get("yearOfBirth", 0)
@@ -252,12 +303,24 @@ def ticket_pkpass(request, pk):
                         }
                     }
                 })
-                if dob_year != 0 or dob_month != 0 or dob_day != 0:
+                if dob_year != 0 and dob_month != 0 and dob_day != 0:
                     pass_json["generic"]["secondaryFields"].append({
                         "key": "date-of-birth",
                         "label": "date-of-birth-label",
                         "dateStyle": "PKDateStyleMedium",
                         "value": f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}T00:00:00Z",
+                    })
+                elif dob_year != 0 and dob_month != 0:
+                    pass_json["generic"]["secondaryFields"].append({
+                        "key": "month-of-birth",
+                        "label": "month-of-birth-label",
+                        "value": f"{dob_month:02d}.{dob_year:04d}",
+                    })
+                elif dob_year != 0:
+                    pass_json["generic"]["secondaryFields"].append({
+                        "key": "year-of-birth",
+                        "label": "year-of-birth-label",
+                        "value": f"{dob_year:04d}",
                     })
 
         pass_json["generic"]["backFields"].append({
@@ -403,6 +466,7 @@ PASS_STRINGS = {
     "en": """
 "product-label" = "Product";
 "ticket-id-label" = "Ticket ID";
+"card-id-label" = "Card ID";
 "more-info-label" = "More info";
 "product-organisation-label" = "Product Organisation";
 "issuing-organisation-label" = "Issuing Organisation";
@@ -412,11 +476,17 @@ PASS_STRINGS = {
 "validity-end-change" = "Validity extended to %@";
 "issued-at-label" = "Issued at";
 "passenger-label" = "Passenger";
+"class-code-label" = "Class";
+"class-code-first-label" = "1st";
+"class-code-second-label" = "2nd";
 "date-of-birth-label" = "Date of birth";
+"month-of-birth-label" = "Birth month";
+"year-of-birth-label" = "Birth year";
 """,
     "de": """
 "product-label" = "Produkt";
 "ticket-id-label" = "Ticket-ID";
+"card-id-label" = "Kartennummer";
 "more-info-label" = "Mehr Infos";
 "product-organisation-label" = "Produktorganisation";
 "issuing-organisation-label" = "Ausstellende Organisation";
@@ -426,7 +496,12 @@ PASS_STRINGS = {
 "validity-end-change" = "Verlängert bis %@";
 "issued-at-label" = "Ausgestellt am";
 "passenger-label" = "Fahrgast";
+"class-code-label" = "Klasse";
+"class-code-first-label" = "1.";
+"class-code-second-label" = "2.";
 "date-of-birth-label" = "Geburtsdatum";
+"month-of-birth-label" = "Geburtsmonat";
+"year-of-birth-label" = "Geburtsjahr";
 """
 }
 

@@ -1,4 +1,5 @@
 {% load rics %}
+
 {% if ticket.head %}
     <h2 class="govuk-heading-m">Header</h2>
     <dl class="govuk-summary-list">
@@ -198,7 +199,7 @@
             <dt class="govuk-summary-list__key">Version</dt>
             <dd class="govuk-summary-list__value"><code>{{ ticket.flex.version }}</code></dd>
         </div>
-        {% include "main/uic_flex.html" with flex=ticket.flex %}
+        {% include "main/uic/flex.html" with flex=ticket.flex %}
     </dl>
 {% endif %}
 

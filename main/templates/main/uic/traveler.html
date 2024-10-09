@@ -1,0 +1,57 @@
+{% load rics %}
+<dl class="govuk-summary-list">
+    {% if traveler.firstName %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Forename</dt>
+            <dd class="govuk-summary-list__value">{{ traveler.firstName }}</dd>
+        </div>
+    {% endif %}
+    {% if traveler.secondName %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Middle name</dt>
+            <dd class="govuk-summary-list__value">{{ traveler.secondName }}</dd>
+        </div>
+    {% endif %}
+    {% if traveler.lastName %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Surname</dt>
+            <dd class="govuk-summary-list__value">{{ traveler.lastName }}</dd>
+        </div>
+    {% endif %}
+    {% if traveler.title %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Title</dt>
+            <dd class="govuk-summary-list__value">{{ traveler.title }}</dd>
+        </div>
+    {% endif %}
+    {% if traveler.idCard %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">ID Card Number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ traveler.idCard }}</code></dd>
+        </div>
+    {% endif %}
+    {% if traveler.passportId %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Passport Number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ traveler.passportId }}</code></dd>
+        </div>
+    {% endif %}
+    {% with dob=traveler|rics_traveler_dob %}
+        {% if dob %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date of birth</dt>
+                <dd class="govuk-summary-list__value">{{ dob|date:"F d, Y" }}</dd>
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Ticket holder</dt>
+        <dd class="govuk-summary-list__value">
+            {% if traveler.ticketHolder %}
+                <strong class="govuk-tag govuk-tag--green">Yes</strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--red">No</strong>
+            {% endif %}
+        </dd>
+    </div>
+</dl>

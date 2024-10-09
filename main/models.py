@@ -13,10 +13,12 @@ def make_pass_token():
 
 class Ticket(models.Model):
     TYPE_DEUTCHLANDTICKET = "deutschlandticket"
+    TYPE_BAHNCARD = "bahncard"
     TYPE_UNKNOWN = "unknown"
 
     TICKET_TYPES = (
         (TYPE_DEUTCHLANDTICKET, "Deutschlandticket"),
+        (TYPE_BAHNCARD, "Bahncard"),
         (TYPE_UNKNOWN, "Unknown"),
     )
 

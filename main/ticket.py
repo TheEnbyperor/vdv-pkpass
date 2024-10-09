@@ -74,25 +74,32 @@ class UICTicket:
         return "UIC"
 
     def type(self) -> str:
-        if self.flex and self.flex.version == 3 and \
-                self.flex.data["issuingDetail"].get("issuerNum") == 1080 and \
-                len(self.flex.data.get("transportDocument", [])) >= 1 and \
-                len(self.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
-            ticket = self.flex.data["transportDocument"][0]["ticket"]
-            if ticket[0] == "openTicket" and ticket[1]["productIdNum"] in (
-                    9999, # Deutschlandticket subscription
-                    9998, # Deutschlandjobticket subscription
-                    9997, # Startkarte Deutschlandticket
-                    9996, # Semesterticket Deutschlandticket Upgrade subscription
-                    9995, # Semesterdeutschlandticket subscription
-            ):
-                return models.Ticket.TYPE_DEUTCHLANDTICKET
+        if self.flex:
+            issuer_num = self.flex.data["issuingDetail"].get("issuerNum")
+            if len(self.flex.data.get("transportDocument", [])) >= 1:
+                ticket_type, ticket = self.flex.data["transportDocument"][0]["ticket"]
+                if ticket_type == "openTicket":
+                    if len(self.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1 and \
+                        issuer_num == 1080: # Deutsche Bahn
+                        if ticket["productIdNum"] in (
+                                9999, # Deutschlandticket subscription
+                                9998, # Deutschlandjobticket subscription
+                                9997, # Startkarte Deutschlandticket
+                                9996, # Semesterticket Deutschlandticket Upgrade subscription
+                                9995, # Semesterdeutschlandticket subscription
+                        ):
+                            return models.Ticket.TYPE_DEUTCHLANDTICKET
+                elif ticket_type == "customerCard":
+                    return models.Ticket.TYPE_BAHNCARD
+
         return models.Ticket.TYPE_UNKNOWN
 
     def pk(self) -> str:
         hd = Crypto.Hash.TupleHash128.new(digest_bytes=16)
 
-        if self.type() == models.Ticket.TYPE_DEUTCHLANDTICKET:
+        ticket_type = self.type()
+
+        if ticket_type == models.Ticket.TYPE_DEUTCHLANDTICKET:
             passenger = self.flex.data.get("travelerDetail", {}).get("traveler", [{}])[0]
             dob_year = passenger.get("yearOfBirth", 0)
             dob_month = passenger.get("monthOfBirth", 0)
@@ -104,10 +111,21 @@ class UICTicket:
             hd.update(f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}".encode("utf-8"))
             return base64.b32hexencode(hd.digest()).decode("utf-8")
 
-        hd.update(b"unknown-uic")
-        hd.update(self.issuing_rics().to_bytes(4, "big"))
-        hd.update(self.ticket_id().encode("utf-8"))
-        return base64.b32encode(hd.digest()).decode("utf-8")
+        elif ticket_type == models.Ticket.TYPE_BAHNCARD:
+            card = self.flex.data["transportDocument"][0]["ticket"][1]
+            hd.update(b"bahncard")
+            hd.update(self.flex.data["issuingDetail"].get("issuerNum", 0).to_bytes(8, "big"))
+            if "cardIdIA5" in card:
+                hd.update(card["cardIdIA5"].encode("utf-8"))
+            else:
+                hd.update(str(card.get("cardIdNum", 0)).encode("utf-8"))
+            return base64.b32hexencode(hd.digest()).decode("utf-8")
+
+        else:
+            hd.update(b"unknown-uic")
+            hd.update(self.issuing_rics().to_bytes(4, "big"))
+            hd.update(self.ticket_id().encode("utf-8"))
+            return base64.b32encode(hd.digest()).decode("utf-8")
 
     def issuing_rics(self) -> int:
         if self.head:
