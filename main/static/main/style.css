@@ -15,6 +15,10 @@
     src: url(din-mono.ttf) format('truetype');
 }
 
+.govuk-header__container {
+    border-bottom-color: #EC0016;
+}
+
 .rct2-ticket-container {
     overflow-x: auto;
     display: flex;
