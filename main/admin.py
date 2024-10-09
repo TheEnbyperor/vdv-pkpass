@@ -12,6 +12,10 @@ class UICTicketInstanceInline(admin.StackedInline):
 class AppleRegistrationInline(admin.StackedInline):
     extra = 0
     model = models.AppleRegistration
+    readonly_fields = [
+        "device",
+        "ticket",
+    ]
 
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
@@ -30,4 +34,7 @@ class AppleDeviceAdmin(admin.ModelAdmin):
     readonly_fields = [
         "device_id",
         "push_token",
+    ]
+    inlines = [
+        AppleRegistrationInline,
     ]

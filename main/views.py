@@ -685,6 +685,7 @@ RICS_LOGO = {
     1080: "pass/logo-db.png",
     1088: "pass/logo-sncb.png",
     1181: "pass/logo-oebb.png",
+    1184: "pass/logo-ns.png",
     1186: "pass/logo-dsb.png",
     9901: "pass/logo-interrail.png",
 }

@@ -49,7 +49,7 @@ class HeadV1:
             raise util.UICException("Invalid UIC ticket distributing RICS") from e
 
         try:
-            ticket_id = data[4:24].rstrip(b"\x00").decode("ascii")
+            ticket_id = data[4:24].rstrip(b"\x00").decode("ascii").strip()
         except UnicodeDecodeError as e:
             raise util.UICException("Invalid UIC ticket ID") from e
 
@@ -62,7 +62,7 @@ class HeadV1:
             raise util.UICException("Invalid UIC ticket flags") from e
 
         try:
-            language = data[37:39].decode("ascii")
+            language = data[37:39].decode("ascii").strip()
             if data[39:41] == b"\x00\x00":
                 second_language = None
             else:
