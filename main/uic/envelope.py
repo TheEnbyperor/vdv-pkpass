@@ -105,9 +105,12 @@ class Envelope:
         except zlib.error as e:
             raise util.UICException("Failed to decompress UIC ticket data") from e
 
+        print(raw_ticket)
+
         offset = 0
         records = []
         while raw_ticket[offset:]:
+            print(raw_ticket[offset:])
             record = Record.parse(raw_ticket[offset:])
             offset += 12 + len(record.data)
             records.append(record)
