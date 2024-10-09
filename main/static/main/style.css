@@ -48,6 +48,7 @@
 .rct2-ticket-field {
     display: inline-block;
     position: absolute;
+    white-space: pre-wrap;
 }
 
 .rct2-ticket-fixed-area {

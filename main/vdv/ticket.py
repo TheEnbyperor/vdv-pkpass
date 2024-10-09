@@ -1,7 +1,10 @@
 import dataclasses
 import typing
 import ber_tlv.tlv
+import re
 from . import util
+
+NAME_TYPE_1_RE = re.compile("^(?P<start>\w+)(?P<len>\d+)(?P<end>\w+)$")
 
 @dataclasses.dataclass
 class VDVTicket:
@@ -224,11 +227,22 @@ class PassengerData:
         if len(data) < 5:
             raise util.VDVException("Invalid passenger data element")
 
-        name = data[5:].decode('ascii', 'replace')
+        name = data[5:].decode("iso-8859-1", "replace")
         forename = ""
-        surname = ""
         if "#" in name:
             forename, surname = name.split("#", 1)
+        elif "@" in name:
+            forename, surname = name.split("@", 1)
+            if forename_match := NAME_TYPE_1_RE.fullmatch(forename):
+                forename_start = forename_match.group("start")
+                forename_end = forename_match.group("end")
+                forename_len = int(forename_match.group("len"))
+                forename = f"{forename_start}{'_'*forename_len}{forename_end}"
+            if surname_match := NAME_TYPE_1_RE.fullmatch(surname):
+                surname_start = surname_match.group("start")
+                surname_end = surname_match.group("end")
+                surname_len = int(surname_match.group("len"))
+                surname = f"{surname_start}{'_'*surname_len}{surname_end}"
         else:
             surname = name
 

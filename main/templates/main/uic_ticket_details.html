@@ -82,7 +82,6 @@
         <div class="rct2-ticket-container">
             <div class="rct2-ticket">
                 <div class="rct2-ticket-inner">
-                    <span class="rct2-ticket-fixed-field" style="top: 2em;left:  1ch;width: 3ch;height: 1em;">CIV</span>
                     <span class="rct2-ticket-fixed-field" style="top: 4em;left:  1ch;width: 5ch;height: 2em;">Datum</span>
                     <span class="rct2-ticket-fixed-field" style="top: 4em;left:  7ch;width: 5ch;height: 2em;">Zeit</span>
                     <span class="rct2-ticket-fixed-field" style="top: 4em;left: 13ch;width: 3ch;height: 2em;">Von</span>
@@ -112,10 +111,7 @@
 
                     {% for field in ticket.layout.fields %}
                         <span class="rct2-ticket-field{% if field.formatting.bold %} rct2-ticket-field-bold{% endif %}{% if field.formatting.italic %} rct2-ticket-field-italic{% endif %}{% if field.formatting.small_font %} rct2-ticket-field-small-font{% endif %}"
-                                style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;{% if not field.text|rics_already_newlined %}width: {{ field.width }}ch;{% endif %}">
-
-                            {{ field.text|linebreaksbr }}
-                        </span>
+                                style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;{% if not field.text|rics_already_newlined %}width: {{ field.width }}ch;{% endif %}">{{ field.text }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -202,11 +198,7 @@
             <dt class="govuk-summary-list__key">Version</dt>
             <dd class="govuk-summary-list__value"><code>{{ ticket.flex.version }}</code></dd>
         </div>
-        {% if ticket.flex.version == 13 %}
-            {% include "main/uic_flex_v13.html" with flex=ticket.flex %}
-        {% elif ticket.flex.version == 3 %}
-            {% include "main/uic_flex_v3.html" with flex=ticket.flex %}
-        {% endif %}
+        {% include "main/uic_flex.html" with flex=ticket.flex %}
     </dl>
 {% endif %}
 
