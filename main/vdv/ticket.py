@@ -107,9 +107,7 @@ class VDVTicket:
         offset_2 = parser.get_offset()
         ticket_issue_data, data = data[offset_2:offset_2+12], data[offset_2+12:]
 
-        extra_bytes = (111 - len(header) - offset_1 - len(common_transaction_data)
-                       - offset_2 - len(ticket_issue_data) - 5)
-        trailer = data[extra_bytes:]
+        trailer = data[-5:]
 
         if trailer[0:3] != b'VDV':
             raise util.VDVException("Not a VDV ticket")
