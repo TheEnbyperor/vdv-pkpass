@@ -7,6 +7,8 @@ register = template.Library()
 
 @register.filter(name="rics")
 def get_rics_code(value):
+    if not value:
+        return None
     return uic.rics.get_rics(int(value))
 
 @register.filter(name="rics_already_newlined")

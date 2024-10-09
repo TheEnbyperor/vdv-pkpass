@@ -60,16 +60,17 @@ def index(request):
             }
         else:
             ticket_pk = ticket_data.pk()
-            ticket_obj, ticket_created = models.Ticket.objects.get_or_create(id=ticket_pk, defaults={
+            ticket_obj, ticket_created = models.Ticket.objects.update_or_create(id=ticket_pk, defaults={
                 "ticket_type": ticket_data.type()
             })
             request.session["ticket_updated"] = True
             request.session["ticket_created"] = ticket_created
             if isinstance(ticket_data, ticket.VDVTicket):
-                ticket_obj.vdv_instances.get_or_create(
+                models.VDVTicketInstance.objects.update_or_create(
                     ticket_number=ticket_data.ticket.ticket_id,
                     ticket_org_id=ticket_data.ticket.ticket_org_id,
                     defaults={
+                        "ticket": ticket_obj,
                         "validity_start": ticket_data.ticket.validity_start.as_datetime(),
                         "validity_end": ticket_data.ticket.validity_end.as_datetime(),
                         "barcode_data": ticket_bytes,
@@ -83,10 +84,11 @@ def index(request):
                     }
                 )
             elif isinstance(ticket_data, ticket.UICTicket):
-                ticket_obj.uic_instances.get_or_create(
+                models.UICTicketInstance.objects.update_or_create(
                     reference=ticket_data.ticket_id(),
                     distributor_rics=ticket_data.issuing_rics(),
                     defaults={
+                        "ticket": ticket_obj,
                         "issuing_time": ticket_data.issuing_time(),
                         "barcode_data": ticket_bytes,
                         "decoded_data": {
