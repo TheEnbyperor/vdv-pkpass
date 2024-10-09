@@ -4,7 +4,7 @@ import ber_tlv.tlv
 import re
 from . import util
 
-NAME_TYPE_1_RE = re.compile("^(?P<start>\w+)(?P<len>\d+)(?P<end>\w+)$")
+NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w+)(?P<len>\d+)(?P<end>\w+)$")
 
 @dataclasses.dataclass
 class VDVTicket:
