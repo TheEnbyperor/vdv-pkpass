@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from . import models
+from . import models, views
 
 logger = logging.Logger(__name__)
 
@@ -93,6 +93,29 @@ def registration(request, device_id, pass_type_id, serial_number):
         return HttpResponse(status=200)
     else:
         return HttpResponse(status=405)
+
+@csrf_exempt
+def pass_document(request, pass_type_id, serial_number):
+    if "Authorization" not in request.headers:
+        return HttpResponse(status=401)
+
+    auth_header = request.headers["Authorization"]
+    if not auth_header.startswith("ApplePass "):
+        return HttpResponse(status=401)
+
+    auth_token = auth_header[10:]
+
+    if pass_type_id != settings.PKPASS_CONF["pass_type"]:
+        return HttpResponse(status=404)
+
+    ticket_obj: models.Ticket = models.Ticket.objects.get(id=serial_number)
+    if not ticket_obj:
+        return HttpResponse(status=404)
+
+    if ticket_obj.pkpass_authentication_token != auth_token:
+        return HttpResponse(status=403)
+
+    return views.make_pkpass(ticket_obj)
 
 @csrf_exempt
 def log(request):

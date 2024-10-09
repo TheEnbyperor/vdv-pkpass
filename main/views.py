@@ -129,6 +129,9 @@ def add_pkp_img(pkp, img_name: str, pass_path: str):
 
 def ticket_pkpass(request, pk):
     ticket_obj: models.Ticket = get_object_or_404(models.Ticket, id=pk)
+    return make_pkpass(ticket_obj)
+
+def make_pkpass(ticket_obj: models.Ticket):
     ticket_instance: models.UICTicketInstance = ticket_obj.uic_instances.first()
     pkp = pkpass.PKPass()
     have_logo = False
