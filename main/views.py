@@ -185,74 +185,75 @@ def ticket_pkpass(request, pk):
                     "value": distributor["full_name"],
                 })
 
-        if len(ticket_data.flex.data["transportDocument"]) >= 1:
-            document = ticket_data.flex.data["transportDocument"][0]["ticket"]
-            if document[0] == "openTicket":
-                document = document[1]
+        if ticket_data.flex:
+            if len(ticket_data.flex.data["transportDocument"]) >= 1:
+                document = ticket_data.flex.data["transportDocument"][0]["ticket"]
+                if document[0] == "openTicket":
+                    document = document[1]
 
-                validity_start = templatetags.rics.rics_valid_from(document, issued_at)
-                validity_end = templatetags.rics.rics_valid_until(document, issued_at)
+                    validity_start = templatetags.rics.rics_valid_from(document, issued_at)
+                    validity_end = templatetags.rics.rics_valid_until(document, issued_at)
 
-                pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-                pass_json["generic"]["secondaryFields"].append({
-                    "key": "validity-start",
-                    "label": "validity-start-label",
-                    "dateStyle": "PKDateStyleMedium",
-                    "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                })
-                pass_json["generic"]["secondaryFields"].append({
-                    "key": "validity-end",
-                    "label": "validity-end-label",
-                    "dateStyle": "PKDateStyleMedium",
-                    "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                    "changeMessage": "validity-end-change"
-                })
-                pass_json["generic"]["backFields"].append({
-                    "key": "validity-start-back",
-                    "label": "validity-start-label",
-                    "dateStyle": "PKDateStyleFull",
-                    "timeStyle": "PKDateStyleFull",
-                    "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                })
-                pass_json["generic"]["backFields"].append({
-                    "key": "validity-end-back",
-                    "label": "validity-end-label",
-                    "dateStyle": "PKDateStyleFull",
-                    "timeStyle": "PKDateStyleFull",
-                    "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                })
+                    pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    pass_json["generic"]["secondaryFields"].append({
+                        "key": "validity-start",
+                        "label": "validity-start-label",
+                        "dateStyle": "PKDateStyleMedium",
+                        "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    })
+                    pass_json["generic"]["secondaryFields"].append({
+                        "key": "validity-end",
+                        "label": "validity-end-label",
+                        "dateStyle": "PKDateStyleMedium",
+                        "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        "changeMessage": "validity-end-change"
+                    })
+                    pass_json["generic"]["backFields"].append({
+                        "key": "validity-start-back",
+                        "label": "validity-start-label",
+                        "dateStyle": "PKDateStyleFull",
+                        "timeStyle": "PKDateStyleFull",
+                        "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    })
+                    pass_json["generic"]["backFields"].append({
+                        "key": "validity-end-back",
+                        "label": "validity-end-label",
+                        "dateStyle": "PKDateStyleFull",
+                        "timeStyle": "PKDateStyleFull",
+                        "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    })
 
-                if len(document.get("tariffs")) >= 1:
-                    tariff = document["tariffs"][0]
-                    if "tariffDesc" in tariff:
-                        pass_json["generic"]["headerFields"].append({
-                            "key": "product",
-                            "label": "product-label",
-                            "value": tariff["tariffDesc"]
-                        })
+                    if len(document.get("tariffs")) >= 1:
+                        tariff = document["tariffs"][0]
+                        if "tariffDesc" in tariff:
+                            pass_json["generic"]["headerFields"].append({
+                                "key": "product",
+                                "label": "product-label",
+                                "value": tariff["tariffDesc"]
+                            })
 
-        if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
-            passenger = ticket_data.flex.data["travelerDetail"]["traveler"][0]
-            dob_year = passenger.get("yearOfBirth", 0)
-            dob_month = passenger.get("monthOfBirth", 0)
-            dob_day = passenger.get("dayOfBirthInMonth", 0)
-            pass_json["generic"]["primaryFields"].append({
-                "key": "passenger",
-                "label": "passenger-label",
-                "value": f"{passenger.get('firstName')}\n{passenger.get('lastName')}",
-                "semantics": {
-                    "passengerName": {
-                        "familyName": passenger.get('lastName'),
-                        "givenName": passenger.get('firstName')
+            if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
+                passenger = ticket_data.flex.data["travelerDetail"]["traveler"][0]
+                dob_year = passenger.get("yearOfBirth", 0)
+                dob_month = passenger.get("monthOfBirth", 0)
+                dob_day = passenger.get("dayOfBirthInMonth", 0)
+                pass_json["generic"]["primaryFields"].append({
+                    "key": "passenger",
+                    "label": "passenger-label",
+                    "value": f"{passenger.get('firstName')}\n{passenger.get('lastName')}",
+                    "semantics": {
+                        "passengerName": {
+                            "familyName": passenger.get('lastName'),
+                            "givenName": passenger.get('firstName')
+                        }
                     }
-                }
-            })
-            pass_json["generic"]["secondaryFields"].append({
-                "key": "date-of-birth",
-                "label": "date-of-birth-label",
-                "dateStyle": "PKDateStyleMedium",
-                "value": f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}T00:00:00Z",
-            })
+                })
+                pass_json["generic"]["secondaryFields"].append({
+                    "key": "date-of-birth",
+                    "label": "date-of-birth-label",
+                    "dateStyle": "PKDateStyleMedium",
+                    "value": f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}T00:00:00Z",
+                })
 
         pass_json["generic"]["backFields"].append({
             "key": "issued-date",
