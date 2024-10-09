@@ -438,4 +438,5 @@ RICS_LOGO = {
 VDV_ORG_ID_LOGO = {
     36: "pass/logo-rmv.png",
     77: "pass/logo-wt.png",
+    6234: "pass/logo-vvs.png",
 }
