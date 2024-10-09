@@ -426,8 +426,10 @@ PASS_STRINGS = {
 
 RICS_LOGO = {
     1080: "pass/logo-db.png",
+    1181: "pass/logo-oebb.png",
 }
 
 VDV_ORG_ID_LOGO = {
+    36: "pass/logo-rmv.png",
     77: "pass/logo-wt.png",
 }
