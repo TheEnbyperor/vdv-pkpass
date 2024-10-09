@@ -236,6 +236,24 @@ def ticket_pkpass(request, pk):
                                 "label": "from-station-label",
                                 "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{from_station['name']}</a>",
                             })
+                        elif "fromStationNameUTF8" in document:
+                            pass_fields["primaryFields"].append({
+                                "key": "from-station",
+                                "label": "from-station-label",
+                                "value": document["fromStationNameUTF8"],
+                                "semantics": {
+                                    "departureStationName": document["fromStationNameUTF8"]
+                                }
+                            })
+                        elif "fromStationIA5" in document:
+                            pass_fields["primaryFields"].append({
+                                "key": "from-station",
+                                "label": "from-station-label",
+                                "value": document["fromStationIA5"],
+                                "semantics": {
+                                    "departureStationName": document["fromStationIA5"]
+                                }
+                            })
 
                         if to_station:
                             pass_fields["primaryFields"].append({
@@ -263,6 +281,24 @@ def ticket_pkpass(request, pk):
                                 "key": "to-station-back",
                                 "label": "to-station-label",
                                 "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{to_station['name']}</a>",
+                            })
+                        elif "toStationNameUTF8" in document:
+                            pass_fields["primaryFields"].append({
+                                "key": "to-station",
+                                "label": "to-station-label",
+                                "value": document["toStationNameUTF8"],
+                                "semantics": {
+                                    "destinationStationName": document["toStationNameUTF8"]
+                                }
+                            })
+                        elif "toStationIA5" in document:
+                            pass_fields["primaryFields"].append({
+                                "key": "to-station",
+                                "label": "to-station-label",
+                                "value": document["toStationIA5"],
+                                "semantics": {
+                                    "destinationStationName": document["toStationIA5"]
+                                }
                             })
 
                     if len(document.get("tariffs")) >= 1:
@@ -400,7 +436,6 @@ def ticket_pkpass(request, pk):
                         "value": product_name
                     })
 
-
             if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
                 passenger = ticket_data.flex.data["travelerDetail"]["traveler"][0]
                 dob_year = passenger.get("yearOfBirth", 0)
@@ -412,7 +447,7 @@ def ticket_pkpass(request, pk):
                 field_data = {
                     "key": "passenger",
                     "label": "passenger-label",
-                    "value": f"{first_name}\n{last_name}",
+                    "value": f"{first_name}\n{last_name}" if pass_type == "generic" else f"{first_name} {last_name}",
                     "semantics": {
                         "passengerName": {
                             "familyName": last_name,
@@ -693,4 +728,6 @@ RICS_LOGO = {
 VDV_ORG_ID_LOGO = {
     36: "pass/logo-rmv.png",
     77: "pass/logo-wt.png",
+    102: "pass/logo-vrs.png",
+    103: "pass/logo-swb.png",
 }

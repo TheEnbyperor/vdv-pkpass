@@ -28,6 +28,7 @@ class TicketAdmin(admin.ModelAdmin):
         UICTicketInstanceInline,
         AppleRegistrationInline,
     ]
+    view_on_site = True
 
 @admin.register(models.AppleDevice)
 class AppleDeviceAdmin(admin.ModelAdmin):

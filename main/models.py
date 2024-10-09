@@ -1,6 +1,7 @@
 import base64
 import secrets
 import dacite
+from django.shortcuts import reverse
 from django.db import models
 from django.core import validators
 from . import ticket as t
@@ -34,6 +35,9 @@ class Ticket(models.Model):
     def __str__(self):
         return f"{self.get_ticket_type_display()} - {self.id}"
 
+    def get_absolute_url(self):
+        return reverse("ticket", kwargs={"pk": self.id})
+
 class VDVTicketInstance(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="vdv_instances")
     ticket_number = models.PositiveIntegerField(verbose_name="Ticket number")
@@ -48,6 +52,7 @@ class VDVTicketInstance(models.Model):
             ["ticket_number", "ticket_org_id"],
         ]
         ordering = ["-validity_start"]
+        verbose_name = "VDV ticket"
 
     def __str__(self):
         return f"{self.ticket_org_id} - {self.ticket_number}"
@@ -76,6 +81,7 @@ class UICTicketInstance(models.Model):
             ["reference", "distributor_rics"],
         ]
         ordering = ["-issuing_time"]
+        verbose_name = "UIC ticket"
 
     def __str__(self):
         return f"{self.distributor_rics} - {self.reference}"

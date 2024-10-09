@@ -191,17 +191,37 @@ class VDVTicket:
     def map_org_id(org_id, opt=False):
         if org_id == 36:
             return "Rhein-Main-Verkehrsverbund GmbH"
+        elif org_id == 38:
+            return "Bahnen der Stadt Monheim GmbH"
+        elif org_id == 39:
+            return "Ruhrbahn Mülheim GmbH"
         elif org_id == 57:
             return "Dortmunder Stadtwerke AG"
-        elif org_id == 77:
-            return "WestfalenTarif GmbH"
+        elif org_id == 70:
+            return "Verkehrsverbund Rhein-Ruhr AöR"
+        elif org_id == 102:
+            return "Verkehrsverbund Rhein-Sieg GmbH"
+        elif org_id == 103:
+            return "Stadtwerke Bonn Verkehrs-GmbH"
+        elif org_id == 111:
+            return "Regionalverkehr Köln GmbH"
         elif org_id == 3000:
             return "Verband Deutscher Verkehrsunternehmen eV"
+        elif org_id == 5000:
+            return "VDV eTicket Service GmbH & Co. KG"
+        elif org_id == 6060:
+            return "Verkehrsverbund Oberelbe"
         elif org_id == 6061:
             return "DB Mobility Logistics AG"
+        elif org_id == 6041:
+            return "Abellio Rail NRW GmbH"
+        elif org_id == 6079:
+            return "moBiel GmbH"
         elif org_id == 6187:
             return "Offenbacher Verkehrs-Betriebe GmbH"
-        elif org_id in (6222, 6260, 6312, 6379, 6410):
+        elif org_id == 6212:
+            return "Verkehrsverbund Rhein-Sieg GmbH"
+        elif org_id in (6260, 6261, 6222, 6312, 6377, 6379, 6410):
             return "DB Vertrieb GmbH"
         elif org_id == 6262:
             return "DB Fernverkehr AG"
