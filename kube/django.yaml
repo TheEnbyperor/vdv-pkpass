@@ -17,7 +17,7 @@ data:
   STATIC_URL: "https://vdv-pkpass-django.content.as207960.net/"
   MEDIA_URL: "https://vdv-pkpass-django.content.as207960.net/"
   PKPASS_ORGANIZATION_NAME: "Q Misell"
-  PKPASS_PASS_TYPE: "pass.pass.ch.magicalcodewit.vdv.ticket"
+  PKPASS_PASS_TYPE: "pass.ch.magicalcodewit.vdv.ticket"
   PKPASS_TEAM_ID: "MQ9TN9772U"
   WWDR_CERTIFICATE_LOCATION: "/certs/wwdrg4.crt"
   PKPASS_CERTIFICATE_LOCATION: "/certs/pass.crt"
