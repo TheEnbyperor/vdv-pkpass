@@ -2,12 +2,10 @@ import base64
 import json
 import typing
 import urllib.parse
-from itertools import product
-
 import pytz
 import dataclasses
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.core.files.storage import storages
 from django.conf import settings
@@ -584,10 +582,11 @@ def ticket_pkpass(request, pk):
             add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.product_org_id], "logo.png")
             have_logo = True
 
+    ticket_url = reverse('ticket', kwargs={"pk": ticket_obj.pk})
     pass_fields["backFields"].append({
         "key": "view-link",
         "label": "more-info-label",
-        "attributedValue": f"<a href=\"#\">View ticket</a>",
+        "attributedValue": f"<a href=\"{settings.EXTERNAL_URL_BASE}{ticket_url}\">View ticket</a>",
     })
 
     pass_json[pass_type] = pass_fields
