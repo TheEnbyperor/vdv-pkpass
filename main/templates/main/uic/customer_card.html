@@ -1,0 +1,58 @@
+{% load rics %}
+<dl class="govuk-summary-list">
+    {% if card.customer %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Customer</dt>
+            <dd class="govuk-summary-list__value">
+                {% include "main/uic/traveler.html" with traveler=card.customer %}
+            </dd>
+        </div>
+    {% endif %}
+    {% if card.cardIdIA5 %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Card ID</dt>
+            <dd class="govuk-summary-list__value"><code>{{ card.cardIdIA5 }}</code></dd>
+        </div>
+    {% endif %}
+    {% if card.cardIdNum %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Card ID Number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ card.cardIdNum }}</code></dd>
+        </div>
+    {% endif %}
+    {% if card.cardTypeDescr %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Card type</dt>
+            <dd class="govuk-summary-list__value">{{ card.cardTypeDescr }}</dd>
+        </div>
+    {% endif %}
+    {% if card.customerStatusDescr %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Customer status</dt>
+            <dd class="govuk-summary-list__value">{{ card.customerStatusDescr }}</dd>
+        </div>
+    {% endif %}
+    {% with valid_from=card|rics_valid_from_date %}
+        {% if valid_from %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Valid from</dt>
+                <dd class="govuk-summary-list__value">{{ valid_from|date:"F d, Y" }}</dd>
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% with valid_until=card|rics_valid_until_date %}
+        {% if valid_until %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Valid until</dt>
+                <dd class="govuk-summary-list__value">{{ valid_until|date:"F d, Y" }}</dd>
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% if card.classCode %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Travel class</dt>
+            <dd class="govuk-summary-list__value"><code>{{ card.classCode }}</code></dd>
+        </div>
+    {% endif %}
+    {% include "main/uic/extension.html" with obj=card %}
+</dl>

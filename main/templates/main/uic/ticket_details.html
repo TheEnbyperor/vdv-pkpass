@@ -193,14 +193,7 @@
 {% endif %}
 
 {% if ticket.flex %}
-    <h2 class="govuk-heading-m">Flexible data</h2>
-    <dl class="govuk-summary-list">
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Version</dt>
-            <dd class="govuk-summary-list__value"><code>{{ ticket.flex.version }}</code></dd>
-        </div>
-        {% include "main/uic/flex.html" with flex=ticket.flex %}
-    </dl>
+    {% include "main/uic/flex.html" with flex=ticket.flex %}
 {% endif %}
 
 {% for record in ticket.other_records %}

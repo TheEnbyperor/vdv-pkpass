@@ -1,0 +1,33 @@
+{% load rics %}
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Name</dt>
+        <dd class="govuk-summary-list__value">{{ station.name }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Country</dt>
+        <dd class="govuk-summary-list__value">{{ station.country|iso3166 }}</dd>
+    </div>
+    {% if station.uic %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">UIC Code</dt>
+            <dd class="govuk-summary-list__value"><code>{{ station.uic }}</code></dd>
+        </div>
+    {% endif %}
+    {% if station.latitude and station.longitude %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Location</dt>
+            <dd class="govuk-summary-list__value">
+                <a href="https://maps.apple.com/?q={{ station.name|urlencode }}&ll={{ station.latitude }},{{ station.longitude }}">
+                    <code>{{ station.latitude }}, {{ station.longitude }}</code>
+                </a>
+            </dd>
+        </div>
+    {% endif %}
+    {% if station.time_zone %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Timezone</dt>
+            <dd class="govuk-summary-list__value"><code>{{ station.time_zone }}</code></dd>
+        </div>
+    {% endif %}
+</dl>

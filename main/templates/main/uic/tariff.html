@@ -1,0 +1,62 @@
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Number of passengers
+        </dt>
+        <dd class="govuk-summary-list__value">{{ tariff.numberOfPassengers }}</dd>
+    </div>
+    {% if tariff.passengerType %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Passenger type
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <code>{{ tariff.passengerType }}</code>
+            </dd>
+        </div>
+    {% endif %}
+    {% if tariff.tariffDesc %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Description</dt>
+            <dd class="govuk-summary-list__value">{{ tariff.tariffDesc }}</dd>
+        </div>
+    {% endif %}
+    {% if tariff.ageAbove %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Age above</dt>
+            <dd class="govuk-summary-list__value">{{ tariff.ageAbove }}</dd>
+        </div>
+    {% endif %}
+    {% if tariff.ageBelow %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Age below</dt>
+            <dd class="govuk-summary-list__value">{{ tariff.ageBelow }}</dd>
+        </div>
+    {% endif %}
+    {% if tariff.reductionCard %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Reduction cards</dt>
+            <dd class="govuk-summary-list__value">
+                {% for card in tariff.reductionCard %}
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">
+                                Reduction card #{{ forloop.counter }}
+                            </h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                {% if card.cardName %}
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">Card name</dt>
+                                        <dd class="govuk-summary-list__value">{{ card.cardName }}</dd>
+                                    </div>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                {% endfor %}
+            </dd>
+        </div>
+    {% endif %}
+</dl>

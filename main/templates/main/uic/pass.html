@@ -1,0 +1,60 @@
+{% load tz rics %}
+<dl class="govuk-summary-list">
+    {% if pass.referenceNum %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Reference</dt>
+            <dd class="govuk-summary-list__value"><code>{{ pass.referenceNum }}</code></dd>
+        </div>
+    {% endif %}
+    {% if pass.referenceIA5 %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Reference</dt>
+            <dd class="govuk-summary-list__value"><code>{{ pass.referenceIA5 }}</code></dd>
+        </div>
+    {% endif %}
+    {% if pass.passType %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Pass type</dt>
+            <dd class="govuk-summary-list__value">
+                {% if pass.passType == 1 %}
+                    Eurail Global Pass
+                {% elif pass.passType == 2 %}
+                    Interrail Global Pass
+                {% elif pass.passType == 3 %}
+                    Interrail One Country Pass
+                {% elif pass.passType == 4 %}
+                    Eurail One Country Pass
+                {% elif pass.passType == 5 %}
+                    Eurail/Interrail Global Pass Emergency ticket
+                {% else %}
+                    <code>{{ pass.passType }}</code>
+                {% endif %}
+            </dd>
+        </div>
+    {% endif %}
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Valid from</dt>
+        <dd class="govuk-summary-list__value">
+            {{ pass|rics_valid_from:flex.issuing_time|utc|date:"F d, Y H:i" }} UTC
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Valid until</dt>
+        <dd class="govuk-summary-list__value">
+            {{ pass|rics_valid_until:flex.issuing_time|utc|date:"F d, Y H:i" }} UTC
+        </dd>
+    </div>
+    {% if pass.countries %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Countries</dt>
+            <dd class="govuk-summary-list__value">
+                <ul class="govuk-list">
+                    {% for country in pass.countries %}
+                        <li>{{ country|uic_country|iso3166 }}</li>
+                    {% endfor %}
+                </ul>
+            </dd>
+        </div>
+    {% endif %}
+    {% include "main/uic/extension.html" with obj=card %}
+</dl>

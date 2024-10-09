@@ -1,0 +1,128 @@
+{% load tz rics %}
+<dl class="govuk-summary-list">
+    {% if ticket.referenceNum %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Reference number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ ticket.referenceNum }}</code>
+            </dd>
+        </div>
+    {% endif %}
+    {% if ticket.referenceIA5 %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Reference</dt>
+            <dd class="govuk-summary-list__value"><code>{{ ticket.referenceIA5 }}</code>
+            </dd>
+        </div>
+    {% endif %}
+    {% if ticket.productIdNum %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Product ID number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ ticket.productIdNum }}</code>
+            </dd>
+        </div>
+    {% endif %}
+    {% if ticket.productIdIA5 %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Product ID</dt>
+            <dd class="govuk-summary-list__value">{{ ticket.productIdIA5 }}</dd>
+        </div>
+    {% endif %}
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Return included</dt>
+        <dd class="govuk-summary-list__value">
+            {% if ticket.returnIncluded %}
+                <strong class="govuk-tag govuk-tag--green">Yes</strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--red">No</strong>
+            {% endif %}
+        </dd>
+    </div>
+    {% if ticket.fromStationNum %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">From station number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ ticket.fromStationNum }}</code>
+            </dd>
+        </div>
+    {% endif %}
+    {% if ticket.fromStationNameUTF8 %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">From station name</dt>
+            <dd class="govuk-summary-list__value">{{ ticket.fromStationNameUTF8 }}</dd>
+        </div>
+    {% endif %}
+    {% with station=ticket.fromStationNum|get_station:ticket.stationCodeTable %}
+        {% if station %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">From station</dt>
+                <dd class="govuk-summary-list__value">
+                    {% include "main/uic/station.html" with station=station %}
+                </dd>
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% if ticket.toStationNum %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">To station number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ ticket.toStationNum }}</code>
+            </dd>
+        </div>
+    {% endif %}
+    {% if ticket.toStationNameUTF8 %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">To station name</dt>
+            <dd class="govuk-summary-list__value">{{ ticket.toStationNameUTF8 }}</dd>
+        </div>
+    {% endif %}
+    {% with station=ticket.toStationNum|get_station:ticket.stationCodeTable %}
+        {% if station %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">To station</dt>
+                <dd class="govuk-summary-list__value">
+                    {% include "main/uic/station.html" with station=station %}
+                </dd>
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Valid from</dt>
+        <dd class="govuk-summary-list__value">
+            {{ ticket|rics_valid_from:flex.issuing_time|utc|date:"F d, Y H:i" }} UTC
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Valid until</dt>
+        <dd class="govuk-summary-list__value">
+            {{ ticket|rics_valid_until:flex.issuing_time|utc|date:"F d, Y H:i" }} UTC
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Travel class</dt>
+        <dd class="govuk-summary-list__value"><code>{{ ticket.classCode }}</code></dd>
+    </div>
+    {% if ticket.validRegionDesc %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Valid region</dt>
+            <dd class="govuk-summary-list__value">{{ ticket.validRegionDesc }}</dd>
+        </div>
+    {% endif %}
+    {% if ticket.tariffs %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Tariffs</dt>
+            <dd class="govuk-summary-list__value">
+                {% for tariff in ticket.tariffs %}
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">
+                                Tariff #{{ forloop.counter }}
+                            </h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            {% include "main/uic/tariff.html" with tariff=tariff %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </dd>
+        </div>
+    {% endif %}
+    {% include "main/uic/extension.html" with obj=card %}
+</dl>

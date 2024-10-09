@@ -38,4 +38,28 @@ class Command(BaseCommand):
             }
 
         with uic_storage.open("rics_codes.json", "w") as f:
-            f.write(json.dumps(out, indent=4))
+            json.dump(out, f)
+
+        stations_r = requests.get("https://github.com/trainline-eu/stations/raw/refs/heads/master/stations.csv")
+        stations_r.raise_for_status()
+        stations = csv.DictReader(stations_r.text.splitlines(), delimiter=";")
+
+        out = {
+            "stations": [],
+            "uic_codes": {},
+        }
+        for row in stations:
+            station = {}
+            for k, v in row.items():
+                if v == "t":
+                    station[k] = True
+                elif v == "f":
+                    station[k] = False
+                elif v:
+                    station[k] = v
+            out["stations"].append(station)
+            if row["uic"]:
+                out["uic_codes"][row["uic"]] = len(out["stations"]) - 1
+
+        with uic_storage.open("stations.json", "w") as f:
+            json.dump(out, f)

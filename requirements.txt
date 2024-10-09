@@ -17,3 +17,4 @@ django-cockroachdb==5.0.*
 django-xff
 psycopg2-binary
 gunicorn
+iso3166

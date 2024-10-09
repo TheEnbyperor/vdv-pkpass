@@ -1,6 +1,9 @@
 import base64
 import json
 import typing
+import urllib.parse
+from itertools import product
+
 import pytz
 import dataclasses
 
@@ -139,9 +142,22 @@ def ticket_pkpass(request, pk):
         "teamIdentifier": settings.PKPASS_CONF["team_id"],
         "serialNumber": ticket_obj.pk,
         "groupingIdentifier": ticket_obj.pk,
+        "description": ticket_obj.get_ticket_type_display(),
         "sharingProhibited": True,
         "backgroundColor": "rgb(255, 255, 255)",
         "foregroundColor": "rgb(0, 0, 0)",
+        "locations": [],
+        "webServiceURL": f"{settings.EXTERNAL_URL_BASE}/api/apple/",
+        "authenticationToken": ticket_obj.pkpass_authentication_token
+    }
+
+    pass_type = "generic"
+    pass_fields = {
+        "headerFields": [],
+        "primaryFields": [],
+        "secondaryFields": [],
+        "auxiliaryFields": [],
+        "backFields": []
     }
 
     if ticket_instance:
@@ -149,46 +165,30 @@ def ticket_pkpass(request, pk):
         issued_at = ticket_data.issuing_time().astimezone(pytz.utc)
         issuing_rics = ticket_data.issuing_rics()
 
-        pass_json["description"] = "UIC Ticket"
-        pass_json["generic"] = {
-            "headerFields": [],
-            "primaryFields": [],
-            "secondaryFields": [],
-            "backFields": []
-        }
         pass_json["barcodes"] = [{
             "format": "PKBarcodeFormatAztec",
             "message": bytes(ticket_instance.barcode_data).decode("iso-8859-1"),
-            "messageEncoding": "iso-8859-1"
+            "messageEncoding": "iso-8859-1",
+            "altText": ticket_data.ticket_id()
         }]
 
         if ticket_id := ticket_data.ticket_id():
-            pass_json["generic"]["backFields"].append({
+            pass_fields["backFields"].append({
                 "key": "ticket-id",
                 "label": "ticket-id-label",
                 "value": ticket_id,
+                "semantics": {
+                    "confirmationNumber": ticket_id
+                }
             })
 
         if issuing_rics in RICS_LOGO:
             add_pkp_img(pkp, RICS_LOGO[issuing_rics], "logo.png")
             have_logo = True
 
-        if distributor := ticket_data.distributor():
-            if distributor["url"]:
-                pass_json["generic"]["backFields"].append({
-                    "key": "issuing-org",
-                    "label": "issuing-organisation-label",
-                    "value": distributor["full_name"],
-                    "attributedValue": f"<a href=\"{distributor['url']}\">{distributor['full_name']}</a>",
-                })
-            else:
-                pass_json["generic"]["backFields"].append({
-                    "key": "distributor",
-                    "label": "issuing-organisation-label",
-                    "value": distributor["full_name"],
-                })
-
         if ticket_data.flex:
+            pass_json["voided"] = not ticket_data.flex.data["issuingDetail"]["activated"]
+
             if len(ticket_data.flex.data["transportDocument"]) >= 1:
                 document_type, document = ticket_data.flex.data["transportDocument"][0]["ticket"]
                 if document_type == "openTicket":
@@ -196,14 +196,114 @@ def ticket_pkpass(request, pk):
                     validity_end = templatetags.rics.rics_valid_until(document, issued_at)
 
                     pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-                    pass_json["generic"]["secondaryFields"].append({
+
+                    if "fromStationNum" in document and "toStationNum" in document:
+                        pass_type = "boardingPass"
+                        pass_fields["transitType"] = "PKTransitTypeTrain"
+
+                        from_station = templatetags.rics.get_station(document["fromStationNum"], document["stationCodeTable"])
+                        to_station = templatetags.rics.get_station(document["toStationNum"], document["stationCodeTable"])
+
+                        if "classCode" in document:
+                            pass_fields["auxiliaryFields"].append({
+                                "key": "class-code",
+                                "label": "class-code-label",
+                                "value": f"class-code-{document['classCode']}-label",
+                            })
+
+                        if from_station:
+                            pass_fields["primaryFields"].append({
+                                "key": "from-station",
+                                "label": "from-station-label",
+                                "value": from_station["name"],
+                                "semantics": {
+                                    "departureLocation": {
+                                        "latitude": float(from_station["latitude"]),
+                                        "longitude": float(from_station["longitude"]),
+                                    },
+                                    "departureStationName": from_station["name"]
+                                }
+                            })
+                            pass_json["locations"].append({
+                                "latitude": float(from_station["latitude"]),
+                                "longitude": float(from_station["longitude"]),
+                                "relevantText": from_station["name"]
+                            })
+                            maps_link = urllib.parse.urlencode({
+                                "q": from_station["name"],
+                                "ll": f"{from_station['latitude']},{from_station['longitude']}"
+                            })
+                            pass_fields["backFields"].append({
+                                "key": "from-station-back",
+                                "label": "from-station-label",
+                                "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{from_station['name']}</a>",
+                            })
+
+                        if to_station:
+                            pass_fields["primaryFields"].append({
+                                "key": "to-station",
+                                "label": "to-station-label",
+                                "value": to_station["name"],
+                                "semantics": {
+                                    "destinationLocation": {
+                                        "latitude": float(from_station["latitude"]),
+                                        "longitude": float(from_station["longitude"]),
+                                    },
+                                    "destinationStationName": to_station["name"]
+                                }
+                            })
+                            pass_json["locations"].append({
+                                "latitude": float(to_station["latitude"]),
+                                "longitude": float(to_station["longitude"]),
+                                "relevantText": to_station["name"]
+                            })
+                            maps_link = urllib.parse.urlencode({
+                                "q": to_station["name"],
+                                "ll": f"{to_station['latitude']},{to_station['longitude']}"
+                            })
+                            pass_fields["backFields"].append({
+                                "key": "to-station-back",
+                                "label": "to-station-label",
+                                "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{to_station['name']}</a>",
+                            })
+
+                    if len(document.get("tariffs")) >= 1:
+                        tariff = document["tariffs"][0]
+                        if "tariffDesc" in tariff:
+                            pass_fields["headerFields"].append({
+                                "key": "product",
+                                "label": "product-label",
+                                "value": tariff["tariffDesc"]
+                            })
+
+                        for card in tariff.get("reductionCard", []):
+                            pass_fields["auxiliaryFields"].append({
+                                "key": "reduction-card",
+                                "label": "reduction-card-label",
+                                "value": card["cardName"]
+                            })
+
+                    pass_fields["backFields"].append({
+                        "key": "return-included",
+                        "label": "return-included-label",
+                        "value": "return-included-yes" if document["returnIncluded"] else "return-included-no",
+                    })
+
+                    if "productIdIA5" in document:
+                        pass_fields["backFields"].append({
+                            "key": "product-id",
+                            "label": "product-id-label",
+                            "value": document["productIdIA5"],
+                        })
+
+                    pass_fields["secondaryFields"].append({
                         "key": "validity-start",
                         "label": "validity-start-label",
                         "dateStyle": "PKDateStyleMedium",
                         "timeStyle": "PKDateStyleNone",
                         "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     })
-                    pass_json["generic"]["secondaryFields"].append({
+                    pass_fields["secondaryFields"].append({
                         "key": "validity-end",
                         "label": "validity-end-label",
                         "dateStyle": "PKDateStyleMedium",
@@ -211,14 +311,14 @@ def ticket_pkpass(request, pk):
                         "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
                         "changeMessage": "validity-end-change"
                     })
-                    pass_json["generic"]["backFields"].append({
+                    pass_fields["backFields"].append({
                         "key": "validity-start-back",
                         "label": "validity-start-label",
                         "dateStyle": "PKDateStyleFull",
                         "timeStyle": "PKDateStyleFull",
                         "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     })
-                    pass_json["generic"]["backFields"].append({
+                    pass_fields["backFields"].append({
                         "key": "validity-end-back",
                         "label": "validity-end-label",
                         "dateStyle": "PKDateStyleFull",
@@ -226,48 +326,46 @@ def ticket_pkpass(request, pk):
                         "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     })
 
-                    if len(document.get("tariffs")) >= 1:
-                        tariff = document["tariffs"][0]
-                        if "tariffDesc" in tariff:
-                            pass_json["generic"]["headerFields"].append({
-                                "key": "product",
-                                "label": "product-label",
-                                "value": tariff["tariffDesc"]
-                            })
+                    if "validRegionDesc" in document:
+                        pass_fields["backFields"].append({
+                            "key": "valid-region",
+                            "label": "valid-region-label",
+                            "value": document["validRegionDesc"],
+                        })
 
                 elif document_type == "customerCard":
                     validity_start = templatetags.rics.rics_valid_from_date(document)
                     validity_end = templatetags.rics.rics_valid_until_date(document)
 
                     if "cardTypeDescr" in document:
-                        pass_json["generic"]["headerFields"].append({
+                        pass_fields["headerFields"].append({
                             "key": "product",
                             "label": "product-label",
                             "value": document["cardTypeDescr"]
                         })
 
                     if "cardIdIA5" in document:
-                        pass_json["generic"]["secondaryFields"].append({
+                        pass_fields["secondaryFields"].append({
                             "key": "card-id",
                             "label": "card-id-label",
                             "value": document["cardIdIA5"],
                         })
                     elif "cardIdNum" in document:
-                        pass_json["generic"]["secondaryFields"].append({
+                        pass_fields["secondaryFields"].append({
                             "key": "card-id",
                             "label": "card-id-label",
                             "value": str(document["cardIdNum"]),
                         })
 
                     if "classCode" in document:
-                        pass_json["generic"]["secondaryFields"].append({
+                        pass_fields["secondaryFields"].append({
                             "key": "class-code",
                             "label": "class-code-label",
                             "value": f"class-code-{document['classCode']}-label",
                         })
 
                     if validity_start:
-                        pass_json["generic"]["backFields"].append({
+                        pass_fields["backFields"].append({
                             "key": "validity-start-back",
                             "label": "validity-start-label",
                             "dateStyle": "PKDateStyleFull",
@@ -276,13 +374,33 @@ def ticket_pkpass(request, pk):
                         })
                     if validity_end:
                         pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-                        pass_json["generic"]["backFields"].append({
+                        pass_fields["backFields"].append({
                             "key": "validity-end-back",
                             "label": "validity-end-label",
                             "dateStyle": "PKDateStyleFull",
                             "timeStyle": "PKDateStyleNone",
                             "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
                         })
+
+                elif document_type == "pass":
+                    if document["passType"] == 1:
+                        product_name = "Eurail Global Pass"
+                    elif document["passType"] == 2:
+                        product_name = "Interrail Global Pass"
+                    elif document["passType"] == 3:
+                        product_name = "Interrail One Country Pass"
+                    elif document["passType"] == 4:
+                        product_name = "Eurail One Country Pass"
+                    elif document["passType"] == 5:
+                        product_name = "Eurail/Interrail Emergency ticket"
+                    else:
+                        product_name = f"Pass type {document['passType']}"
+
+                    pass_fields["headerFields"].append({
+                        "key": "product",
+                        "label": "product-label",
+                        "value": product_name
+                    })
 
 
             if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
@@ -292,7 +410,8 @@ def ticket_pkpass(request, pk):
                 dob_day = passenger.get("dayOfBirthInMonth", 0)
                 first_name = passenger.get('firstName', "").strip()
                 last_name = passenger.get('lastName', "").strip()
-                pass_json["generic"]["primaryFields"].append({
+
+                field_data = {
                     "key": "passenger",
                     "label": "passenger-label",
                     "value": f"{first_name}\n{last_name}",
@@ -302,28 +421,63 @@ def ticket_pkpass(request, pk):
                             "givenName": first_name,
                         }
                     }
-                })
+                }
+                if pass_type == "generic":
+                    pass_fields["primaryFields"].append(field_data)
+                else:
+                    pass_fields["auxiliaryFields"].append(field_data)
+
                 if dob_year != 0 and dob_month != 0 and dob_day != 0:
-                    pass_json["generic"]["secondaryFields"].append({
+                    pass_fields["secondaryFields"].append({
                         "key": "date-of-birth",
                         "label": "date-of-birth-label",
                         "dateStyle": "PKDateStyleMedium",
                         "value": f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}T00:00:00Z",
                     })
                 elif dob_year != 0 and dob_month != 0:
-                    pass_json["generic"]["secondaryFields"].append({
+                    pass_fields["secondaryFields"].append({
                         "key": "month-of-birth",
                         "label": "month-of-birth-label",
                         "value": f"{dob_month:02d}.{dob_year:04d}",
                     })
                 elif dob_year != 0:
-                    pass_json["generic"]["secondaryFields"].append({
+                    pass_fields["secondaryFields"].append({
                         "key": "year-of-birth",
                         "label": "year-of-birth-label",
                         "value": f"{dob_year:04d}",
                     })
 
-        pass_json["generic"]["backFields"].append({
+                if "countryOfResidence" in passenger:
+                    pass_fields["secondaryFields"].append({
+                        "key": "country-of-residence",
+                        "label": "country-of-residence-label",
+                        "value": templatetags.rics.get_country(passenger["countryOfResidence"]),
+                    })
+
+                if "passportId" in passenger:
+                    pass_fields["secondaryFields"].append({
+                        "key": "passport-number",
+                        "label": "passport-number-label",
+                        "value": passenger["passportId"],
+                    })
+
+        if distributor := ticket_data.distributor():
+            pass_json["organizationName"] = distributor["full_name"]
+            if distributor["url"]:
+                pass_fields["backFields"].append({
+                    "key": "issuing-org",
+                    "label": "issuing-organisation-label",
+                    "value": distributor["full_name"],
+                    "attributedValue": f"<a href=\"{distributor['url']}\">{distributor['full_name']}</a>",
+                })
+            else:
+                pass_fields["backFields"].append({
+                    "key": "distributor",
+                    "label": "issuing-organisation-label",
+                    "value": distributor["full_name"],
+                })
+
+        pass_fields["backFields"].append({
             "key": "issued-date",
             "label": "issued-at-label",
             "dateStyle": "PKDateStyleFull",
@@ -339,8 +493,7 @@ def ticket_pkpass(request, pk):
         issued_at = ticket_data.ticket.transaction_time.as_datetime().astimezone(pytz.utc)
 
         pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-        pass_json["description"] = "VDV Ticket"
-        pass_json["generic"] = {
+        pass_fields = {
             "headerFields": [{
                 "key": "product",
                 "label": "product-label",
@@ -399,15 +552,17 @@ def ticket_pkpass(request, pk):
                 "value": ticket_data.ticket.kvp_org_name(),
             }]
         }
+        pass_json["organizationName"] = ticket_data.ticket.kvp_org_name()
         pass_json["barcodes"] = [{
             "format": "PKBarcodeFormatAztec",
             "message": bytes(ticket_instance.barcode_data).decode("iso-8859-1"),
-            "messageEncoding": "iso-8859-1"
+            "messageEncoding": "iso-8859-1",
+            "altText": str(ticket_data.ticket.ticket_id),
         }]
 
         for elm in ticket_data.ticket.product_data:
             if isinstance(elm, vdv.ticket.PassengerData):
-                pass_json["generic"]["primaryFields"].append({
+                pass_fields["primaryFields"].append({
                     "key": "passenger",
                     "label": "passenger-label",
                     "value": f"{elm.forename}\n{elm.surname}",
@@ -418,7 +573,7 @@ def ticket_pkpass(request, pk):
                         }
                     }
                 })
-                pass_json["generic"]["secondaryFields"].append({
+                pass_fields["secondaryFields"].append({
                     "key": "date-of-birth",
                     "label": "date-of-birth-label",
                     "dateStyle": "PKDateStyleMedium",
@@ -429,11 +584,13 @@ def ticket_pkpass(request, pk):
             add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.product_org_id], "logo.png")
             have_logo = True
 
-    pass_json["generic"]["backFields"].append({
+    pass_fields["backFields"].append({
         "key": "view-link",
         "label": "more-info-label",
         "attributedValue": f"<a href=\"#\">View ticket</a>",
     })
+
+    pass_json[pass_type] = pass_fields
 
     for lang, strings in PASS_STRINGS.items():
         pkp.add_file(f"{lang}.lproj/pass.strings", strings.encode("utf-8"))
@@ -479,9 +636,19 @@ PASS_STRINGS = {
 "class-code-label" = "Class";
 "class-code-first-label" = "1st";
 "class-code-second-label" = "2nd";
+"reduction-card-label" = "Discount card";
 "date-of-birth-label" = "Date of birth";
 "month-of-birth-label" = "Birth month";
 "year-of-birth-label" = "Birth year";
+"country-of-residence-label" = "Country of residence";
+"passport-number-label" = "Passport number";
+"from-station-label" = "From";
+"to-station-label" = "To";
+"product-id-label" = "Ticket type";
+"valid-region-label" = "Validity";
+"return-included-label" = "Return included";
+"return-included-yes" = "Yes";
+"return-included-no" = "No";
 """,
     "de": """
 "product-label" = "Produkt";
@@ -499,15 +666,26 @@ PASS_STRINGS = {
 "class-code-label" = "Klasse";
 "class-code-first-label" = "1.";
 "class-code-second-label" = "2.";
+"reduction-card-label" = "Bahncard";
 "date-of-birth-label" = "Geburtsdatum";
 "month-of-birth-label" = "Geburtsmonat";
 "year-of-birth-label" = "Geburtsjahr";
+"country-of-residence-label" = "Land des Wohnsitzes";
+"passport-number-label" = "Passnummer";
+"from-station-label" = "Von";
+"to-station-label" = "Nach";
+"product-id-label" = "Tickettyp";
+"valid-region-label" = "Gültigkeit";
+"return-included-label" = "Rückfahrt inklusive";
+"return-included-yes" = "Ja";
+"return-included-no" = "Nein";
 """
 }
 
 RICS_LOGO = {
     1080: "pass/logo-db.png",
     1181: "pass/logo-oebb.png",
+    9901: "pass/logo-interrail.png",
 }
 
 VDV_ORG_ID_LOGO = {

@@ -1,0 +1,18 @@
+{% load rics %}
+{% if obj.extension %}
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Extension</dt>
+        <dd class="govuk-summary-list__value">
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">ID</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ obj.extension.extensionId }}</code></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Data</dt>
+                    <dd class="govuk-summary-list__value"><code>{{ obj.extension.extensionData|rics_unicode }}</code></dd>
+                </div>
+            </dl>
+        </dd>
+    </div>
+{% endif %}

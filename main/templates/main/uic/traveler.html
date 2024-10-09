@@ -44,6 +44,18 @@
             </div>
         {% endif %}
     {% endwith %}
+    {% if traveler.passengerType %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Passenger type</dt>
+            <dd class="govuk-summary-list__value"><code>{{ traveler.passengerType }}</code></dd>
+        </div>
+    {% endif %}
+    {% if traveler.countryOfResidence %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Country of residence</dt>
+            <dd class="govuk-summary-list__value">{{ traveler.countryOfResidence|iso3166 }}</dd>
+        </div>
+    {% endif %}
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Ticket holder</dt>
         <dd class="govuk-summary-list__value">

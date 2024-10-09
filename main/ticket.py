@@ -81,7 +81,7 @@ class UICTicket:
                 if ticket_type == "openTicket":
                     if len(self.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1 and \
                         issuer_num == 1080: # Deutsche Bahn
-                        if ticket["productIdNum"] in (
+                        if ticket.get("productIdNum") in (
                                 9999, # Deutschlandticket subscription
                                 9998, # Deutschlandjobticket subscription
                                 9997, # Startkarte Deutschlandticket
@@ -89,6 +89,13 @@ class UICTicket:
                                 9995, # Semesterdeutschlandticket subscription
                         ):
                             return models.Ticket.TYPE_DEUTCHLANDTICKET
+                        else:
+                            return models.Ticket.TYPE_FAHRKARTE
+                    else:
+                        return models.Ticket.TYPE_FAHRKARTE
+                elif ticket_type == "pass":
+                    if issuer_num == 9901:
+                        return models.Ticket.TYPE_INTERRAIL
                 elif ticket_type == "customerCard":
                     return models.Ticket.TYPE_BAHNCARD
 
@@ -119,6 +126,25 @@ class UICTicket:
                 hd.update(card["cardIdIA5"].encode("utf-8"))
             else:
                 hd.update(str(card.get("cardIdNum", 0)).encode("utf-8"))
+            return base64.b32hexencode(hd.digest()).decode("utf-8")
+
+        elif ticket_type == models.Ticket.TYPE_FAHRKARTE:
+            ticket = self.flex.data["transportDocument"][0]["ticket"][1]
+            hd.update(b"fahrkarte")
+            hd.update(self.flex.data["issuingDetail"].get("issuerNum", 0).to_bytes(8, "big"))
+            if "referenceIA5" in ticket:
+                hd.update(ticket["referenceIA5"].encode("utf-8"))
+            else:
+                hd.update(str(ticket.get("referenceNum", 0)).encode("utf-8"))
+            return base64.b32hexencode(hd.digest()).decode("utf-8")
+
+        elif ticket_type == models.Ticket.TYPE_INTERRAIL:
+            interrail_pass = self.flex.data["transportDocument"][0]["ticket"][1]
+            hd.update(b"interrail")
+            if "referenceIA5" in interrail_pass:
+                hd.update(interrail_pass["referenceIA5"].encode("utf-8"))
+            else:
+                hd.update(str(interrail_pass.get("referenceNum", 0)).encode("utf-8"))
             return base64.b32hexencode(hd.digest()).decode("utf-8")
 
         else:
