@@ -1,3 +1,4 @@
+{% load rics %}
 {% if ticket.head %}
     <h2 class="govuk-heading-m">Header</h2>
     <dl class="govuk-summary-list">
@@ -111,8 +112,9 @@
 
                     {% for field in ticket.layout.fields %}
                         <span class="rct2-ticket-field{% if field.formatting.bold %} rct2-ticket-field-bold{% endif %}{% if field.formatting.italic %} rct2-ticket-field-italic{% endif %}{% if field.formatting.small_font %} rct2-ticket-field-small-font{% endif %}"
-                                style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;width: {{ field.width }}ch;">
-                            {{ field.text }}
+                                style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;{% if not field.text|rics_already_newlined %}width: {{ field.width }}ch;{% endif %}">
+
+                            {{ field.text|linebreaksbr }}
                         </span>
                     {% endfor %}
                 </div>

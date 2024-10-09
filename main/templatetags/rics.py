@@ -9,6 +9,10 @@ register = template.Library()
 def get_rics_code(value):
     return uic.rics.get_rics(int(value))
 
+@register.filter(name="rics_already_newlined")
+def get_rics_code(value):
+    return "\n" in value
+
 @register.filter(name="rics_traveler_dob")
 def get_rics_code(value):
     if "yearOfBirth" in value or "monthOfBirth" in value or "dayOfBirthInMonth" in value:

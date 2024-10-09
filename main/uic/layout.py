@@ -90,7 +90,8 @@ class LayoutV1:
                 raise util.UICException("UIC ticket layout field text too short")
 
             try:
-                field_text = data[offset + 13:offset + 13 + field_text_length].decode("utf-8")
+                field_text = data[offset + 13:offset + 13 + field_text_length].decode("utf-8")\
+                    .replace("\\n", "\n")
             except UnicodeDecodeError as e:
                 raise util.UICException("Invalid UIC ticket layout field text") from e
 
