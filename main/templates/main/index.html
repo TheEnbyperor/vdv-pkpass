@@ -157,10 +157,15 @@
                 let byte = result.rawBytes[Math.floor(i / 8)];
                 correctedBits.push((byte >> (7 - (i % 8)) & 1) === 1);
             }
+            return getEncodedDataBits(correctedBits)
+        }
+
+        function getEncodedDataBits(correctedBits) {
             let latchTable = UPPER;
             let shiftTable = UPPER;
             let output = [];
             let index = 0;
+            let endIndex = correctedBits.length;
             while (index < endIndex) {
                 if (shiftTable === BINARY) {
                     if (endIndex - index < 5) {
@@ -181,7 +186,6 @@
                             break;
                         }
                         const code = ZXing.AztecDecoder.readCode(correctedBits, index, 8);
-                        console.log(code);
                         output.push(code);
                         index += 8;
                     }

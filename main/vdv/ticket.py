@@ -1,10 +1,11 @@
 import dataclasses
+import enum
 import typing
 import ber_tlv.tlv
 import re
 from . import util
 
-NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w+)(?P<len>\d+)(?P<end>\w+)$")
+NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w*)(?P<len>\d+)(?P<end>\w*)$")
 
 @dataclasses.dataclass
 class VDVTicket:
@@ -227,6 +228,8 @@ class VDVTicket:
             return "Verkehrs- und Tarifverbund Stuttgart GmbH"
         elif org_id == 6262:
             return "DB Fernverkehr AG"
+        elif org_id == 6310:
+            return "Saarländische Nahverkehrs-Service GmbH"
         elif org_id == 6335:
             return "Rhein-Main-Verkehrsverbund Servicegesellschaft mbH"
         else:
@@ -234,11 +237,17 @@ class VDVTicket:
                 return None
             return str(org_id)
 
+class Gender(enum.Enum):
+    Unspecified = 0
+    Male = 1
+    Female = 2
+    Diverse = 3
+
 @dataclasses.dataclass
 class PassengerData:
     TYPE = "passenger-data"
 
-    gender: int
+    gender: Gender
     date_of_birth: util.Date
     forename: str
     surname: str
@@ -257,6 +266,7 @@ class PassengerData:
             forename, surname = name.split("#", 1)
         elif "@" in name:
             forename, surname = name.split("@", 1)
+            print(name)
             if forename_match := NAME_TYPE_1_RE.fullmatch(forename):
                 forename_start = forename_match.group("start")
                 forename_end = forename_match.group("end")
@@ -271,7 +281,7 @@ class PassengerData:
             surname = name
 
         return cls(
-            gender=data[0],
+            gender=Gender(data[0]),
             date_of_birth=util.Date.from_bytes(data[1:5]),
             forename=forename,
             surname=surname
