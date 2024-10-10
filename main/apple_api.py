@@ -20,7 +20,7 @@ def pass_status(request, device_id, pass_type_id):
     if pass_type_id != settings.PKPASS_CONF["pass_type"]:
         return HttpResponse(status=204)
 
-    last_updated = request.headers.get("previousLastUpdated")
+    last_updated = request.headers.get("passesUpdatedSince")
     if last_updated:
         try:
             last_updated = datetime.datetime.fromtimestamp(int(last_updated), pytz.utc)
@@ -32,9 +32,10 @@ def pass_status(request, device_id, pass_type_id):
         regs = regs.filter(ticket__last_updated__gt=last_updated)
 
     tickets = [reg.ticket for reg in regs]
+    new_last_updated = max(ticket.last_updated for ticket in tickets)
 
     return HttpResponse(status=200, content_type="application/json", content=json.dumps({
-        "lastUpdated": str(int(timezone.now().timestamp())),
+        "lastUpdated": str(int(new_last_updated.timestamp())),
         "serialNumbers": [str(ticket.id) for ticket in tickets]
     }))
 
