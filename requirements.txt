@@ -1,5 +1,4 @@
 Django==5.0.*
-zxing==1.0
 ber-tlv
 python-ldap
 crispy-forms-gds

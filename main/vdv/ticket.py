@@ -1,10 +1,11 @@
 import dataclasses
+import enum
 import typing
 import ber_tlv.tlv
 import re
 from . import util, org_id
 
-NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w+)(?P<len>\d+)(?P<end>\w+)$")
+NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w*)(?P<len>\d+)(?P<end>\w*)$")
 
 @dataclasses.dataclass
 class VDVTicket:
@@ -209,11 +210,17 @@ class VDVTicket:
         else:
             return str(org_id)
 
+class Gender(enum.Enum):
+    Unspecified = 0
+    Male = 1
+    Female = 2
+    Diverse = 3
+
 @dataclasses.dataclass
 class PassengerData:
     TYPE = "passenger-data"
 
-    gender: int
+    gender: Gender
     date_of_birth: util.Date
     forename: str
     surname: str
@@ -246,7 +253,7 @@ class PassengerData:
             surname = name
 
         return cls(
-            gender=data[0],
+            gender=Gender(data[0]),
             date_of_birth=util.Date.from_bytes(data[1:5]),
             forename=forename,
             surname=surname

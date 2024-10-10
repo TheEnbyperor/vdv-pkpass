@@ -133,12 +133,21 @@ EXTERNAL_URL_BASE = "https://vdv-pkpass.eu.ngrok.io"
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["gds"]
 CRISPY_TEMPLATE_PACK = "gds"
 
-with open(BASE_DIR / "priv" / "wwdrg4.crt", "rb") as f:
-    WWDR_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
-with open(BASE_DIR / "priv" / "pass.crt", "rb") as f:
-    PKPASS_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
-with open(BASE_DIR / "priv" / "pass.key", "rb") as f:
-    PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), None)
+try:
+    with open(BASE_DIR / "priv" / "wwdrg4.crt", "rb") as f:
+        WWDR_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
+except FileNotFoundError:
+    WWDR_CERTIFICATE = None
+try:
+    with open(BASE_DIR / "priv" / "pass.crt", "rb") as f:
+        PKPASS_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
+except FileNotFoundError:
+    PKPASS_CERTIFICATE = None
+try:
+    with open(BASE_DIR / "priv" / "pass.key", "rb") as f:
+        PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), None)
+except FileNotFoundError:
+    PKPASS_KEY = None
 
 PKPASS_CONF = {
     "organization_name": "Q Misell",
