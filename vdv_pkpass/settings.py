@@ -140,11 +140,14 @@ STORAGES = {
     },
 }
 
+PKPASS_CERTIFICATE_LOCATION = os.getenv("PKPASS_CERTIFICATE_LOCATION")
+PKPASS_KEY_LOCATION = os.getenv("PKPASS_KEY_LOCATION")
+
 with open(os.getenv("WWDR_CERTIFICATE_LOCATION"), "rb") as f:
     WWDR_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
-with open(os.getenv("PKPASS_CERTIFICATE_LOCATION"), "rb") as f:
-    PKPASS_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
-with open(os.getenv("PKPASS_KEY_LOCATION"), "rb") as f:
+with open(PKPASS_CERTIFICATE_LOCATION, "rb") as f:
+    PKPASS_CERTIFICATE = cryptography.x509.load_pem_x509_certificate(f.read())
+with open(PKPASS_KEY_LOCATION, "rb") as f:
     PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), None)
 
 PKPASS_CONF = {

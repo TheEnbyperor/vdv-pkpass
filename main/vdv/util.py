@@ -83,6 +83,14 @@ class DateTime:
             second=second
         )
 
+    def to_bytes(self) -> bytes:
+        return bytes([
+            ((self.year - 1990) << 1) | ((self.month >> 3) & 0x01),
+            ((self.month << 5) & 0xE0) | self.day & 0x1F,
+            ((self.hour & 0xF8) << 3)| ((self.minute >> 3) & 0x07),
+            ((self.minute << 5) & 0xE0) | self.second & 0x1F
+        ])
+
 def un_bcd(data: bytes) -> int:
     v = 0
     for i in range(len(data)):

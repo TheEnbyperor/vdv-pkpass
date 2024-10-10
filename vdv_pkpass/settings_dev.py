@@ -133,18 +133,21 @@ EXTERNAL_URL_BASE = "https://vdv-pkpass.eu.ngrok.io"
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["gds"]
 CRISPY_TEMPLATE_PACK = "gds"
 
+PKPASS_CERTIFICATE_LOCATION = BASE_DIR / "priv" / "pass.crt"
+PKPASS_KEY_LOCATION = BASE_DIR / "priv" / "pass.key"
+
 try:
     with open(BASE_DIR / "priv" / "wwdrg4.crt", "rb") as f:
         WWDR_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
 except FileNotFoundError:
     WWDR_CERTIFICATE = None
 try:
-    with open(BASE_DIR / "priv" / "pass.crt", "rb") as f:
-        PKPASS_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
+    with open(PKPASS_CERTIFICATE_LOCATION, "rb") as f:
+        PKPASS_CERTIFICATE = cryptography.x509.load_pem_x509_certificate(f.read())
 except FileNotFoundError:
     PKPASS_CERTIFICATE = None
 try:
-    with open(BASE_DIR / "priv" / "pass.key", "rb") as f:
+    with open(PKPASS_KEY_LOCATION, "rb") as f:
         PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), None)
 except FileNotFoundError:
     PKPASS_KEY = None

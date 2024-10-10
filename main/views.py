@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.core.files.storage import storages
 from django.conf import settings
-from . import forms, models, ticket, pkpass, vdv, aztec, templatetags
+from . import forms, models, ticket, pkpass, vdv, aztec, templatetags, apn
 
 
 def to_dict_json(elements: typing.List[typing.Tuple[str, typing.Any]]) -> dict:
@@ -97,6 +97,7 @@ def index(request):
                         }
                     }
                 )
+            apn.notify_ticket(ticket_obj)
             return redirect('ticket', pk=ticket_obj.id)
 
     return render(request, "main/index.html", {
