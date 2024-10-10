@@ -1,13 +1,16 @@
 from django.contrib import admin
 from . import models
 
+
 class VDVTicketInstanceInline(admin.StackedInline):
     extra = 0
     model = models.VDVTicketInstance
 
+
 class UICTicketInstanceInline(admin.StackedInline):
     extra = 0
     model = models.UICTicketInstance
+
 
 class AppleRegistrationInline(admin.StackedInline):
     extra = 0
@@ -17,11 +20,13 @@ class AppleRegistrationInline(admin.StackedInline):
         "ticket",
     ]
 
+
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
     readonly_fields = [
         "id",
         "pkpass_authentication_token",
+        "last_updated",
     ]
     inlines = [
         VDVTicketInstanceInline,
@@ -29,6 +34,7 @@ class TicketAdmin(admin.ModelAdmin):
         AppleRegistrationInline,
     ]
     view_on_site = True
+
 
 @admin.register(models.AppleDevice)
 class AppleDeviceAdmin(admin.ModelAdmin):

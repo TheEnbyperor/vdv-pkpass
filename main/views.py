@@ -237,6 +237,7 @@ def make_pkpass(ticket_obj: models.Ticket):
                             pass_fields["backFields"].append({
                                 "key": "from-station-back",
                                 "label": "from-station-label",
+                                "value": from_station["name"],
                                 "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{from_station['name']}</a>",
                             })
                         elif "fromStationNameUTF8" in document:
@@ -283,6 +284,7 @@ def make_pkpass(ticket_obj: models.Ticket):
                             pass_fields["backFields"].append({
                                 "key": "to-station-back",
                                 "label": "to-station-label",
+                                "value": to_station["name"],
                                 "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{to_station['name']}</a>",
                             })
                         elif "toStationNameUTF8" in document:
@@ -624,6 +626,7 @@ def make_pkpass(ticket_obj: models.Ticket):
     pass_fields["backFields"].append({
         "key": "view-link",
         "label": "more-info-label",
+        "value": "",
         "attributedValue": f"<a href=\"{settings.EXTERNAL_URL_BASE}{ticket_url}\">View ticket</a>",
     })
 

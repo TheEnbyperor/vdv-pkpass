@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import condition
 from . import models, views
 
 logger = logging.Logger(__name__)
@@ -26,9 +27,15 @@ def pass_status(request, device_id, pass_type_id):
         except ValueError:
             return HttpResponse(status=400)
 
+    regs = device_obj.registrations.all()
+    if last_updated:
+        regs = regs.filter(ticket__last_updated__gt=last_updated)
+
+    tickets = [reg.ticket for reg in regs]
+
     return HttpResponse(status=200, content_type="application/json", content=json.dumps({
         "lastUpdated": str(int(timezone.now().timestamp())),
-        "serialNumbers": []
+        "serialNumbers": [str(ticket.id) for ticket in tickets]
     }))
 
 
@@ -94,7 +101,17 @@ def registration(request, device_id, pass_type_id, serial_number):
     else:
         return HttpResponse(status=405)
 
+
+def ticket_updated_date(_request, pass_type_id, serial_number):
+    if pass_type_id != settings.PKPASS_CONF["pass_type"]:
+        return
+    ticket_obj: models.Ticket = models.Ticket.objects.get(id=serial_number)
+    if not ticket_obj:
+        return
+    return ticket_obj.last_updated
+
 @csrf_exempt
+@condition(last_modified_func=ticket_updated_date)
 def pass_document(request, pass_type_id, serial_number):
     if "Authorization" not in request.headers:
         return HttpResponse(status=401)
@@ -116,6 +133,7 @@ def pass_document(request, pass_type_id, serial_number):
         return HttpResponse(status=403)
 
     return views.make_pkpass(ticket_obj)
+
 
 @csrf_exempt
 def log(request):
