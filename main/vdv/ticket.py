@@ -223,6 +223,8 @@ class VDVTicket:
             return "Verkehrsverbund Rhein-Sieg GmbH"
         elif org_id in (6260, 6261, 6222, 6312, 6377, 6379, 6410):
             return "DB Vertrieb GmbH"
+        elif org_id == 6234:
+            return "Verkehrs- und Tarifverbund Stuttgart GmbH"
         elif org_id == 6262:
             return "DB Fernverkehr AG"
         elif org_id == 6335:
