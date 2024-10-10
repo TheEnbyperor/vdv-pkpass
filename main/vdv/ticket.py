@@ -168,47 +168,34 @@ class VDVTicket:
         return self.product_name(True)
 
     def product_org_name(self):
-        return self.map_org_id(self.product_org_id)
+        return map_org_id(self.product_org_id)
 
     def product_org_name_opt(self):
-        return self.map_org_id(self.product_org_id, True)
+        return map_org_id(self.product_org_id, True)
 
     def ticket_org_name(self):
-        return self.map_org_id(self.ticket_org_id)
+        return map_org_id(self.ticket_org_id)
 
     def ticket_org_name_opt(self):
-        return self.map_org_id(self.ticket_org_id, True)
+        return map_org_id(self.ticket_org_id, True)
 
     def kvp_org_name(self):
-        return self.map_org_id(self.kvp_org_id)
+        return map_org_id(self.kvp_org_id)
 
     def kvp_org_name_opt(self):
-        return self.map_org_id(self.kvp_org_id, True)
+        return map_org_id(self.kvp_org_id, True)
 
     def terminal_owner_name(self):
-        return self.map_org_id(self.terminal_owner_id)
+        return map_org_id(self.terminal_owner_id)
 
     def terminal_owner_name_opt(self):
-        return self.map_org_id(self.terminal_owner_id, True)
+        return map_org_id(self.terminal_owner_id, True)
 
     def location_org_name(self):
-        return self.map_org_id(self.location_org_id)
+        return map_org_id(self.location_org_id)
 
     def location_org_name_opt(self):
-        return self.map_org_id(self.location_org_id, True)
-
-    @staticmethod
-    def map_org_id(code: int, opt=False):
-        org, is_test = org_id.get_org(code)
-        if org:
-            if is_test:
-                return f"{org['name']} (Test)"
-            else:
-                return org['name']
-        if opt:
-            return None
-        else:
-            return str(org_id)
+        return map_org_id(self.location_org_id, True)
 
 class Gender(enum.Enum):
     Unspecified = 0
@@ -284,6 +271,12 @@ class SpacialValidity:
                 value=data[1:]
             )
 
+    def organization_name(self):
+        return map_org_id(self.organization_id)
+
+    def organization_name_opt(self):
+        return map_org_id(self.organization_id, True)
+
 @dataclasses.dataclass
 class UnknownSpacialValidity:
     TYPE = "unknown-spacial-validity"
@@ -317,3 +310,15 @@ class UnknownElement:
     def data_hex(self):
         return ":".join(f"{self.value[i]:02x}" for i in range(len(self.value)))
 
+
+def map_org_id(code: int, opt=False):
+    org, is_test = org_id.get_org(code)
+    if org:
+        if is_test:
+            return f"{org['name']} (Test)"
+        else:
+            return org['name']
+    if opt:
+        return ""
+    else:
+        return str(org_id)

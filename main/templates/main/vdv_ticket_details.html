@@ -108,7 +108,6 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">KVP Organization ID</dt>
                     <dd class="govuk-summary-list__value">
-                        {{ ticket.ticket.kvp_org_name_opt }}
                         <code>{{ ticket.ticket.kvp_org_id }}</code>
                     </dd>
                 </div>
@@ -240,9 +239,21 @@
                 </div>
                 <div class="govuk-summary-card__content">
                     <dl class="govuk-summary-list">
+                        {% with org_name=elm.organization_name_opt %}
+                            {% if org_name %}
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">Organisation Name</dt>
+                                    <dd class="govuk-summary-list__value">
+                                        {{ org_name }}
+                                    </dd>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">Organisation ID</dt>
-                            <dd class="govuk-summary-list__value"><code>{{ elm.organization_id }}</code></dd>
+                            <dd class="govuk-summary-list__value">
+                                <code>{{ elm.organization_id }}</code>
+                            </dd>
                         </div>
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">Areas</dt>

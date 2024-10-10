@@ -621,6 +621,9 @@ def make_pkpass(ticket_obj: models.Ticket):
         if ticket_data.ticket.product_org_id in VDV_ORG_ID_LOGO:
             add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.product_org_id], "logo.png")
             have_logo = True
+        elif ticket_data.ticket.product_org_id == 3000 and ticket_data.ticket.ticket_org_id in VDV_ORG_ID_LOGO:
+            add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.ticket_org_id], "logo.png")
+            have_logo = True
 
     ticket_url = reverse('ticket', kwargs={"pk": ticket_obj.pk})
     pass_fields["backFields"].append({
@@ -738,4 +741,5 @@ VDV_ORG_ID_LOGO = {
     103: "pass/logo-swb.png",
     6234: "pass/logo-vvs.png",
     6310: "pass/logo-svv.png",
+    6496: "pass/logo-naldo.png",
 }
