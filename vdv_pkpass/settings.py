@@ -123,6 +123,8 @@ AWS_S3_SECRET_ACCESS_KEY = os.getenv("S3_SECRET_ACCESS_KEY", "")
 AWS_S3_ADDRESSING_STYLE = "virtual"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 
+PKPASS_KEY_PASSWORD = os.getenv("PKPASS_KEY_PASSWORD", None)
+
 STORAGES = {
     "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
     "staticfiles": {"BACKEND": "storages.backends.s3boto3.S3ManifestStaticStorage"},
@@ -145,7 +147,7 @@ with open(os.getenv("WWDR_CERTIFICATE_LOCATION"), "rb") as f:
 with open(os.getenv("PKPASS_CERTIFICATE_LOCATION"), "rb") as f:
     PKPASS_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
 with open(os.getenv("PKPASS_KEY_LOCATION"), "rb") as f:
-    PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), None)
+    PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), PKPASS_KEY_PASSWORD.encode("ASCII") if PKPASS_KEY_PASSWORD else None)
 
 PKPASS_CONF = {
     "organization_name": os.getenv("PKPASS_ORGANIZATION_NAME"),
