@@ -2,7 +2,7 @@ import dataclasses
 import typing
 import ber_tlv.tlv
 import re
-from . import util
+from . import util, org_id
 
 NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w+)(?P<len>\d+)(?P<end>\w+)$")
 
@@ -181,55 +181,32 @@ class VDVTicket:
     def kvp_org_name(self):
         return self.map_org_id(self.kvp_org_id)
 
+    def kvp_org_name_opt(self):
+        return self.map_org_id(self.kvp_org_id, True)
+
     def terminal_owner_name(self):
         return self.map_org_id(self.terminal_owner_id)
+
+    def terminal_owner_name_opt(self):
+        return self.map_org_id(self.terminal_owner_id, True)
 
     def location_org_name(self):
         return self.map_org_id(self.location_org_id)
 
+    def location_org_name_opt(self):
+        return self.map_org_id(self.location_org_id, True)
+
     @staticmethod
-    def map_org_id(org_id, opt=False):
-        if org_id == 36:
-            return "Rhein-Main-Verkehrsverbund GmbH"
-        elif org_id == 38:
-            return "Bahnen der Stadt Monheim GmbH"
-        elif org_id == 39:
-            return "Ruhrbahn Mülheim GmbH"
-        elif org_id == 57:
-            return "Dortmunder Stadtwerke AG"
-        elif org_id == 70:
-            return "Verkehrsverbund Rhein-Ruhr AöR"
-        elif org_id == 102:
-            return "Verkehrsverbund Rhein-Sieg GmbH"
-        elif org_id == 103:
-            return "Stadtwerke Bonn Verkehrs-GmbH"
-        elif org_id == 111:
-            return "Regionalverkehr Köln GmbH"
-        elif org_id == 3000:
-            return "Verband Deutscher Verkehrsunternehmen eV"
-        elif org_id == 5000:
-            return "VDV eTicket Service GmbH & Co. KG"
-        elif org_id == 6060:
-            return "Verkehrsverbund Oberelbe"
-        elif org_id == 6061:
-            return "DB Mobility Logistics AG"
-        elif org_id == 6041:
-            return "Abellio Rail NRW GmbH"
-        elif org_id == 6079:
-            return "moBiel GmbH"
-        elif org_id == 6187:
-            return "Offenbacher Verkehrs-Betriebe GmbH"
-        elif org_id == 6212:
-            return "Verkehrsverbund Rhein-Sieg GmbH"
-        elif org_id in (6260, 6261, 6222, 6312, 6377, 6379, 6410):
-            return "DB Vertrieb GmbH"
-        elif org_id == 6262:
-            return "DB Fernverkehr AG"
-        elif org_id == 6335:
-            return "Rhein-Main-Verkehrsverbund Servicegesellschaft mbH"
+    def map_org_id(code: int, opt=False):
+        org, is_test = org_id.get_org(code)
+        if org:
+            if is_test:
+                return f"{org['name']} (Test)"
+            else:
+                return org['name']
+        if opt:
+            return None
         else:
-            if opt:
-                return None
             return str(org_id)
 
 @dataclasses.dataclass

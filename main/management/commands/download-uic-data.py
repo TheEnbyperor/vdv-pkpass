@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import django.core.files.storage
-import requests
+import niquests
 import csv
 import datetime
 import json
@@ -12,7 +12,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         uic_storage = django.core.files.storage.storages["uic-data"]
 
-        rics_codes_r = requests.get("https://teleref.era.europa.eu/Download_CompanycodesExcel.aspx")
+        rics_codes_r = niquests.get("https://teleref.era.europa.eu/Download_CompanycodesExcel.aspx", headers={
+            "User-Agent": "VDV PKPass Generator (magicalcodewit.ch)",
+        })
         rics_codes_r.raise_for_status()
         rics_codes = csv.DictReader(rics_codes_r.text.splitlines(), delimiter="\t")
 
@@ -40,7 +42,9 @@ class Command(BaseCommand):
         with uic_storage.open("rics_codes.json", "w") as f:
             json.dump(out, f)
 
-        stations_r = requests.get("https://github.com/trainline-eu/stations/raw/refs/heads/master/stations.csv")
+        stations_r = niquests.get("https://github.com/trainline-eu/stations/raw/refs/heads/master/stations.csv", headers={
+            "User-Agent": "VDV PKPass Generator (magicalcodewit.ch)",
+        })
         stations_r.raise_for_status()
         stations = csv.DictReader(stations_r.text.splitlines(), delimiter=";")
 

@@ -10,7 +10,7 @@ dacite
 cryptography
 pytz
 asn1tools
-requests
+niquests
 django-storages
 boto3
 django-cockroachdb==5.0.*
