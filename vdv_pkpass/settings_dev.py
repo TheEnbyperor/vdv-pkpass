@@ -137,8 +137,14 @@ with open(BASE_DIR / "priv" / "wwdrg4.crt", "rb") as f:
     WWDR_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
 with open(BASE_DIR / "priv" / "pass.crt", "rb") as f:
     PKPASS_CERTIFICATE = cryptography.x509.load_der_x509_certificate(f.read())
+PKPASS_KEY_PASSWORD = None
+try:
+    with open(BASE_DIR / "priv" / "pass.key_pw", "rb") as f:
+        PKPASS_KEY_PASSWORD = f.read()
+except FileNotFoundError:
+    pass
 with open(BASE_DIR / "priv" / "pass.key", "rb") as f:
-    PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), None)
+    PKPASS_KEY = cryptography.hazmat.primitives.serialization.load_pem_private_key(f.read(), PKPASS_KEY_PASSWORD)
 
 PKPASS_CONF = {
     "organization_name": "Q Misell",
