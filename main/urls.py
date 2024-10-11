@@ -12,8 +12,10 @@ urlpatterns = [
     path('api/apple/v1/passes/<str:pass_type_id>/<str:serial_number>', views.apple_api.pass_document),
 
     path('account/', views.account.index, name='account'),
-    path('account/db_login/', views.account.db_login, name='db_login'),
-    path('account/db_login/login', views.account.db_login_start, name='db_login_start'),
-    path('account/db_login/logout', views.account.db_logout, name='db_logout'),
-    path('account/db_login/callback', views.account.db_login_callback, name='db_login_callback'),
+    path('account/db_login/', views.db.db_login, name='db_login'),
+    path('account/db_login/login', views.db.db_login_start, name='db_login_start'),
+    path('account/db_login/logout', views.db.db_logout, name='db_logout'),
+    path('account/db_login/callback', views.db.db_login_callback, name='db_login_callback'),
+    path('account/saarvv_login/', views.saarvv.saarvv_login, name='saarvv_login'),
+    path('account/saarvv_login/logout/', views.saarvv.saarvv_logout, name='saarvv_logout'),
 ]

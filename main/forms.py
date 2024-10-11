@@ -16,3 +16,13 @@ class TicketImageForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit("submit", "Upload"))
+
+
+class SaarVVLoginForm(forms.Form):
+    username = forms.CharField(label="Email/Username", required=True)
+    password = forms.CharField(label="Password", widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit("submit", "Login"))

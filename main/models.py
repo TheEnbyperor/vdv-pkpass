@@ -23,11 +23,13 @@ class Account(models.Model):
     db_refresh_token = models.TextField(null=True, blank=True, verbose_name="Deutsche Bahn refresh token")
     db_refresh_token_expires_at = models.DateTimeField(blank=True, null=True, verbose_name="Deutsche Bahn refresh token expiration")
     db_account_id = models.CharField(max_length=255, null=True, blank=True, verbose_name="Deutsche Bahn Account ID")
+    saarvv_token = models.TextField(null=True, blank=True, verbose_name="SaarVV Token")
+    saarvv_device_id = models.CharField(max_length=255, null=True, blank=True, verbose_name="SaarVV Device ID")
 
     def __str__(self):
         return str(self.user)
 
-    def is_db_authenticated(self):
+    def is_db_authenticated(self) -> bool:
         now = timezone.now()
         if self.db_token and self.db_token_expires_at and self.db_token_expires_at > now:
             return True
@@ -35,6 +37,10 @@ class Account(models.Model):
             return True
         else:
             return False
+
+    def is_saarvv_authenticated(self) -> bool:
+        now = timezone.now()
+        return bool(self.saarvv_token)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

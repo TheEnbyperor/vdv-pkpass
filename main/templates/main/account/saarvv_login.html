@@ -1,0 +1,11 @@
+{% extends "main/base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block title %}SaarVV Login - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Login with SaarVV</h1>
+        {% crispy form %}
+    </div>
+{% endblock %}

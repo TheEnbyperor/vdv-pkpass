@@ -32,6 +32,19 @@
                     {% endif %}
                 </dd>
             </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">SaarVV Account</dt>
+                <dd class="govuk-summary-list__value">
+                    {% if user.account.is_saarvv_authenticated %}
+                        <p class="govuk-body">Linked</p>
+                        <a class="govuk-button govuk-button--secondary" href="{% url 'saarvv_login' %}">Reauthenticate</a>
+                        <a class="govuk-button govuk-button--warning" href="{% url 'saarvv_logout' %}">Unlink</a>
+                    {% else %}
+                        <p class="govuk-body">Unlinked</p>
+                        <a class="govuk-button" href="{% url 'saarvv_login' %}">Login with SaarVV</a>
+                    {% endif %}
+                </dd>
+            </div>
         </dl>
 
         {% if db_account %}
