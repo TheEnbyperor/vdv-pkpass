@@ -1,0 +1,12 @@
+<h2>Hi {{ user.get_short_name }},</h2>
+<p>
+    You're receiving this email because you requested to login to your account for VDV PKPass.
+</p>
+<p>
+    Click the link below to sign in. This link will expire in {{ expiry|timeuntil }}.
+</p>
+<p><a href="{{ magiclink|safe }}">Login</a></p>
+<p>
+    Please do not forward this message to anyone else, if you do they will be able to access your account.
+    If you did not request this link, you can safely ignore this email.
+</p>

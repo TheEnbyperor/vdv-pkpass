@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.core.files.storage import storages
 from django.conf import settings
-from . import forms, models, ticket, pkpass, vdv, aztec, templatetags, apn
+from main import forms, models, ticket, pkpass, vdv, aztec, templatetags, apn
 
 
 def to_dict_json(elements: typing.List[typing.Tuple[str, typing.Any]]) -> dict:
@@ -655,12 +655,6 @@ def make_pkpass(ticket_obj: models.Ticket):
     response['Content-Disposition'] = f'attachment; filename="{ticket_obj.pk}.pkpass"'
     response.write(pkp.get_buffer())
     return response
-
-
-def page_not_found(request, exception):
-    return render(request, "main/404.html", {
-        "exception": exception,
-    }, status=404)
 
 
 PASS_STRINGS = {

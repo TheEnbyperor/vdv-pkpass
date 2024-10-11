@@ -55,3 +55,10 @@ class AppleDeviceAdmin(admin.ModelAdmin):
     inlines = [
         AppleRegistrationInline,
     ]
+
+
+@admin.register(models.Account)
+class Account(admin.ModelAdmin):
+    readonly_fields = [
+        "db_token"
+    ]

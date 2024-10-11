@@ -1,0 +1,36 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Login error - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Login failed</h1>
+        <p class="govuk-body-lead">It was not possible to log you in due to: {{ login_error }}</p>
+
+        <p class="govuk-body">It might be because:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>The URL you are trying to use is malformed</li>
+            <li>The magic link you tried to use has expired</li>
+            <li>You have already used this magic link to login before</li>
+            {% if ONE_TOKEN_PER_USER %}
+                <li>You have requested another magic causing this magic link to become invalid</li>
+            {% endif %}
+            {% if REQUIRE_SAME_BROWSER %}
+                <li>You are using a different browser to when you requested the login link</li>
+            {% endif %}
+            {% if REQUIRE_SAME_IP %}
+                <li>You are trying to login from a different location or machine that you requested the login
+                    link from
+                </li>
+            {% endif %}
+            {% if not ALLOW_SUPERUSER_LOGIN or not ALLOW_STAFF_LOGIN %}
+                <li>You are a superuser or staff user</li>
+            {% endif %}
+        </ul>
+
+        <p class="govuk-body">
+            <a href="{% url 'magiclink:login' %}" class="govuk-link govuk-link--no-visited-state">Back to login</a>
+        </p>
+    </div>
+{% endblock %}

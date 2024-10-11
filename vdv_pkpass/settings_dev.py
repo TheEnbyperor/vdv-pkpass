@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "crispy_forms",
     "crispy_forms_gds",
+    "magiclink",
     "main"
 ]
 
@@ -52,6 +53,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = [
+    'magiclink.backends.MagicLinkBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = "vdv_pkpass.urls"
@@ -180,6 +186,28 @@ STORAGES = {
         }
     },
 }
+
+LOGIN_URL = "magiclink:login"
+
+MAGICLINK_LOGIN_TEMPLATE_NAME = "registration/magic_login.html"
+MAGICLINK_LOGIN_SENT_TEMPLATE_NAME = "registration/magic_sent.html"
+MAGICLINK_LOGIN_FAILED_TEMPLATE_NAME = "registration/magic_failed.html"
+MAGICLINK_SIGNUP_TEMPLATE_NAME = "registration/magic_signup.html"
+MAGICLINK_EMAIL_SUBJECT = "VDV PKPass Login"
+MAGICLINK_EMAIL_TEMPLATE_NAME_TEXT = "registration/magic_email.txt"
+MAGICLINK_EMAIL_TEMPLATE_NAME_HTML = "registration/magic_email.html"
+MAGICLINK_REQUIRE_SIGNUP = True
+MAGICLINK_IGNORE_EMAIL_CASE = True
+MAGICLINK_EMAIL_AS_USERNAME = True
+MAGICLINK_ALLOW_SUPERUSER_LOGIN = False
+MAGICLINK_ALLOW_STAFF_LOGIN = False
+MAGICLINK_IGNORE_IS_ACTIVE_FLAG = False
+MAGICLINK_REQUIRE_SAME_BROWSER = False
+MAGICLINK_REQUIRE_SAME_IP = False
+MAGICLINK_TOKEN_USES = 1
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = "VDV PKPass <noreply@magicalcodewit.ch>"
 
 LOGGING = {
     'version': 1,

@@ -1,15 +1,47 @@
 import base64
 import secrets
 import dacite
+from django.utils import timezone
 from django.shortcuts import reverse
+from django.conf import settings
 from django.db import models
 from django.core import validators
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from . import ticket as t
 from . import vdv, uic
 
 
 def make_pass_token():
     return secrets.token_urlsafe(32)
+
+
+class Account(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    db_token = models.TextField(null=True, blank=True, verbose_name="Deutsche Bahn Bearer token")
+    db_token_expires_at = models.DateTimeField(blank=True, null=True, verbose_name="Deutsche Bahn Bearer token expiration")
+    db_refresh_token = models.TextField(null=True, blank=True, verbose_name="Deutsche Bahn refresh token")
+    db_refresh_token_expires_at = models.DateTimeField(blank=True, null=True, verbose_name="Deutsche Bahn refresh token expiration")
+    db_account_id = models.CharField(max_length=255, null=True, blank=True, verbose_name="Deutsche Bahn Account ID")
+
+    def __str__(self):
+        return str(self.user)
+
+    def is_db_authenticated(self):
+        now = timezone.now()
+        if self.db_token and self.db_token_expires_at and self.db_token_expires_at > now:
+            return True
+        elif self.db_refresh_token and self.db_refresh_token_expires_at and self.db_refresh_token_expires_at > now:
+            return True
+        else:
+            return False
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(instance, created, **kwargs):
+    if created or not hasattr(instance, "account"):
+        Account.objects.create(user=instance)
+    instance.account.save()
 
 
 class Ticket(models.Model):

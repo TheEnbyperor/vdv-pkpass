@@ -1,0 +1,28 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_gds %}
+
+{% block title %}Login - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Login</h1>
+        <form action="{% url 'magiclink:login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}"
+              method="post">
+            {% csrf_token %}
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--m" for="email">
+                    {{ login_form.email.label }}
+                </label>
+              {% crispy_gds_field login_form.email %}
+            </div>
+            <button type="submit" class="govuk-button govuk-button--start">Send login email</button>
+        </form>
+        {% if require_signup %}
+            <p class="govuk-body-lead">
+                Don't have an account?
+                <a href="{% url 'magiclink:signup' %}" class="govuk-link govuk-link--no-visited-state">Sign up here</a>
+            </p>
+        {% endif %}
+        <a href="{% url 'admin:login' %}" class="govuk-button govuk-button--secondary">Login with password</a>
+    </div>
+{% endblock %}

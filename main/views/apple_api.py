@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import condition
-from . import models, views
+from main import models, views
 
 logger = logging.Logger(__name__)
 

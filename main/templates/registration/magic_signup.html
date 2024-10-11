@@ -1,0 +1,38 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_gds %}
+
+{% block title %}Signup - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Signup</h1>
+        <p class="govuk-body-lead">
+            Enter your details below to create your account
+        </p>
+        <form method="post"
+              action="{% url 'magiclink:signup' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="SignupForm">
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--m" for="name">
+                    {{ SignupForm.name.label }}
+                </label>
+                {{ SignupForm.name.errors }}
+                {% include 'gds/layout/help_text_and_errors.html' with field=SignupForm.name form_show_errors=1 %}
+                {% crispy_gds_field SignupForm.name %}
+            </div>
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--m" for="email">
+                    {{ SignupForm.email.label }}
+                </label>
+                {% include 'gds/layout/help_text_and_errors.html' with field=SignupForm.email form_show_errors=1 %}
+                {% crispy_gds_field SignupForm.email %}
+            </div>
+            <button type="submit" class="govuk-button govuk-button--start">Signup</button>
+        </form>
+        <p class="govuk-body">
+            Already have an account?
+            <a href="{% url 'magiclink:login' %}" class="govuk-link govuk-link--no-visited-state">Log in here</a>
+        </p>
+    </div>
+{% endblock %}
