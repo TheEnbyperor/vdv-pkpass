@@ -34,6 +34,16 @@ class TicketAdmin(admin.ModelAdmin):
         AppleRegistrationInline,
     ]
     view_on_site = True
+    list_display = [
+        "id",
+        "ticket_type",
+        "last_updated"
+    ]
+    date_hierarchy = "last_updated"
+    list_filter = [
+        "ticket_type",
+    ]
+    search_fields = ["id"]
 
 
 @admin.register(models.AppleDevice)
