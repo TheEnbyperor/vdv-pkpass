@@ -165,6 +165,7 @@ PKPASS_CONF = {
 AZTEC_JAR_PATH = BASE_DIR / "aztec-1.0.jar"
 
 LOGIN_URL = "magiclink:login"
+LOGIN_REDIRECT_URL = "account"
 
 MAGICLINK_LOGIN_TEMPLATE_NAME = "registration/magic_login.html"
 MAGICLINK_LOGIN_SENT_TEMPLATE_NAME = "registration/magic_sent.html"

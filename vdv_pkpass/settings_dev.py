@@ -188,6 +188,7 @@ STORAGES = {
 }
 
 LOGIN_URL = "magiclink:login"
+LOGIN_REDIRECT_URL = "account"
 
 MAGICLINK_LOGIN_TEMPLATE_NAME = "registration/magic_login.html"
 MAGICLINK_LOGIN_SENT_TEMPLATE_NAME = "registration/magic_sent.html"
