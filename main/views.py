@@ -14,7 +14,7 @@ from . import forms, models, ticket, pkpass, vdv, aztec, templatetags, apn
 
 def to_dict_json(elements: typing.List[typing.Tuple[str, typing.Any]]) -> dict:
     def encode_value(v):
-        if isinstance(v, bytes):
+        if isinstance(v, bytes) or isinstance(v, bytearray):
             return base64.b64encode(v).decode("ascii")
         else:
             return v
