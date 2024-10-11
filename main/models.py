@@ -16,6 +16,7 @@ class Ticket(models.Model):
     TYPE_DEUTCHLANDTICKET = "deutschlandticket"
     TYPE_BAHNCARD = "bahncard"
     TYPE_FAHRKARTE = "fahrkarte"
+    TYPE_RESERVIERUNG = "reservierung"
     TYPE_INTERRAIL = "interrail"
     TYPE_UNKNOWN = "unknown"
 
@@ -23,6 +24,7 @@ class Ticket(models.Model):
         (TYPE_DEUTCHLANDTICKET, "Deutschlandticket"),
         (TYPE_BAHNCARD, "Bahncard"),
         (TYPE_FAHRKARTE, "Fahrkarte"),
+        (TYPE_RESERVIERUNG, "Reservierung"),
         (TYPE_INTERRAIL, "Interrail"),
         (TYPE_UNKNOWN, "Unknown"),
     )

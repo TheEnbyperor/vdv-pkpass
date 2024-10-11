@@ -41,7 +41,11 @@ class Flex:
 
     def issuing_rics(self) -> int:
         if self.version in (13, 2, 3):
-            return self.data["issuingDetail"].get("issuerNum", 0)
+            rics = self.data["issuingDetail"].get("issuerNum", 0)
+            if rics:
+                return rics
+            else:
+                return self.data["issuingDetail"].get("securityProviderNum", 0)
 
     def ticket_id(self) -> str:
         if self.version in (13, 2, 3):

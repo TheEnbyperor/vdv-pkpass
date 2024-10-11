@@ -98,6 +98,8 @@ class UICTicket:
                         return models.Ticket.TYPE_INTERRAIL
                 elif ticket_type == "customerCard":
                     return models.Ticket.TYPE_BAHNCARD
+                elif ticket_type == "reservation":
+                    return models.Ticket.TYPE_RESERVIERUNG
 
         return models.Ticket.TYPE_UNKNOWN
 
@@ -131,6 +133,16 @@ class UICTicket:
         elif ticket_type == models.Ticket.TYPE_FAHRKARTE:
             ticket = self.flex.data["transportDocument"][0]["ticket"][1]
             hd.update(b"fahrkarte")
+            hd.update(self.flex.data["issuingDetail"].get("issuerNum", 0).to_bytes(8, "big"))
+            if "referenceIA5" in ticket:
+                hd.update(ticket["referenceIA5"].encode("utf-8"))
+            else:
+                hd.update(str(ticket.get("referenceNum", 0)).encode("utf-8"))
+            return base64.b32hexencode(hd.digest()).decode("utf-8")
+
+        elif ticket_type == models.Ticket.TYPE_RESERVIERUNG:
+            ticket = self.flex.data["transportDocument"][0]["ticket"][1]
+            hd.update(b"reservierung")
             hd.update(self.flex.data["issuingDetail"].get("issuerNum", 0).to_bytes(8, "big"))
             if "referenceIA5" in ticket:
                 hd.update(ticket["referenceIA5"].encode("utf-8"))

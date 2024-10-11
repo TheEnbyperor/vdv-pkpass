@@ -55,7 +55,7 @@ class Envelope:
     records: typing.List[Record]
 
     def issuer(self):
-        return rics.get_rics(self.distributing_rics)
+        return rics.get_rics(self.issuer_rics)
 
     @classmethod
     def parse(cls, data: bytes) -> "Envelope":
@@ -90,6 +90,8 @@ class Envelope:
             signature, data = data[14:64], data[64:]
         elif version == 2:
             signature, data = data[14:78], data[78:]
+        else:
+            raise util.UICException("Unsupported UIC ticket version")
 
         try:
             data_length_str = data[0:4].decode("ascii")

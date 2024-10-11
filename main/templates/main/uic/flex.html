@@ -22,20 +22,22 @@
             </div>
         {% endif %}
     {% endwith %}
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Issuer RICS</dt>
-        <dd class="govuk-summary-list__value"><code>{{ flex.data.issuingDetail.issuerNum }}</code></dd>
-    </div>
-    {% with org=flex.data.issuingDetail.issuerNum|rics %}
-        {% if org %}
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Issuer</dt>
-                <dd class="govuk-summary-list__value">
-                    {% include 'main/rics.html' with org=org %}
-                </dd>
-            </div>
-        {% endif %}
-    {% endwith %}
+    {% if flex.data.issuingDetail.issuerNum %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Issuer RICS</dt>
+            <dd class="govuk-summary-list__value"><code>{{ flex.data.issuingDetail.issuerNum }}</code></dd>
+        </div>
+        {% with org=flex.data.issuingDetail.issuerNum|rics %}
+            {% if org %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Issuer</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% include 'main/rics.html' with org=org %}
+                    </dd>
+                </div>
+            {% endif %}
+        {% endwith %}
+    {% endif %}
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Issuing time</dt>
         <dd class="govuk-summary-list__value">{{ flex.issuing_time|utc|date:"F d, Y H:i" }} UTC</dd>
