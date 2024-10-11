@@ -64,6 +64,9 @@ spec:
                 name: vdv-pkpass-db-creds
               prefix: "DB_"
             - secretRef:
+                name: vdv-pkpass-email
+              prefix: "EMAIL_"
+            - secretRef:
                 name: vdv-pkpass-django-secret
             - secretRef:
                 name: vdv-pkpass-s3
