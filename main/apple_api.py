@@ -69,7 +69,7 @@ def pass_status(request, device_id, pass_type_id):
     tickets = [reg.ticket for reg in regs]
     new_last_updated = max(
         (ticket.last_updated for ticket in tickets),
-        default=datetime.datetime.now(pytz.utc).timestamp()
+        default=datetime.datetime.now(pytz.utc)
     )
 
     return HttpResponse(status=200, content_type="application/json", content=json.dumps({
