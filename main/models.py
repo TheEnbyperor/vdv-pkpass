@@ -39,7 +39,6 @@ class Account(models.Model):
             return False
 
     def is_saarvv_authenticated(self) -> bool:
-        now = timezone.now()
         return bool(self.saarvv_token)
 
 
@@ -71,12 +70,14 @@ class Ticket(models.Model):
     ticket_type = models.CharField(max_length=255, choices=TICKET_TYPES, verbose_name="Ticket type", default=TYPE_UNKNOWN)
     pkpass_authentication_token = models.CharField(max_length=255, verbose_name="PKPass authentication token", default=make_pass_token)
     last_updated = models.DateTimeField(auto_now=True)
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets")
 
     def __str__(self):
         return f"{self.get_ticket_type_display()} - {self.id}"
 
     def get_absolute_url(self):
         return reverse("ticket", kwargs={"pk": self.id})
+
 
 class VDVTicketInstance(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="vdv_instances")
@@ -107,6 +108,7 @@ class VDVTicketInstance(models.Model):
             raw_ticket=raw_ticket,
             ticket=vdv.VDVTicket.parse(raw_ticket)
         )
+
 
 class UICTicketInstance(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="uic_instances")
