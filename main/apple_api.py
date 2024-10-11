@@ -20,7 +20,7 @@ def pass_status(request, device_id, pass_type_id):
     if pass_type_id != settings.PKPASS_CONF["pass_type"]:
         return HttpResponse(status=204)
 
-    last_updated = request.headers.get("passesUpdatedSince")
+    last_updated = request.GET.get("passesUpdatedSince")
     if last_updated:
         try:
             last_updated = datetime.datetime.fromtimestamp(int(last_updated), pytz.utc)
