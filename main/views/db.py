@@ -20,7 +20,8 @@ DB_REDIRECT_URI = "dbnav://dbnavigator.bahn.de/auth"
 
 def get_db_token(user):
     now = timezone.now()
-    if user.account.db_token and user.account.db_token_expires_at and user.account.db_token_expires_at > now:
+    if user.account.db_token and user.account.db_token_expires_at and \
+            user.account.db_token_expires_at > now + datetime.timedelta(minutes=5):
         return user.account.db_token
     elif user.account.db_refresh_token and user.account.db_refresh_token_expires_at and user.account.db_refresh_token_expires_at > now:
         r = niquests.post(DB_TOKEN_URL, data={
