@@ -26,8 +26,8 @@ def index(request):
             image_form = forms.TicketImageForm(request.POST, request.FILES)
             if image_form.is_valid():
                 image = image_form.cleaned_data["ticket"]
-                if image.size > 2 * 1024 * 1024:
-                    image_form.add_error("ticket", "The image must be less than 2MB")
+                if image.size > 16 * 1024 * 1024:
+                    image_form.add_error("ticket", "The image must be less than 16MB")
                 else:
                     image_data = image.read()
                     try:
