@@ -270,6 +270,13 @@ def make_pkpass(ticket_obj: models.Ticket):
                                     "destinationStationName": document["toStationIA5"]
                                 }
                             })
+                    else:
+                        if "classCode" in document:
+                            pass_fields["auxiliaryFields"].append({
+                                "key": "class-code",
+                                "label": "class-code-label",
+                                "value": f"class-code-{document['classCode']}-label",
+                            })
 
                     if len(document.get("tariffs")) >= 1:
                         tariff = document["tariffs"][0]
