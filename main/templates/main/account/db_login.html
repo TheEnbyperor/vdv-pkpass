@@ -6,13 +6,17 @@
 {% block content %}
     <div class="govuk-width-container">
         <h1 class="govuk-heading-xl">Login with DB</h1>
-        <p class="govuk-body-l">
+        <p class="govuk-body-lead">
             This service slightly<sup>1</sup> abuses the login process for the DB Navigator mobile app.
             To allow you to login on this site please download the below macOS app and install it before continuing.
             This app does nothing other than redirect links from the DB Navigator mobile app to this website.
         </p>
         <p class="govuk-body-l">
             <a href="{% static 'main/DB Login Hook.pkg' %}" class="govuk-link govuk-link--no-visited-state">Download app</a>
+        </p>
+        <p class="govuk-body">
+            If you want to inspect the source of what you're about to run its available on
+            <a href="https://github.com/TheEnbyperor/db-login-hook" class="govuk-link">GitHub</a>.
         </p>
         <a href="{% url 'db_login_start' %}" class="govuk-button govuk-button--start">
             Login
