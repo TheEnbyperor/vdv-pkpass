@@ -1,0 +1,124 @@
+
+    <h2 class="govuk-heading-m">Paper ticket</h2>
+    {% if layout.standard == "RCT2" %}
+        <div class="paper-ticket-container">
+            <div class="paper-ticket">
+                <div class="rct2-ticket-inner">
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left:  1ch;width: 5ch;height: 2em;">Datum</span>
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left:  7ch;width: 5ch;height: 2em;">Zeit</span>
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left: 13ch;width: 3ch;height: 2em;">Von</span>
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left: 32ch;width: 2ch;height: 2em;">&#x2B95;</span>
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left: 34ch;width: 4ch;height: 2em;">Nach</span>
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left: 52ch;width: 5ch;height: 2em;">Datum</span>
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left: 58ch;width: 5ch;height: 2em;">Zeit</span>
+                    <span class="rct2-ticket-fixed-field" style="top: 4em;left: 66ch;width: 5ch;height: 2em;">Kl.</span>
+
+                    <div class="rct2-ticket-fixed-area" style="--top:  4em;--left:  1ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  6em;--left:  1ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  4em;--left:  7ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  6em;--left:  7ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  4em;--left: 13ch;--width: 37ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  6em;--left: 13ch;--width: 37ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  4em;--left: 52ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  6em;--left: 52ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  4em;--left: 58ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  6em;--left: 58ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  4em;--left: 66ch;--width:  5ch;--height: 2em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  6em;--left: 66ch;--width:  5ch;--height: 2em;"></div>
+
+                    <div class="rct2-ticket-fixed-area" style="--top:  0em;--left: 52ch;--width: 19ch;--height: 3em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top:  8em;--left:  1ch;--width: 70ch;--height: 4em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top: 12em;--left:  1ch;--width: 49ch;--height: 3em;"></div>
+                    <div class="rct2-ticket-fixed-area" style="--top: 13em;--left: 52ch;--width: 19ch;--height: 2em;"></div>
+
+                    {% for field in layout.fields %}
+                        <span class="paper-ticket-field{% if field.formatting.bold %} paper-ticket-field-bold{% endif %}{% if field.formatting.italic %} paper-ticket-field-italic{% endif %}{% if field.formatting.small_font %} paper-ticket-field-small-font{% endif %}"
+                                style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;{% if not field.text|rics_already_newlined %}width: {{ field.width }}ch;{% endif %}">{{ field.text }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% elif layout.standard == "PLAI" %}
+        <div class="paper-ticket-container">
+            <div class="paper-ticket">
+                <div class="plai-ticket-inner">
+                    {% for field in layout.fields %}
+                        <span class="paper-ticket-field{% if field.formatting.bold %} paper-ticket-field-bold{% endif %}{% if field.formatting.italic %} paper-ticket-field-italic{% endif %}{% if field.formatting.small_font %} paper-ticket-field-small-font{% endif %}"
+                                style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;{% if not field.text|rics_already_newlined %}width: {{ field.width }}ch;{% endif %}">{{ field.text }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <h2 class="govuk-heading-s">Unknown ticket layout <code>{{ layout.standard }}</code></h2>
+        {% for field in tlayout.fields %}
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">Field #{{ forloop.counter }}</h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Line</dt>
+                            <dd class="govuk-summary-list__value"><code>{{ field.line }}</code></dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Column</dt>
+                            <dd class="govuk-summary-list__value"><code>{{ field.column }}</code></dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Height</dt>
+                            <dd class="govuk-summary-list__value"><code>{{ field.height }}</code></dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Width</dt>
+                            <dd class="govuk-summary-list__value"><code>{{ field.width }}</code></dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Formatting</dt>
+                            <dd class="govuk-summary-list__value">
+                                <table class="govuk-table">
+                                    <tbody class="govuk-table__body">
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">Bold</td>
+                                        <td class="govuk-table__cell">
+                                            {% if field.formatting.bold %}
+                                                <strong class="govuk-tag govuk-tag--green">Yes</strong>
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--red">No</strong>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">Italic</td>
+                                        <td class="govuk-table__cell">
+                                            {% if field.formatting.italic %}
+                                                <strong class="govuk-tag govuk-tag--green">Yes</strong>
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--red">No</strong>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">Small font</td>
+                                        <td class="govuk-table__cell">
+                                            {% if field.formatting.small_font %}
+                                                <strong class="govuk-tag govuk-tag--green">Yes</strong>
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--red">No</strong>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Text</dt>
+                            <dd class="govuk-summary-list__value">{{ field.text }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}

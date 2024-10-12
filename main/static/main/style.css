@@ -19,14 +19,14 @@
     border-bottom-color: #EC0016;
 }
 
-.rct2-ticket-container {
+.paper-ticket-container {
     overflow-x: auto;
     display: flex;
     justify-content: center;
     padding: 20px 0;
 }
 
-.rct2-ticket {
+.paper-ticket {
     font-family: monospace;
     background-image: linear-gradient(-45deg, #f2d4b6 0% 50%, #b6def2 50% 100%);
     background-size: 2ch 2ch;
@@ -45,7 +45,13 @@
     position: relative;
 }
 
-.rct2-ticket-field {
+.plai-ticket-inner {
+    width: 33ch;
+    height: 12em;
+    position: relative;
+}
+
+.paper-ticket-field {
     display: inline-block;
     position: absolute;
     white-space: pre-wrap;
@@ -69,10 +75,10 @@
     letter-spacing: -1px;
 }
 
-.rct2-ticket-field.rct2-ticket-field-bold {
+.paper-ticket-field.paper-ticket-field-bold {
     font-weight: bold;
 }
 
-.rct2-ticket-field.rct2-ticket-field-italic {
+.paper-ticket-field.paper-ticket-field-italic {
     font-style: italic;
 }
