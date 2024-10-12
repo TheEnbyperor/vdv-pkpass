@@ -72,7 +72,9 @@ class Ticket(models.Model):
     pkpass_authentication_token = models.CharField(max_length=255, verbose_name="PKPass authentication token", default=make_pass_token)
     last_updated = models.DateTimeField()
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets")
-    db_subscription = models.ForeignKey("DBSubscription", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets")
+    db_subscription = models.ForeignKey(
+        "DBSubscription", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets", verbose_name="DB Subscription"
+    )
 
     def __str__(self):
         return f"{self.get_ticket_type_display()} - {self.id}"

@@ -81,10 +81,10 @@ def update_abo_tickets(abo: models):
                 pk=ticket_pk,
                 last_updated=timezone.now(),
                 account=abo.account,
-                db_subscription=abo
             )
 
         ticket_obj.ticket_type = decoded_ticket.type()
+        ticket_obj.db_subscription = abo
         if ticket.create_ticket_obj(ticket_obj, barcode_data, decoded_ticket):
             should_update = True
 
