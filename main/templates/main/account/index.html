@@ -23,12 +23,15 @@
                 <dt class="govuk-summary-list__key">DB Account</dt>
                 <dd class="govuk-summary-list__value">
                     {% if user.account.is_db_authenticated %}
-                        <p class="govuk-body">Linked - <code>{{ user.account.db_account_id }}</code></p>
-                        <a class="govuk-button govuk-button--secondary" href="{% url 'db_login' %}">Reauthenticate</a>
-                        <a class="govuk-button govuk-button--warning" href="{% url 'db_logout' %}">Unlink</a>
+                        <p class="govuk-body"><code>{{ user.account.db_account_id }}</code></p>
+                        <div class="govuk-button-group">
+                            <a class="govuk-button govuk-button--secondary"
+                               href="{% url 'db_login' %}">Reauthenticate</a>
+                            <a class="govuk-button govuk-button--warning" href="{% url 'db_logout' %}">Unlink</a>
+                        </div>
                     {% else %}
-                        <p class="govuk-body">Unlinked</p>
                         <a class="govuk-button" href="{% url 'db_login' %}">Login with DB</a>
+                        <p class="govuk-body-s">Logging in with DB isn't required for subscription tickets.</p>
                     {% endif %}
                 </dd>
             </div>
@@ -36,76 +39,15 @@
                 <dt class="govuk-summary-list__key">SaarVV Account</dt>
                 <dd class="govuk-summary-list__value">
                     {% if user.account.is_saarvv_authenticated %}
-                        <p class="govuk-body">Linked</p>
-                        <a class="govuk-button govuk-button--secondary" href="{% url 'saarvv_login' %}">Reauthenticate</a>
-                        <a class="govuk-button govuk-button--warning" href="{% url 'saarvv_logout' %}">Unlink</a>
+                        <div class="govuk-button-group">
+                            <a class="govuk-button govuk-button--secondary" href="{% url 'saarvv_login' %}">Reauthenticate</a>
+                            <a class="govuk-button govuk-button--warning" href="{% url 'saarvv_logout' %}">Unlink</a>
+                        </div>
                     {% else %}
-                        <p class="govuk-body">Unlinked</p>
                         <a class="govuk-button" href="{% url 'saarvv_login' %}">Login with SaarVV</a>
                     {% endif %}
                 </dd>
             </div>
         </dl>
-
-        {% if db_account %}
-            <h2 class="govuk-heading-l">DB Account</h2>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Customer number</dt>
-                    <dd class="govuk-summary-list__value">{{ db_account.kundennummer }}</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Forename</dt>
-                    <dd class="govuk-summary-list__value">{{ db_account.vorname }}</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Surname</dt>
-                    <dd class="govuk-summary-list__value">{{ db_account.nachname }}</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Birthday</dt>
-                    <dd class="govuk-summary-list__value">{{ db_account.geburtsdatum }}</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Email</dt>
-                    <dd class="govuk-summary-list__value">{{ db_account.kundenprofile.0.kontaktmailadresse.email }}</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Primary address</dt>
-                    <dd class="govuk-summary-list__value">
-                        <p class="govuk-body">
-                            {{ db_account.hauptadresse.strasse }}<br/>
-                            {{ db_account.hauptadresse.plz }}, {{ db_account.hauptadresse.ort }}<br/>
-                            {{ db_account.hauptadresse.land|iso3166 }}
-                        </p>
-                    </dd>
-                </div>
-            </dl>
-            {% if db_bb_status %}
-                <h3 class="govuk-heading-m">BahnBonus</h3>
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Bonus points</dt>
-                        <dd class="govuk-summary-list__value">{{ db_bb_status.activeBonusPoints }}</dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Status points</dt>
-                        <dd class="govuk-summary-list__value">{{ db_bb_status.activeStatusPoints }}</dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Status level</dt>
-                        <dd class="govuk-summary-list__value"><code>{{ db_bb_status.statusLevel }}</code></dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Status valid until</dt>
-                        <dd class="govuk-summary-list__value">{{ db_bb_status.statusValidUntil }}</dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Bonusnummer</dt>
-                        <dd class="govuk-summary-list__value"><code>{{ db_bb_status.loyaltyNumber }}</code></dd>
-                    </div>
-                </dl>
-            {% endif %}
-        {% endif %}
     </div>
 {% endblock %}

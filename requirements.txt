@@ -19,3 +19,4 @@ gunicorn
 iso3166
 pyjwt
 django-magiclink
+BeautifulSoup4

@@ -5,7 +5,7 @@ import typing
 import datetime
 import Crypto.Hash.TupleHash128
 
-from . import models, vdv, uic
+from . import models, vdv, uic, templatetags
 
 
 class TicketError(Exception):
@@ -462,3 +462,64 @@ def parse_ticket(ticket_bytes: bytes) -> typing.Union[VDVTicket, UICTicket]:
         return parse_ticket_uic(ticket_bytes)
     else:
         return parse_ticket_vdv(ticket_bytes)
+
+
+def to_dict_json(elements: typing.List[typing.Tuple[str, typing.Any]]) -> dict:
+    def encode_value(v):
+        if isinstance(v, bytes) or isinstance(v, bytearray):
+            return base64.b64encode(v).decode("ascii")
+        else:
+            return v
+
+    return {k: encode_value(v) for k, v in elements}
+
+
+def create_ticket_obj(
+        ticket_obj: "models.Ticket",
+        ticket_bytes: bytes,
+        ticket_data: typing.Union[VDVTicket, UICTicket]
+) -> bool:
+    created = False
+    if isinstance(ticket_data, VDVTicket):
+        _, created = models.VDVTicketInstance.objects.update_or_create(
+            ticket_number=ticket_data.ticket.ticket_id,
+            ticket_org_id=ticket_data.ticket.ticket_org_id,
+            defaults={
+                "ticket": ticket_obj,
+                "validity_start": ticket_data.ticket.validity_start.as_datetime(),
+                "validity_end": ticket_data.ticket.validity_end.as_datetime(),
+                "barcode_data": ticket_bytes,
+                "decoded_data": {
+                    "root_ca": dataclasses.asdict(ticket_data.root_ca, dict_factory=to_dict_json),
+                    "issuing_ca": dataclasses.asdict(ticket_data.issuing_ca, dict_factory=to_dict_json),
+                    "envelope_certificate":
+                        dataclasses.asdict(ticket_data.envelope_certificate, dict_factory=to_dict_json),
+                    "ticket": base64.b64encode(ticket_data.raw_ticket).decode("ascii"),
+                }
+            }
+        )
+    elif isinstance(ticket_data, UICTicket):
+        validity_start = None
+        validity_end = None
+        if ticket_data.flex:
+            docs = ticket_data.flex.data.get("transportDocument")
+            if docs:
+                if docs[0]["ticket"][0] == "openTicket":
+                    validity_start = templatetags.rics.rics_valid_from(docs[0]["ticket"][1], ticket_data.issuing_time())
+                    validity_end = templatetags.rics.rics_valid_until(docs[0]["ticket"][1], ticket_data.issuing_time())
+
+        _, created = models.UICTicketInstance.objects.update_or_create(
+            reference=ticket_data.ticket_id(),
+            distributor_rics=ticket_data.issuing_rics(),
+            defaults={
+                "ticket": ticket_obj,
+                "issuing_time": ticket_data.issuing_time(),
+                "barcode_data": ticket_bytes,
+                "validity_start": validity_start,
+                "validity_end": validity_end,
+                "decoded_data": {
+                    "envelope": dataclasses.asdict(ticket_data.envelope, dict_factory=to_dict_json),
+                }
+            }
+        )
+    return created

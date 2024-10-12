@@ -12,6 +12,10 @@ urlpatterns = [
     path('api/apple/v1/passes/<str:pass_type_id>/<str:serial_number>', views.apple_api.pass_document),
 
     path('account/', views.account.index, name='account'),
+    path('account/db/', views.account.db_account, name='db_account'),
+    path('account/db_abo/', views.db_abo.db_abo, name='db_abo'),
+    path('account/db_abo/new/', views.db_abo.new_abo, name='new_db_abo'),
+    path('account/db_abo/abo/<abo_id>/delete/', views.db_abo.delete_abo, name='delete_db_abo'),
     path('account/db_login/', views.db.db_login, name='db_login'),
     path('account/db_login/login', views.db.db_login_start, name='db_login_start'),
     path('account/db_login/logout', views.db.db_logout, name='db_logout'),

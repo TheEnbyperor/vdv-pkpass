@@ -1,0 +1,67 @@
+{% extends "main/base.html" %}
+{% load static crispy_forms_tags rics %}
+
+{% block title %}DB Account - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">DB Account</h1>
+    <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Customer number</dt>
+                    <dd class="govuk-summary-list__value">{{ db_account.kundennummer }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Forename</dt>
+                    <dd class="govuk-summary-list__value">{{ db_account.vorname }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Surname</dt>
+                    <dd class="govuk-summary-list__value">{{ db_account.nachname }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Birthday</dt>
+                    <dd class="govuk-summary-list__value">{{ db_account.geburtsdatum }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Email</dt>
+                    <dd class="govuk-summary-list__value">{{ db_account.kundenprofile.0.kontaktmailadresse.email }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Primary address</dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">
+                            {{ db_account.hauptadresse.strasse }}<br/>
+                            {{ db_account.hauptadresse.plz }}, {{ db_account.hauptadresse.ort }}<br/>
+                            {{ db_account.hauptadresse.land|iso3166 }}
+                        </p>
+                    </dd>
+                </div>
+            </dl>
+            {% if db_bb_status %}
+                <h3 class="govuk-heading-m">BahnBonus</h3>
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Bonus points</dt>
+                        <dd class="govuk-summary-list__value">{{ db_bb_status.activeBonusPoints }}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Status points</dt>
+                        <dd class="govuk-summary-list__value">{{ db_bb_status.activeStatusPoints }}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Status level</dt>
+                        <dd class="govuk-summary-list__value"><code>{{ db_bb_status.statusLevel }}</code></dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Status valid until</dt>
+                        <dd class="govuk-summary-list__value">{{ db_bb_status.statusValidUntil }}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Bonusnummer</dt>
+                        <dd class="govuk-summary-list__value"><code>{{ db_bb_status.loyaltyNumber }}</code></dd>
+                    </div>
+                </dl>
+            {% endif %}
+    </div>
+{% endblock %}

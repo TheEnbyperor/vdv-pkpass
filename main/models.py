@@ -1,6 +1,7 @@
 import base64
 import secrets
 import dacite
+import datetime
 from django.utils import timezone
 from django.shortcuts import reverse
 from django.conf import settings
@@ -69,14 +70,18 @@ class Ticket(models.Model):
     id = models.CharField(max_length=32, primary_key=True, verbose_name="ID")
     ticket_type = models.CharField(max_length=255, choices=TICKET_TYPES, verbose_name="Ticket type", default=TYPE_UNKNOWN)
     pkpass_authentication_token = models.CharField(max_length=255, verbose_name="PKPass authentication token", default=make_pass_token)
-    last_updated = models.DateTimeField(auto_now=True)
+    last_updated = models.DateTimeField()
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets")
+    db_subscription = models.ForeignKey("DBSubscription", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets")
 
     def __str__(self):
         return f"{self.get_ticket_type_display()} - {self.id}"
 
     def get_absolute_url(self):
         return reverse("ticket", kwargs={"pk": self.id})
+
+    def public_id(self):
+        return self.pk.upper()[0:8]
 
 
 class VDVTicketInstance(models.Model):
@@ -117,6 +122,8 @@ class UICTicketInstance(models.Model):
     issuing_time = models.DateTimeField()
     barcode_data = models.BinaryField()
     decoded_data = models.JSONField()
+    validity_start = models.DateTimeField(blank=True, null=True)
+    validity_end = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         unique_together = [
@@ -164,3 +171,31 @@ class AppleRegistration(models.Model):
         unique_together = [
             ["ticket", "device"],
         ]
+
+
+class DBSubscription(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="subscriptions")
+    device_token = models.CharField(max_length=255, verbose_name="Device token", unique=True)
+    refresh_at = models.DateTimeField(verbose_name="Refresh at")
+    info = models.JSONField(verbose_name="Info", default=dict)
+
+    class Meta:
+        verbose_name = "DB Subscription"
+        verbose_name_plural = "DB Subscriptions"
+
+    def __str__(self):
+        return str(self.device_token)
+
+    def get_current_info(self):
+        if "type" not in self.info:
+            return None
+
+        if self.info["type"] == "VendoHuelle":
+            return self.info
+        elif self.info["type"] == "TicketHuelle":
+            now = timezone.now()
+            for info in self.info["ticketHuellen"]:
+                start = datetime.datetime.fromisoformat(info["anzeigeAb"])
+                end = datetime.datetime.fromisoformat(info["anzeigeBis"])
+                if start > now and end < now:
+                    return info["huelleInfo"]

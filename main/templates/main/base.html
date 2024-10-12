@@ -25,20 +25,20 @@
         </a>
     </div>
 </header>
-<div class="govuk-service-navigation" data-module="govuk-service-navigation">
-    <div class="govuk-width-container">
-        <div class="govuk-service-navigation__container">
-            {% if user.is_authenticated %}
-                <span class="govuk-service-navigation__service-name">
+{% with request.resolver_match.url_name as url_name %}
+    <div class="govuk-service-navigation" data-module="govuk-service-navigation">
+        <div class="govuk-width-container">
+            <div class="govuk-service-navigation__container">
+                {% if user.is_authenticated %}
+                    <span class="govuk-service-navigation__service-name">
                     Hi {{ user.get_short_name }}!
                 </span>
-            {% endif %}
-            <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
-                <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle"
-                        aria-controls="navigation" hidden>
-                    Menu
-                </button>
-                {% with request.resolver_match.url_name as url_name %}
+                {% endif %}
+                <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+                    <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle"
+                            aria-controls="navigation" hidden>
+                        Menu
+                    </button>
                     <ul class="govuk-service-navigation__list" id="navigation">
                         <li class="govuk-service-navigation__item{% if url_name == 'index' %} govuk-service-navigation__item--active{% endif %}">
                             <a class="govuk-service-navigation__link" href="{% url 'index' %}">
@@ -46,29 +46,68 @@
                             </a>
                         </li>
                         {% if user.is_authenticated %}
-                            <li class="govuk-service-navigation__item{% if url_name == 'account' %} govuk-service-navigation__item--active{% endif %}">
+                            <li class="govuk-service-navigation__item{% if url_name == 'account' or url_name == 'db_account' or url_name == 'db_abo' or url_name == 'new_db_abo' %} govuk-service-navigation__item--active{% endif %}">
                                 <a class="govuk-service-navigation__link" href="{% url 'account' %}">
                                     Account
                                 </a>
                             </li>
                             <li class="govuk-service-navigation__item">
-                                <a class="govuk-service-navigation__link" href="{% url 'magiclink:logout' %}?next={{ request.path }}">
+                                <a class="govuk-service-navigation__link"
+                                   href="{% url 'magiclink:logout' %}?next={{ request.path }}">
                                     Logout
                                 </a>
                             </li>
                         {% else %}
                             <li class="govuk-service-navigation__item{% if url_name == 'login' %} govuk-service-navigation__item--active{% endif %}">
-                                <a class="govuk-service-navigation__link" href="{% url 'magiclink:login' %}?next={{ request.path }}">
+                                <a class="govuk-service-navigation__link"
+                                   href="{% url 'magiclink:login' %}?next={{ request.path }}">
                                     Login
                                 </a>
                             </li>
                         {% endif %}
                     </ul>
-                {% endwith %}
-            </nav>
+                </nav>
+            </div>
+            {% if url_name == 'account' or url_name == 'db_account' or url_name == 'db_abo' or url_name == 'new_db_abo' %}
+                <div class="govuk-service-navigation__container">
+                    <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+                        <button type="button"
+                                class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle"
+                                aria-controls="navigation" hidden>
+                            Menu
+                        </button>
+                        <ul class="govuk-service-navigation__list" id="navigation">
+                            <li class="govuk-service-navigation__item{% if url_name == 'account' %} govuk-service-navigation__item--active{% endif %}">
+                                <a class="govuk-service-navigation__link" href="{% url 'account' %}">
+                                    Account home
+                                </a>
+                            </li>
+                            {% if user.is_authenticated and user.account.is_db_authenticated %}
+                                <li class="govuk-service-navigation__item{% if url_name == 'db_account' %} govuk-service-navigation__item--active{% endif %}">
+                                    <a class="govuk-service-navigation__link" href="{% url 'db_account' %}" aria-current="true">
+                                        DB Account
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="govuk-service-navigation__item{% if url_name == 'db_abo' %} govuk-service-navigation__item--active{% endif %}">
+                                <a class="govuk-service-navigation__link " href="{% url 'db_abo' %}">
+                                    DB Subscriptions
+                                </a>
+                            </li>
+                            {% if user.is_authenticated and user.account.is_saarvv_authenticated %}
+                                <li class="govuk-service-navigation__item">
+                                    <a class="govuk-service-navigation__link" href="#">
+                                        SaarVV Account
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            {% endif %}
         </div>
     </div>
-</div>
+{% endwith %}
 <div class="govuk-width-container">
     <div class="govuk-phase-banner">
         <p class="govuk-phase-banner__content">
@@ -114,13 +153,12 @@
                     Not affiliated with the Verband Deutscher Verkehrsunternehmen (VDV) or any of its members.
                 </div>
                 <div class="govuk-footer__meta-custom">
-                    <a class="govuk-footer__link" href="https://github.com/alphagov/govuk-frontend">GOV.UK Design
-                        System</a>
+                    <a class="govuk-footer__link" href="https://github.com/alphagov/govuk-frontend" target="_blank">GOV.UK Design System</a>
                     used under license.
                 </div>
                 <span class="govuk-footer__licence-description">
-                    Licensed under the MIT license. &copy; <a class="govuk-footer__link"
-                                                              href="https://magicalcodewit.ch">Q Misell</a>, {% now "Y" %}
+                    Licensed under the <a href="https://eupl.eu" class="govuk-footer__link" target="_blank">EUPL v1.2</a>.
+                    &copy; <a class="govuk-footer__link" href="https://magicalcodewit.ch">Q Misell</a>, {% now "Y" %}
                 </span>
             </div>
         </div>

@@ -1,12 +1,12 @@
 {% extends "main/base.html" %}
 {% load static %}
 
-{% block title %}Ticket {{ ticket_id }} - VDV to Apple Wallet{% endblock title %}
+{% block title %}Ticket {{ ticket.public_id }} - VDV to Apple Wallet{% endblock title %}
 
 {% block content %}
     <div class="govuk-width-container">
     <h1 class="govuk-heading-xl">
-        Ticket #{{ ticket_id }}
+        Ticket #{{ ticket.public_id }}
         <span class="govuk-caption-xl">{{ ticket.get_ticket_type_display }}</span>
     </h1>
 

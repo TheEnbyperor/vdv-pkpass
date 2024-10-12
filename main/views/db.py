@@ -28,6 +28,8 @@ def get_db_token(user):
             "grant_type": "refresh_token",
             "client_id": DB_CLIENT_ID,
             "refresh_token": user.account.db_refresh_token,
+        }, headers={
+            "User-Agent": "VDV PKPass q@magicalcodewit.ch"
         })
         if r.status_code != 200:
             user.account.db_refresh_token = None
@@ -130,6 +132,8 @@ def db_login_callback(request):
         "redirect_uri": DB_REDIRECT_URI,
         "code": code,
         "code_verifier": code_verifier,
+    }, headers={
+        "User-Agent": "VDV PKPass q@magicalcodewit.ch"
     })
     data = r.json()
     if r.status_code != 200:

@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vdv-pkpass-db-abo
+  namespace: q-personal
+  labels:
+    app: vdv-pkpass
+    part: db-abo
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            cni.projectcalico.org/ipv6pools: "[\"default-ipv6-ippool\"]"
+          labels:
+            app: vdv-pkpass
+            part: db-abo
+        spec:
+          containers:
+            - name: django
+              image: theenbyperor/vdv-pkpass-django:(version)
+              imagePullPolicy: Always
+              command: ["sh", "-c", "python3 manage.py update-db-abo"]
+              envFrom: &envFrom
+                - configMapRef:
+                    name: vdv-pkpass
+                - secretRef:
+                    name: vdv-pkpass-db-creds
+                  prefix: "DB_"
+                - secretRef:
+                    name: vdv-pkpass-email
+                  prefix: "EMAIL_"
+                - secretRef:
+                    name: vdv-pkpass-django-secret
+                - secretRef:
+                    name: vdv-pkpass-s3
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: vdv-pkpass-db-abo
+  namespace: q-personal
+spec:
+  podSelector:
+    matchLabels:
+      app: vdv-pkpass
+      part: db-abo
+  policyTypes:
+    - Ingress

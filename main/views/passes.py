@@ -1,25 +1,13 @@
-import base64
 import json
-import typing
 import urllib.parse
 import pytz
-import dataclasses
-
+from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.core.files.storage import storages
 from django.conf import settings
+from django.db.models import Q
 from main import forms, models, ticket, pkpass, vdv, aztec, templatetags, apn
-
-
-def to_dict_json(elements: typing.List[typing.Tuple[str, typing.Any]]) -> dict:
-    def encode_value(v):
-        if isinstance(v, bytes) or isinstance(v, bytearray):
-            return base64.b64encode(v).decode("ascii")
-        else:
-            return v
-
-    return {k: encode_value(v) for k, v in elements}
 
 
 def index(request):
@@ -63,43 +51,14 @@ def index(request):
             ticket_pk = ticket_data.pk()
             defaults = {
                 "ticket_type": ticket_data.type(),
+                "last_updated": timezone.now(),
             }
             if request.user.is_authenticated:
                 defaults["account"] = request.user.account
             ticket_obj, ticket_created = models.Ticket.objects.update_or_create(id=ticket_pk, defaults=defaults)
             request.session["ticket_updated"] = True
             request.session["ticket_created"] = ticket_created
-            if isinstance(ticket_data, ticket.VDVTicket):
-                models.VDVTicketInstance.objects.update_or_create(
-                    ticket_number=ticket_data.ticket.ticket_id,
-                    ticket_org_id=ticket_data.ticket.ticket_org_id,
-                    defaults={
-                        "ticket": ticket_obj,
-                        "validity_start": ticket_data.ticket.validity_start.as_datetime(),
-                        "validity_end": ticket_data.ticket.validity_end.as_datetime(),
-                        "barcode_data": ticket_bytes,
-                        "decoded_data": {
-                            "root_ca": dataclasses.asdict(ticket_data.root_ca, dict_factory=to_dict_json),
-                            "issuing_ca": dataclasses.asdict(ticket_data.issuing_ca, dict_factory=to_dict_json),
-                            "envelope_certificate": dataclasses.asdict(ticket_data.envelope_certificate,
-                                                                       dict_factory=to_dict_json),
-                            "ticket": base64.b64encode(ticket_data.raw_ticket).decode("ascii"),
-                        }
-                    }
-                )
-            elif isinstance(ticket_data, ticket.UICTicket):
-                models.UICTicketInstance.objects.update_or_create(
-                    reference=ticket_data.ticket_id(),
-                    distributor_rics=ticket_data.issuing_rics(),
-                    defaults={
-                        "ticket": ticket_obj,
-                        "issuing_time": ticket_data.issuing_time(),
-                        "barcode_data": ticket_bytes,
-                        "decoded_data": {
-                            "envelope": dataclasses.asdict(ticket_data.envelope, dict_factory=to_dict_json),
-                        }
-                    }
-                )
+            ticket.create_ticket_obj(ticket_obj, ticket_bytes, ticket_data)
             apn.notify_ticket(ticket_obj)
             return redirect('ticket', pk=ticket_obj.id)
 
@@ -111,10 +70,8 @@ def index(request):
 
 def view_ticket(request, pk):
     ticket_obj = get_object_or_404(models.Ticket, id=pk)
-    ticket_id = ticket_obj.pk.upper()[0:8]
     return render(request, "main/ticket.html", {
         "ticket": ticket_obj,
-        "ticket_id": ticket_id,
         "ticket_updated": request.session.pop("ticket_updated", False),
         "ticket_created": request.session.pop("ticket_created", False),
     })
@@ -135,8 +92,12 @@ def ticket_pkpass(request, pk):
     ticket_obj: models.Ticket = get_object_or_404(models.Ticket, id=pk)
     return make_pkpass(ticket_obj)
 
+
 def make_pkpass(ticket_obj: models.Ticket):
-    ticket_instance: models.UICTicketInstance = ticket_obj.uic_instances.first()
+    now = timezone.now()
+    ticket_instance: models.UICTicketInstance = ticket_obj.uic_instances.filter(
+        Q(validity_start__lt=now) | Q(validity_start__isnull=True)
+    ).first()
     pkp = pkpass.PKPass()
     have_logo = False
 
@@ -527,7 +488,9 @@ def make_pkpass(ticket_obj: models.Ticket):
             "value": issued_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
         })
     else:
-        ticket_instance: models.VDVTicketInstance = ticket_obj.vdv_instances.first()
+        ticket_instance: models.VDVTicketInstance = ticket_obj.vdv_instances.filter(
+            Q(validity_start__lt=now) | Q(validity_start__isnull=True)
+        ).first()
         ticket_data: ticket.VDVTicket = ticket_instance.as_ticket()
 
         validity_start = ticket_data.ticket.validity_start.as_datetime().astimezone(pytz.utc)

@@ -1,0 +1,81 @@
+{% extends "main/base.html" %}
+{% load static crispy_forms_tags rics %}
+
+{% block title %}DB Subscriptions - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">DB Subscriptions</h1>
+        <div class="govuk-button-group">
+            <a class="govuk-button" data-module="govuk-button" href="{% url 'new_db_abo' %}">
+               Add subscription
+            </a>
+        </div>
+        {% if subscriptions %}
+            {% for subscription in subscriptions %}
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h2 class="govuk-summary-card__title">
+                            Subscription #{{ forloop.counter }}
+                        </h2>
+                        <ul class="govuk-summary-card__actions">
+                            <li class="govuk-summary-card__action">
+                                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'delete_db_abo' subscription.id %}">Delete</a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% with info=subscription.get_current_info %}
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Product
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        {{ info.produktname }}
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Area valid
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        {{ info.raeumlicheGueltigkeit }}
+                                    </dd>
+                                </div>
+                                {% if info.ticketStatusInfo %}
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key"></dt>
+                                        <dd class="govuk-summary-list__value">
+                                            <div class="govuk-warning-text">
+                                              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                                              <strong class="govuk-warning-text__text">
+                                                <span class="govuk-visually-hidden">Warning</span>
+                                                {{ info.ticketStatusInfo }}
+                                              </strong>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                {% endif %}
+                            </dl>
+                            <h3 class="govuk-heading-m">Tickets</h3>
+                            {% if subscription.tickets.count %}
+                                <ul class="govuk-list govuk-list--spaced">
+                                {% for ticket in subscription.tickets.all %}
+                                    <li>
+                                        <a href="{% url 'ticket' ticket.pk %}" class="govuk-link">#{{ ticket.public_id }}</a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="govuk-body">No tickets</p>
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="govuk-body-l">No subscriptions</p>
+        {% endif %}
+    </div>
+{% endblock %}

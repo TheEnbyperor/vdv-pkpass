@@ -58,7 +58,14 @@ class AppleDeviceAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Account)
-class Account(admin.ModelAdmin):
+class AccountAdmin(admin.ModelAdmin):
     readonly_fields = [
         "db_token"
+    ]
+
+
+@admin.register(models.DBSubscription)
+class DBSubscriptionAdmin(admin.ModelAdmin):
+    readonly_fields = [
+        "device_token"
     ]

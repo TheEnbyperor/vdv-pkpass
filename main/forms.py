@@ -26,3 +26,13 @@ class SaarVVLoginForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit("submit", "Login"))
+
+
+class DBAboForm(forms.Form):
+    subscription_number = forms.CharField(label="Subscription Number", required=True)
+    surname = forms.CharField(label="Surname", required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit("submit", "Add"))

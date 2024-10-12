@@ -1,0 +1,23 @@
+{% extends "main/base.html" %}
+{% load static crispy_forms_tags rics %}
+
+{% block title %}Delete DB Subscription - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Delete DB Subscription</h1>
+        <p class="govuk-body-lead">
+            Are you sure you want to delete this subscription?
+        </p>
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="remove">
+            <div class="govuk-button-group">
+                <button class="govuk-button govuk-button--warning">
+                    Delete
+                </button>
+                <a href="{% url 'db_abo' %}" class="govuk-link govuk-link--no-visited-state">Go back</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
