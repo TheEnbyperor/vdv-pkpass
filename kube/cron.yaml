@@ -18,12 +18,13 @@ spec:
             app: vdv-pkpass
             part: db-abo
         spec:
+          restartPolicy: OnFailure
           containers:
             - name: django
               image: theenbyperor/vdv-pkpass-django:(version)
               imagePullPolicy: Always
               command: ["sh", "-c", "python3 manage.py update-db-abo"]
-              envFrom: &envFrom
+              envFrom:
                 - configMapRef:
                     name: vdv-pkpass
                 - secretRef:

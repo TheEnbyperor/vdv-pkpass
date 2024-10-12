@@ -1,12 +1,5 @@
-import secrets
-import base64
-import hashlib
-import urllib.parse
-import binascii
 import niquests
-import jwt
 import datetime
-from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,7 +7,7 @@ from .. import forms, models, db_abo
 
 
 @login_required
-def db_abo(request):
+def view_db_abo(request):
     subscriptions = models.DBSubscription.objects.all()
 
     return render(request, "main/account/db_abo.html", {
