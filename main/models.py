@@ -148,6 +148,13 @@ class AppleDevice(models.Model):
     def __str__(self):
         return self.device_id
 
+    def accounts(self):
+        accounts = []
+        for reg in self.registrations.all():
+            if reg.ticket.account_id:
+                accounts.append(reg.ticket.account_id)
+        return accounts
+
 
 class AppleRegistration(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="apple_registrations")

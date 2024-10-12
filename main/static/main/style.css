@@ -15,7 +15,7 @@
     src: url(din-mono.ttf) format('truetype');
 }
 
-.govuk-header__container {
+.govuk-header__container, .govuk-header--full-width-border {
     border-bottom-color: #EC0016;
 }
 

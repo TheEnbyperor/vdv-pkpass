@@ -61,9 +61,12 @@ def index(request):
             }
         else:
             ticket_pk = ticket_data.pk()
-            ticket_obj, ticket_created = models.Ticket.objects.update_or_create(id=ticket_pk, defaults={
-                "ticket_type": ticket_data.type()
-            })
+            defaults = {
+                "ticket_type": ticket_data.type(),
+            }
+            if request.user.is_authenticated:
+                defaults["account"] = request.user.account
+            ticket_obj, ticket_created = models.Ticket.objects.update_or_create(id=ticket_pk, defaults=defaults)
             request.session["ticket_updated"] = True
             request.session["ticket_created"] = ticket_created
             if isinstance(ticket_data, ticket.VDVTicket):

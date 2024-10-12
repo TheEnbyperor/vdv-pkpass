@@ -18,21 +18,63 @@
 <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
 {% block body_start %}
 {% endblock body_start %}
-<header class="govuk-header" data-module="govuk-header">
+<header class="govuk-header govuk-header--full-width-border" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
-        <div class="govuk-header__content">
-            <a href="{% url 'index' %}" class="govuk-header__link govuk-header__service-name">
-                VDV to Apple Wallet
-            </a>
-        </div>
+        <a href="{% url 'index' %}" class="govuk-header__link govuk-header__service-name">
+            VDV to Apple Wallet
+        </a>
     </div>
 </header>
+<div class="govuk-service-navigation" data-module="govuk-service-navigation">
+    <div class="govuk-width-container">
+        <div class="govuk-service-navigation__container">
+            {% if user.is_authenticated %}
+                <span class="govuk-service-navigation__service-name">
+                    Hi {{ user.get_short_name }}!
+                </span>
+            {% endif %}
+            <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+                <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle"
+                        aria-controls="navigation" hidden>
+                    Menu
+                </button>
+                {% with request.resolver_match.url_name as url_name %}
+                    <ul class="govuk-service-navigation__list" id="navigation">
+                        <li class="govuk-service-navigation__item{% if url_name == 'index' %} govuk-service-navigation__item--active{% endif %}">
+                            <a class="govuk-service-navigation__link" href="{% url 'index' %}">
+                                Home
+                            </a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="govuk-service-navigation__item{% if url_name == 'account' %} govuk-service-navigation__item--active{% endif %}">
+                                <a class="govuk-service-navigation__link" href="{% url 'account' %}">
+                                    Account
+                                </a>
+                            </li>
+                            <li class="govuk-service-navigation__item">
+                                <a class="govuk-service-navigation__link" href="{% url 'magiclink:logout' %}?next={{ request.path }}">
+                                    Logout
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="govuk-service-navigation__item{% if url_name == 'login' %} govuk-service-navigation__item--active{% endif %}">
+                                <a class="govuk-service-navigation__link" href="{% url 'magiclink:login' %}?next={{ request.path }}">
+                                    Login
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% endwith %}
+            </nav>
+        </div>
+    </div>
+</div>
 <div class="govuk-width-container">
     <div class="govuk-phase-banner">
         <p class="govuk-phase-banner__content">
             <strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
             <span class="govuk-phase-banner__text">
-              This is a new service - it may break in any number of ways. Please report any issues you find.
+              This is a new service - it may break in any number of ways. Please report any issues you find!
             </span>
         </p>
     </div>
@@ -51,7 +93,8 @@
                         </div>
                     </div>
                 {% else %}
-                    <div class="govuk-notification-banner govuk-notification-banner--{{ message.level_tag }}" role="region"
+                    <div class="govuk-notification-banner govuk-notification-banner--{{ message.level_tag }}"
+                         role="region"
                          data-module="govuk-notification-banner">
                         <div class="govuk-notification-banner__content">
                             {{ message.message }}
