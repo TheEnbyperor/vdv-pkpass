@@ -5,6 +5,8 @@ import datetime
 import logging
 import bs4
 from django.utils import timezone
+from urllib3 import request
+
 from . import models, aztec, ticket, apn
 
 logger = logging.getLogger(__name__)
@@ -71,7 +73,7 @@ def update_abo_tickets(abo: models):
             continue
 
         try:
-            decoded_ticket = ticket.parse_ticket(barcode_data)
+            decoded_ticket = ticket.parse_ticket(barcode_data, account=abo.account)
         except ticket.TicketError as e:
             logger.error("Error decoding barcode ticket: %s", e)
             continue
