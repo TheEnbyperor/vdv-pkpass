@@ -70,7 +70,7 @@ def sign_request(request: niquests.PreparedRequest, device_id: str) -> niquests.
 
 
 def update_all():
-    for account in models.Account.objects.filter(saarvv_device__isnull=False):
+    for account in models.Account.objects.filter(saarvv_device_id__isnull=False):
         update_saarvv_tickets(account)
 
         for t in account.saarvv_tickets.all():
