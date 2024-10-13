@@ -3,6 +3,8 @@ package ch.magicalcodewit.vdv.aztec;
 import boofcv.abst.fiducial.AztecCodePreciseDetector;
 import boofcv.alg.fiducial.aztec.AztecCode;
 import boofcv.alg.fiducial.qrcode.PackedBits8;
+import boofcv.factory.shape.ConfigPolygonDetector;
+import boofcv.factory.shape.ConfigPolygonFromContour;
 import boofcv.factory.fiducial.ConfigAztecCode;
 import boofcv.factory.fiducial.FactoryFiducial;
 import boofcv.io.image.ConvertBufferedImage;
@@ -31,7 +33,17 @@ public class Main {
         GrayU8 gray = ConvertBufferedImage.convertFrom(input, (GrayU8) null);
 
         ConfigAztecCode config = new ConfigAztecCode();
+        config.considerTransposed = true;
+        config.maxOrientationError = 16;
+        config.polygon = new ConfigPolygonDetector();
+        config.polygon.refineContour = true;
+        config.polygon.adjustForThresholdBias = true;
+        config.polygon.minimumRefineEdgeIntensity = 0;
+        config.polygon.detector = new ConfigPolygonFromContour();
+        config.polygon.detector.canTouchBorder = true;
+        config.polygon.detector.minimumEdgeIntensity = 0;
         AztecCodePreciseDetector<GrayU8> detector = FactoryFiducial.aztec(config, GrayU8.class);
+        detector.setVerbose(System.out, null);
 
         detector.process(gray);
 
@@ -46,7 +58,7 @@ public class Main {
         PackedBits8 paddedBits = PackedBits8.wrap(marker.corrected, marker.messageWordCount*marker.getWordBitCount());
         PackedBits8 bits = new PackedBits8();
         if (!removeExtraBits(marker.getWordBitCount(), marker.messageWordCount, paddedBits, bits)) {
-            System.exit(-2);
+            System.exit(-3);
             return;
         }
 

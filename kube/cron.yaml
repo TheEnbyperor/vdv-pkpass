@@ -16,6 +16,7 @@ spec:
             cni.projectcalico.org/ipv6pools: "[\"default-ipv6-ippool\"]"
           labels:
             app: vdv-pkpass
+            class: cron
             part: db-abo
         spec:
           restartPolicy: OnFailure
@@ -24,6 +25,47 @@ spec:
               image: theenbyperor/vdv-pkpass-django:(version)
               imagePullPolicy: Always
               command: ["sh", "-c", "python3 manage.py update-db-abo"]
+              envFrom:
+                - configMapRef:
+                    name: vdv-pkpass
+                - secretRef:
+                    name: vdv-pkpass-db-creds
+                  prefix: "DB_"
+                - secretRef:
+                    name: vdv-pkpass-email
+                  prefix: "EMAIL_"
+                - secretRef:
+                    name: vdv-pkpass-django-secret
+                - secretRef:
+                    name: vdv-pkpass-s3
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vdv-pkpass-db-saarvv
+  namespace: q-personal
+  labels:
+    app: vdv-pkpass
+    part: db-saarvv
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            cni.projectcalico.org/ipv6pools: "[\"default-ipv6-ippool\"]"
+          labels:
+            app: vdv-pkpass
+            class: cron
+            part: db-saarvv
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: django
+              image: theenbyperor/vdv-pkpass-django:(version)
+              imagePullPolicy: Always
+              command: ["sh", "-c", "python3 manage.py update-saarvv"]
               envFrom:
                 - configMapRef:
                     name: vdv-pkpass
@@ -47,6 +89,6 @@ spec:
   podSelector:
     matchLabels:
       app: vdv-pkpass
-      part: db-abo
+      class: cron
   policyTypes:
     - Ingress

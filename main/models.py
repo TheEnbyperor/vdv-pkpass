@@ -75,6 +75,9 @@ class Ticket(models.Model):
     db_subscription = models.ForeignKey(
         "DBSubscription", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets", verbose_name="DB Subscription"
     )
+    saarvv_account = models.ForeignKey(
+        "Account", on_delete=models.SET_NULL, null=True, blank=True, related_name="saarvv_tickets"
+    )
 
     def __str__(self):
         return f"{self.get_ticket_type_display()} - {self.id}"

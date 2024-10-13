@@ -1,82 +1,21 @@
-import hashlib
 import niquests
-import datetime
-import json
-import hmac
-import urllib3.util
-import secrets
 import typing
-from Crypto.Cipher import AES
+import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.files.storage import storages
 from django.shortcuts import render, redirect
-from .. import forms
-
-VERSION = "3.10.17"
-COMMIT_HASH = "h183ab339"
-EOS_INSTANCE = None
-
-def get_device_id():
-    device_id = secrets.token_hex(16)
-    return hashlib.sha1(device_id.encode()).hexdigest()
-
-
-def get_eos_instance():
-    global EOS_INSTANCE
-
-    if EOS_INSTANCE:
-        return EOS_INSTANCE
-
-    with storages["staticfiles"].open("saarvv/parsed_licenses.lcs", "rb") as f:
-        encrypted_license = f.read()
-
-    encryption_key = hashlib.sha512(f"saarvv{COMMIT_HASH}".encode("utf-8")).hexdigest()[:16].encode("utf-8")
-    cipher = AES.new(encryption_key, AES.MODE_CBC, iv=bytes(16))
-    decrypted_license = cipher.decrypt(encrypted_license)
-    eos_license = json.loads(decrypted_license)
-    eos_instance = eos_license["instances"][0]
-    EOS_INSTANCE = eos_instance
-    return eos_instance
-
-
-def sign_request(request: niquests.PreparedRequest, device_id: str) -> niquests.PreparedRequest:
-    eos = get_eos_instance()
-
-    request.headers["User-Agent"] = (f"{eos['clientName']}/{VERSION}/{eos['mobileServiceAPIVersion']}/"
-                                     f"{eos['identifier']} (VDV PKPass q@magicalcodewit.ch)")
-    request.headers["X-Eos-Date"] = datetime.datetime.now(datetime.UTC).strftime('%a, %d %b %Y %H:%M:%S GMT')
-    request.headers["Device-Identifier"] = device_id
-
-    mac_key = eos["applicationKey"].encode("utf-8")
-    mac1 = hmac.new(mac_key, request.body, "sha512").hexdigest()
-    scheme, auth, host, port, path, query, fragment = urllib3.util.parse_url(request.url)
-    default_port = 443 if scheme == "https" else 80
-    mac2_msg = f"{mac1}|{host}|{port or default_port}|{path}"
-    if query:
-        mac2_msg += f"?{query}"
-    x_eos_date = request.headers.get("X-Eos-Date", "")
-    content_type = request.headers.get("Content-Type", "")
-    authorization = request.headers.get("Authorization", "")
-    x_eos_anonymous = request.headers.get("X-TICKeos-Anonymous", "")
-    x_eos_sso = request.headers.get("X-TICKeos-SSO", "")
-    user_agent = request.headers.get("User-Agent", "")
-    mac2_msg += f"|{x_eos_date}|{content_type}|{authorization}|{x_eos_anonymous}|{x_eos_sso}|{user_agent}"
-    mac2 = hmac.new(mac_key, mac2_msg.encode("utf-8"), "sha512").hexdigest()
-    request.headers["X-Api-Signature"] = mac2
-
-    return request
+from .. import forms, saarvv
 
 
 def login(username: str, password: str) -> typing.Optional[typing.Tuple[str, str]]:
-    device_id = get_device_id()
+    device_id = saarvv.get_device_id()
     r = niquests.post(f"https://saarvv.tickeos.de/index.php/mobileService/login", json={
         "credentials": {
             "password": password,
             "username": username,
         }
     }, hooks={
-        "pre_request": [lambda r: sign_request(r, device_id)],
+        "pre_request": [lambda req: saarvv.sign_request(req, device_id)],
     })
     if r.status_code != 200:
         return None
@@ -102,7 +41,8 @@ def saarvv_login(request):
                 request.user.account.saarvv_token = token
                 request.user.account.saarvv_device_id = device_id
                 request.user.account.save()
-                return redirect("account")
+                saarvv.update_saarvv_tickets(request.user.account)
+                return redirect("saarvv_account")
     else:
         form = forms.SaarVVLoginForm()
 
@@ -118,3 +58,33 @@ def saarvv_logout(request):
     request.user.account.save()
     messages.add_message(request, messages.SUCCESS, "Successfully logged out")
     return redirect("account")
+
+
+def map_customer_field(f):
+    if f["content"]["type"] == "choice":
+        return next(filter(lambda c: c["key"] == f["content"]["default"], f["content"]["choices"]))["value"]
+    elif f["content"]["type"] == "text":
+        return f["content"].get("default")
+    elif f["content"]["type"] == "date":
+        return datetime.date.fromisoformat(f["content"]["default"])
+
+
+@login_required
+def saarvv_account(request):
+    if not request.user.account.saarvv_token:
+        return redirect("saarvv_login")
+
+    r = niquests.post(f"https://saarvv.tickeos.de/index.php/mobileService/customer/fields", json={}, hooks={
+        "pre_request": [lambda req: saarvv.sign_request(req, request.user.account.saarvv_device_id)],
+    }, headers={
+        "Authorization": request.user.account.saarvv_token
+    })
+    r.raise_for_status()
+    data = r.json()
+
+    fields = {f["name"]: map_customer_field(f) for b in data["layout_blocks"] for f in b["fields"]}
+
+    return render(request, "main/account/saarvv.html", {
+        "fields": fields,
+        "tickets": request.user.account.saarvv_tickets,
+    })

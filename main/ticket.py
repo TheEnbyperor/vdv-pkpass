@@ -4,8 +4,8 @@ import traceback
 import typing
 import datetime
 import Crypto.Hash.TupleHash128
-
-from . import models, vdv, uic, templatetags
+from django.utils import timezone
+from . import models, vdv, uic, templatetags, apn
 
 
 class TicketError(Exception):
@@ -526,3 +526,31 @@ def create_ticket_obj(
             }
         )
     return created
+
+def update_from_subscription_barcode(barcode_data: bytes, account: typing.Optional["models.Account"]) -> "models.Ticket":
+    decoded_ticket = parse_ticket(barcode_data, account=account)
+
+    should_update = False
+    ticket_pk = decoded_ticket.pk()
+    ticket_obj = models.Ticket.objects.filter(pk=ticket_pk).first()
+    if not ticket_obj:
+        should_update = True
+        ticket_obj = models.Ticket.objects.create(
+            pk=ticket_pk,
+            last_updated=timezone.now(),
+            account=account,
+        )
+
+    ticket_obj.ticket_type = decoded_ticket.type()
+    if create_ticket_obj(ticket_obj, barcode_data, decoded_ticket):
+        should_update = True
+
+    if should_update:
+        ticket_obj.last_updated = timezone.now()
+
+    ticket_obj.save()
+
+    if should_update:
+        apn.notify_ticket(ticket_obj)
+
+    return ticket_obj

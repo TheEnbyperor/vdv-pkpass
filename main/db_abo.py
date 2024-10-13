@@ -5,7 +5,6 @@ import datetime
 import logging
 import bs4
 from django.utils import timezone
-from urllib3 import request
 
 from . import models, aztec, ticket, apn
 
@@ -17,9 +16,14 @@ def update_all():
     for abo in models.DBSubscription.objects.all():
         if abo.refresh_at <= now:
             update_abo_tickets(abo)
+        else:
+            logging.info(f"Not updating DB subscription {abo.device_token} - not due for refresh")
+
+        for t in abo.tickets.all():
+            apn.notify_ticket_if_renewed(t)
 
 
-def update_abo_tickets(abo: models):
+def update_abo_tickets(abo: models.DBSubscription):
     r = niquests.post("https://dig-aboprod.noncd.db.de/aboticket/refreshmultiple", json={
         "aboTicketCheckRequestList": [{
             "deviceToken": abo.device_token,
@@ -73,31 +77,11 @@ def update_abo_tickets(abo: models):
             continue
 
         try:
-            decoded_ticket = ticket.parse_ticket(barcode_data, account=abo.account)
+            ticket_obj = ticket.update_from_subscription_barcode(barcode_data, account=abo.account)
+            ticket_obj.db_subscription = abo
+            ticket_obj.save()
         except ticket.TicketError as e:
             logger.error("Error decoding barcode ticket: %s", e)
             continue
 
-        should_update = False
-        ticket_pk = decoded_ticket.pk()
-        ticket_obj = models.Ticket.objects.filter(pk=ticket_pk).first()
-        if not ticket_obj:
-            should_update = True
-            ticket_obj = models.Ticket.objects.create(
-                pk=ticket_pk,
-                last_updated=timezone.now(),
-                account=abo.account,
-            )
-
-        ticket_obj.ticket_type = decoded_ticket.type()
-        ticket_obj.db_subscription = abo
-        if ticket.create_ticket_obj(ticket_obj, barcode_data, decoded_ticket):
-            should_update = True
-
-        if should_update:
-            ticket_obj.last_updated = timezone.now()
-
-        ticket_obj.save()
-
-        if should_update:
-            apn.notify_ticket(ticket_obj)
+    logging.info(f"Successfully updated DB subscription {abo.device_token}")

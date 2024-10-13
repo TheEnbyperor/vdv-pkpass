@@ -1,0 +1,50 @@
+{% extends "main/base.html" %}
+{% load static crispy_forms_tags rics %}
+
+{% block title %}SaarVV Account - VDV to Apple Wallet{% endblock title %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">SaarVV Account</h1>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Salutation</dt>
+                <dd class="govuk-summary-list__value">{{ fields.salutation }}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Forename</dt>
+                <dd class="govuk-summary-list__value">{{ fields.first_name }}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Surname</dt>
+                <dd class="govuk-summary-list__value">{{ fields.last_name }}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Birthday</dt>
+                <dd class="govuk-summary-list__value">{{ fields.birthday|date:"F d, Y" }}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Address</dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">
+                        {{ fields.street }} {{ fields.street_number }}<br/>
+                        {{ fields.postal_code }}, {{ fields.city }}<br/>
+                        {{ fields.country }}
+                    </p>
+                </dd>
+            </div>
+        </dl>
+        <h2 class="govuk-heading-l">Tickets</h2>
+        {% if tickets.count %}
+            <ul class="govuk-list govuk-list--spaced">
+                {% for ticket in tickets.all %}
+                    <li>
+                        <a href="{% url 'ticket' ticket.pk %}" class="govuk-link">#{{ ticket.public_id }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="govuk-body">No tickets</p>
+        {% endif %}
+    </div>
+{% endblock %}

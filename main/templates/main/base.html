@@ -46,7 +46,7 @@
                             </a>
                         </li>
                         {% if user.is_authenticated %}
-                            <li class="govuk-service-navigation__item{% if url_name == 'account' or url_name == 'db_account' or url_name == 'db_abo' or url_name == 'new_db_abo' %} govuk-service-navigation__item--active{% endif %}">
+                            <li class="govuk-service-navigation__item{% if url_name == 'account' or url_name == 'db_account' or url_name == 'db_abo' or url_name == 'new_db_abo' or url_name == 'saarvv_account' %} govuk-service-navigation__item--active{% endif %}">
                                 <a class="govuk-service-navigation__link" href="{% url 'account' %}">
                                     Account
                                 </a>
@@ -68,7 +68,7 @@
                     </ul>
                 </nav>
             </div>
-            {% if url_name == 'account' or url_name == 'db_account' or url_name == 'db_abo' or url_name == 'new_db_abo' %}
+            {% if url_name == 'account' or url_name == 'db_account' or url_name == 'db_abo' or url_name == 'new_db_abo' or url_name == 'saarvv_account' %}
                 <div class="govuk-service-navigation__container">
                     <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
                         <button type="button"
@@ -95,8 +95,8 @@
                                 </a>
                             </li>
                             {% if user.is_authenticated and user.account.is_saarvv_authenticated %}
-                                <li class="govuk-service-navigation__item">
-                                    <a class="govuk-service-navigation__link" href="#">
+                                <li class="govuk-service-navigation__item{% if url_name == 'saarvv_account' %} govuk-service-navigation__item--active{% endif %}">
+                                    <a class="govuk-service-navigation__link" href="{% url 'saarvv_account' %}">
                                         SaarVV Account
                                     </a>
                                 </li>

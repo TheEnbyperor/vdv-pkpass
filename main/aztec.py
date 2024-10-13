@@ -1,5 +1,8 @@
 import subprocess
+import zxingcpp
 import enum
+import PIL.Image
+import io
 from django.conf import settings
 
 
@@ -40,7 +43,7 @@ DIGIT_TABLE = [
     'CTRL_PS', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', '.', 'CTRL_UL', 'CTRL_US'
 ]
 
-def decode(data: bytes) -> bytes:
+def decode_boofcv(data: bytes) -> bytes:
     try:
         p = subprocess.Popen(
             ["java", "-jar", settings.AZTEC_JAR_PATH],
@@ -71,6 +74,19 @@ def decode(data: bytes) -> bytes:
             bits.append(False)
 
     return get_encoded_data_from_bits(bits, num_bits)
+
+def decode_zxing(data: bytes) -> bytes:
+    img = PIL.Image.open(io.BytesIO(data))
+    code = zxingcpp.read_barcode(img, zxingcpp.Aztec)
+    if not code:
+        raise AztecError("Failed to decode Aztec")
+    return code.bytes
+
+def decode(data: bytes) -> bytes:
+    try:
+        return decode_boofcv(data)
+    except AztecError as e:
+        return decode_zxing(data)
 
 
 def get_encoded_data_from_bits(corrected_bits, end_index):

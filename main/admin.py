@@ -60,7 +60,13 @@ class AppleDeviceAdmin(admin.ModelAdmin):
 @admin.register(models.Account)
 class AccountAdmin(admin.ModelAdmin):
     readonly_fields = [
-        "db_token"
+        "user",
+        "db_token",
+        "db_token_expires_at",
+        "db_refresh_token",
+        "db_token_expires_at",
+        "saarvv_token",
+        "saarvv_device_id",
     ]
 
 
