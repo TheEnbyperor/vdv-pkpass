@@ -8,7 +8,7 @@ from .. import forms, models, db_abo
 
 @login_required
 def view_db_abo(request):
-    subscriptions = models.DBSubscription.objects.all()
+    subscriptions = models.DBSubscription.objects.filter(account=request.user.account)
 
     return render(request, "main/account/db_abo.html", {
         "subscriptions": subscriptions
