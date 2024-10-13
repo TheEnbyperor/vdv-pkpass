@@ -15,4 +15,4 @@ def plai_width(fields: typing.List) -> int:
 
 @register.filter(name="plai_height")
 def plai_height(fields: typing.List) -> int:
-    return max([f.row + f.height for f in fields])
+    return max([f.line + f.height for f in fields])
