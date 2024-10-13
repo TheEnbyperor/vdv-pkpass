@@ -398,6 +398,9 @@ def make_pkpass(ticket_obj: models.Ticket):
                         })
 
                 elif document_type == "pass":
+                    validity_start = templatetags.rics.rics_valid_from(document, issued_at)
+                    validity_end = templatetags.rics.rics_valid_until(document, issued_at)
+
                     if "passType" in document:
                         if document["passType"] == 1:
                             product_name = "Eurail Global Pass"
@@ -422,6 +425,36 @@ def make_pkpass(ticket_obj: models.Ticket):
                             "label": "product-label",
                             "value": product_name
                         })
+
+                    pass_fields["secondaryFields"].append({
+                        "key": "validity-start",
+                        "label": "validity-start-label",
+                        "dateStyle": "PKDateStyleMedium",
+                        "timeStyle": "PKDateStyleNone",
+                        "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    })
+                    pass_fields["secondaryFields"].append({
+                        "key": "validity-end",
+                        "label": "validity-end-label",
+                        "dateStyle": "PKDateStyleMedium",
+                        "timeStyle": "PKDateStyleNone",
+                        "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        "changeMessage": "validity-end-change"
+                    })
+                    pass_fields["backFields"].append({
+                        "key": "validity-start-back",
+                        "label": "validity-start-label",
+                        "dateStyle": "PKDateStyleFull",
+                        "timeStyle": "PKDateStyleFull",
+                        "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    })
+                    pass_fields["backFields"].append({
+                        "key": "validity-end-back",
+                        "label": "validity-end-label",
+                        "dateStyle": "PKDateStyleFull",
+                        "timeStyle": "PKDateStyleFull",
+                        "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    })
 
             if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
                 passenger = ticket_data.flex.data["travelerDetail"]["traveler"][0]

@@ -522,6 +522,9 @@ def create_ticket_obj(
                 if docs[0]["ticket"][0] == "openTicket":
                     validity_start = templatetags.rics.rics_valid_from(docs[0]["ticket"][1], ticket_data.issuing_time())
                     validity_end = templatetags.rics.rics_valid_until(docs[0]["ticket"][1], ticket_data.issuing_time())
+                elif docs[0]["ticket"][0] == "pass":
+                    validity_start = templatetags.rics.rics_valid_from(docs[0]["ticket"][1], ticket_data.issuing_time())
+                    validity_end = templatetags.rics.rics_valid_until(docs[0]["ticket"][1], ticket_data.issuing_time())
 
         _, created = models.UICTicketInstance.objects.update_or_create(
             reference=ticket_data.ticket_id(),
