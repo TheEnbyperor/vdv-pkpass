@@ -113,7 +113,10 @@ class VDVTicketInstance(models.Model):
             issuing_ca=dacite.from_dict(data_class=vdv.CertificateData, data=self.decoded_data["issuing_ca"], config=config),
             envelope_certificate=dacite.from_dict(data_class=vdv.CertificateData, data=self.decoded_data["envelope_certificate"], config=config),
             raw_ticket=raw_ticket,
-            ticket=vdv.VDVTicket.parse(raw_ticket)
+            ticket=vdv.VDVTicket.parse(raw_ticket, vdv.ticket.Context(
+                account_forename=self.ticket.account.user.first_name if self.ticket.account else None,
+                account_surname=self.ticket.account.user.last_name if self.ticket.account else None,
+            ))
         )
 
 

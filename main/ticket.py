@@ -201,7 +201,7 @@ class UICTicket:
             return False
 
 
-def parse_ticket_vdv(ticket_bytes: bytes) -> VDVTicket:
+def parse_ticket_vdv(ticket_bytes: bytes, context: vdv.ticket.Context) -> VDVTicket:
     pki_store = vdv.CertificateStore()
     try:
         pki_store.load_certificates()
@@ -363,7 +363,7 @@ def parse_ticket_vdv(ticket_bytes: bytes) -> VDVTicket:
         )
 
     try:
-        ticket = vdv.VDVTicket.parse(ticket_data)
+        ticket = vdv.VDVTicket.parse(ticket_data, context)
     except vdv.util.VDVException:
         raise TicketError(
             title="Unable to parse ticket",
@@ -457,11 +457,14 @@ def parse_ticket_uic(ticket_bytes: bytes) -> UICTicket:
         other_records=[r for r in ticket_envelope.records if not r.id.startswith("U_")]
     )
 
-def parse_ticket(ticket_bytes: bytes) -> typing.Union[VDVTicket, UICTicket]:
+def parse_ticket(ticket_bytes: bytes, account: typing.Optional["models.Account"]) -> typing.Union[VDVTicket, UICTicket]:
     if ticket_bytes[:3] == b"#UT":
         return parse_ticket_uic(ticket_bytes)
     else:
-        return parse_ticket_vdv(ticket_bytes)
+        return parse_ticket_vdv(ticket_bytes, vdv.ticket.Context(
+            account_forename=account.user.first_name if account else None,
+            account_surname=account.user.last_name if account else None,
+        ))
 
 
 def to_dict_json(elements: typing.List[typing.Tuple[str, typing.Any]]) -> dict:

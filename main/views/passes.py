@@ -39,7 +39,7 @@ def index(request):
 
     if ticket_bytes:
         try:
-            ticket_data = ticket.parse_ticket(ticket_bytes)
+            ticket_data = ticket.parse_ticket(ticket_bytes, request.user.account if request.user.is_authenticated else None)
         except ticket.TicketError as e:
             error = {
                 "title": e.title,

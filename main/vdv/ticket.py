@@ -8,6 +8,12 @@ from . import util, org_id
 NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w*)(?P<len>\d+)(?P<end>\w*)$")
 
 @dataclasses.dataclass
+class Context:
+    account_forename: typing.Optional[str]
+    account_surname: typing.Optional[str]
+
+
+@dataclasses.dataclass
 class VDVTicket:
     version: str
     ticket_id: int
@@ -74,7 +80,7 @@ class VDVTicket:
         return out
 
     @classmethod
-    def parse(cls, data: bytes):
+    def parse(cls, data: bytes, context: Context) -> "VDVTicket":
         if len(data) < 111:
             raise util.VDVException("Invalid VDV ticket length")
 
@@ -135,14 +141,14 @@ class VDVTicket:
             sam_version=ticket_issue_data[4],
             sam_sequence_number_2=int.from_bytes(ticket_issue_data[5:9], 'big'),
             sam_id=int.from_bytes(ticket_issue_data[9:12], 'big'),
-            product_data=list(map(cls.parse_product_data_element, product_data)),
+            product_data=list(map(lambda e: cls.parse_product_data_element(e, context), product_data)),
             product_transaction_data=product_transaction_data
         )
 
     @staticmethod
-    def parse_product_data_element(elm):
+    def parse_product_data_element(elm, context: Context) -> typing.Any:
         if elm[0] == 0xDB:
-            return PassengerData.parse(elm[1])
+            return PassengerData.parse(elm[1], context)
         elif elm[0] == 0xDC:
             return SpacialValidity.parse(elm[1])
         else:
@@ -216,7 +222,7 @@ class PassengerData:
         return f"Passenger: forename={self.forename}, surname={self.surname}, date_of_birth={self.date_of_birth}, gender={self.gender}"
 
     @classmethod
-    def parse(cls, data: bytes):
+    def parse(cls, data: bytes, context: Context) -> "PassengerData":
         if len(data) < 5:
             raise util.VDVException("Invalid passenger data element")
 
@@ -224,6 +230,10 @@ class PassengerData:
         forename = ""
         if "#" in name:
             forename, surname = name.split("#", 1)
+            if context.account_forename and forename.startswith(context.account_forename):
+                forename = context.account_forename
+            if context.account_surname and surname.startswith(context.account_surname):
+                surname = context.account_surname
         elif "@" in name:
             forename, surname = name.split("@", 1)
             if forename_match := NAME_TYPE_1_RE.fullmatch(forename):
@@ -231,11 +241,21 @@ class PassengerData:
                 forename_end = forename_match.group("end")
                 forename_len = int(forename_match.group("len"))
                 forename = f"{forename_start}{'_'*forename_len}{forename_end}"
+                if context.account_forename and len(context.account_forename) == \
+                    forename_len + len(forename_start) + len(forename_end):
+                    if context.account_forename.startswith(forename_start) and \
+                            context.account_forename.endswith(forename_end):
+                        forename = context.account_forename
             if surname_match := NAME_TYPE_1_RE.fullmatch(surname):
                 surname_start = surname_match.group("start")
                 surname_end = surname_match.group("end")
                 surname_len = int(surname_match.group("len"))
                 surname = f"{surname_start}{'_'*surname_len}{surname_end}"
+                if context.account_surname and len(context.account_surname) == \
+                    surname_len + len(surname_start) + len(surname_end):
+                    if context.account_surname.startswith(surname_start) and \
+                            context.account_surname.endswith(surname_end):
+                        surname = context.account_surname
         else:
             surname = name
 
