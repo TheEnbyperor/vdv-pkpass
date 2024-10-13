@@ -234,9 +234,9 @@ class PassengerData:
         original_surname = None
         if "#" in name:
             forename, surname = name.split("#", 1)
-            if context.account_forename and forename.startswith(context.account_forename):
+            if context.account_forename and context.account_forename.startswith(forename):
                 forename = context.account_forename
-            if context.account_surname and surname.startswith(context.account_surname):
+            if context.account_surname and context.account_surname.startswith(surname):
                 surname = context.account_surname
         elif "@" in name:
             forename, surname = name.split("@", 1)
