@@ -1,4 +1,4 @@
-{% load rics %}
+{% load rics plai %}
 <h2 class="govuk-heading-m">Paper ticket</h2>
 {% if layout.standard == "RCT2" %}
     <div class="paper-ticket-container">
@@ -42,10 +42,10 @@
 {% elif layout.standard == "PLAI" %}
     <div class="paper-ticket-container">
         <div class="paper-ticket">
-            <div class="plai-ticket-inner">
+            <div class="plai-ticket-inner" style="width: {{ layout.fields|plai_width }}ch;height: {{ layout.fields|plai_height }}">
                 {% for field in layout.fields %}
                     <span class="paper-ticket-field{% if field.formatting.bold %} paper-ticket-field-bold{% endif %}{% if field.formatting.italic %} paper-ticket-field-italic{% endif %}{% if field.formatting.small_font %} paper-ticket-field-small-font{% endif %}"
-                          style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;{% if not field.text|rics_already_newlined %}width: {{ field.width }}ch;{% endif %}">{{ field.text }}</span>
+                          style="top:{{ field.line }}em;left: {{ field.column }}ch;height: {{ field.height }}em;width: {{ field.width }}ch;">{{ field.text }}</span>
                 {% endfor %}
             </div>
         </div>
