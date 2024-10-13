@@ -34,7 +34,6 @@ public class Main {
 
         ConfigAztecCode config = new ConfigAztecCode();
         AztecCodePreciseDetector<GrayU8> detector = FactoryFiducial.aztec(config, GrayU8.class);
-        detector.setVerbose(System.out, null);
 
         detector.process(gray);
 
