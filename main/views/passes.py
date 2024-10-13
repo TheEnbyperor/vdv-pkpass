@@ -155,7 +155,7 @@ def make_pkpass(ticket_obj: models.Ticket):
         if ticket_data.flex:
             pass_json["voided"] = not ticket_data.flex.data["issuingDetail"]["activated"]
 
-            if not have_logo and ticket_data.flex.data["issuingDetail"].get("issuerName") in UIC_NAME_LOGO:
+            if ticket_data.flex.data["issuingDetail"].get("issuerName") in UIC_NAME_LOGO:
                 add_pkp_img(pkp, UIC_NAME_LOGO[ticket_data.flex.data["issuingDetail"]["issuerName"]], "logo.png")
                 have_logo = True
 
