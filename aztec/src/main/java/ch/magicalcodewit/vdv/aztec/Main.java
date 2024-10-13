@@ -33,15 +33,6 @@ public class Main {
         GrayU8 gray = ConvertBufferedImage.convertFrom(input, (GrayU8) null);
 
         ConfigAztecCode config = new ConfigAztecCode();
-        config.considerTransposed = true;
-        config.maxOrientationError = 16;
-        config.polygon = new ConfigPolygonDetector();
-        config.polygon.refineContour = true;
-        config.polygon.adjustForThresholdBias = true;
-        config.polygon.minimumRefineEdgeIntensity = 0;
-        config.polygon.detector = new ConfigPolygonFromContour();
-        config.polygon.detector.canTouchBorder = true;
-        config.polygon.detector.minimumEdgeIntensity = 0;
         AztecCodePreciseDetector<GrayU8> detector = FactoryFiducial.aztec(config, GrayU8.class);
         detector.setVerbose(System.out, null);
 
