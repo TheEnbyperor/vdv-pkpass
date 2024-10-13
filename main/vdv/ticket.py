@@ -216,7 +216,9 @@ class PassengerData:
     gender: Gender
     date_of_birth: util.Date
     forename: str
+    original_forename: typing.Optional[str]
     surname: str
+    original_surname: typing.Optional[str]
 
     def __str__(self):
         return f"Passenger: forename={self.forename}, surname={self.surname}, date_of_birth={self.date_of_birth}, gender={self.gender}"
@@ -228,6 +230,8 @@ class PassengerData:
 
         name = data[5:].decode("iso-8859-1", "replace")
         forename = ""
+        original_forename = None
+        original_surname = None
         if "#" in name:
             forename, surname = name.split("#", 1)
             if context.account_forename and forename.startswith(context.account_forename):
@@ -245,6 +249,7 @@ class PassengerData:
                     forename_len + len(forename_start) + len(forename_end):
                     if context.account_forename.startswith(forename_start) and \
                             context.account_forename.endswith(forename_end):
+                        original_forename = forename
                         forename = context.account_forename
             if surname_match := NAME_TYPE_1_RE.fullmatch(surname):
                 surname_start = surname_match.group("start")
@@ -255,6 +260,7 @@ class PassengerData:
                     surname_len + len(surname_start) + len(surname_end):
                     if context.account_surname.startswith(surname_start) and \
                             context.account_surname.endswith(surname_end):
+                        original_surname = surname
                         surname = context.account_surname
         else:
             surname = name
@@ -263,7 +269,9 @@ class PassengerData:
             gender=Gender(data[0]),
             date_of_birth=util.Date.from_bytes(data[1:5]),
             forename=forename,
-            surname=surname
+            surname=surname,
+            original_forename=original_forename,
+            original_surname=original_surname
         )
 
 @dataclasses.dataclass
