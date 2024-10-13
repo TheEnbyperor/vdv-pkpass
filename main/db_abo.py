@@ -40,18 +40,22 @@ def update_abo_tickets(abo: models):
     for t in tickets["tickets"]:
         ticket_data = base64.urlsafe_b64decode(t["payload"] + '==')
         ticket_data = json.loads(ticket_data.decode('utf-8'))
-        ticket_layout = bs4.BeautifulSoup(ticket_data["ticketLayoutTemplate"], 'html.parser')
-        barcode_elm = ticket_layout.find("nativeimg", attrs={
-            "id": "ticketbarcode"
-        }, recursive=True)
-        if not barcode_elm:
-            logger.error("Could not find barcode element")
-            continue
-        barcode_img = barcode_elm.attrs["src"]
-        if not barcode_img.startswith("data:"):
+        if "barcode" in ticket_data:
+            barcode_url = ticket_data["barcode"]
+        else:
+            ticket_layout = bs4.BeautifulSoup(ticket_data["ticketLayoutTemplate"], 'html.parser')
+            barcode_elm = ticket_layout.find("nativeimg", attrs={
+                "id": "ticketbarcode"
+            }, recursive=True)
+            if not barcode_elm:
+                logger.error("Could not find barcode element")
+                continue
+            barcode_url = barcode_elm.attrs["src"]
+
+        if not barcode_url.startswith("data:"):
             logger.error("Barcode image not a data URL")
             continue
-        media_type, data = barcode_img[5:].split(";", 1)
+        media_type, data = barcode_url[5:].split(";", 1)
         encoding, data = data.split(",", 1)
         if not media_type.startswith("image/"):
             logger.error("Unsupported media type '%s'", media_type)
