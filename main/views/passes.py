@@ -155,6 +155,10 @@ def make_pkpass(ticket_obj: models.Ticket):
         if ticket_data.flex:
             pass_json["voided"] = not ticket_data.flex.data["issuingDetail"]["activated"]
 
+            if not have_logo and ticket_data.flex.data["issuingDetail"].get("issuerName") in UIC_NAME_LOGO:
+                add_pkp_img(pkp, UIC_NAME_LOGO[ticket_data.flex.data["issuingDetail"]["issuerName"]], "logo.png")
+                have_logo = True
+
             if len(ticket_data.flex.data["transportDocument"]) >= 1:
                 document_type, document = ticket_data.flex.data["transportDocument"][0]["ticket"]
                 if document_type == "openTicket":
@@ -394,24 +398,30 @@ def make_pkpass(ticket_obj: models.Ticket):
                         })
 
                 elif document_type == "pass":
-                    if document["passType"] == 1:
-                        product_name = "Eurail Global Pass"
-                    elif document["passType"] == 2:
-                        product_name = "Interrail Global Pass"
-                    elif document["passType"] == 3:
-                        product_name = "Interrail One Country Pass"
-                    elif document["passType"] == 4:
-                        product_name = "Eurail One Country Pass"
-                    elif document["passType"] == 5:
-                        product_name = "Eurail/Interrail Emergency ticket"
+                    if "passType" in document:
+                        if document["passType"] == 1:
+                            product_name = "Eurail Global Pass"
+                        elif document["passType"] == 2:
+                            product_name = "Interrail Global Pass"
+                        elif document["passType"] == 3:
+                            product_name = "Interrail One Country Pass"
+                        elif document["passType"] == 4:
+                            product_name = "Eurail One Country Pass"
+                        elif document["passType"] == 5:
+                            product_name = "Eurail/Interrail Emergency ticket"
+                        else:
+                            product_name = f"Pass type {document['passType']}"
+                    elif "passDescription" in document:
+                        product_name = document["passDescription"]
                     else:
-                        product_name = f"Pass type {document['passType']}"
+                        product_name = None
 
-                    pass_fields["headerFields"].append({
-                        "key": "product",
-                        "label": "product-label",
-                        "value": product_name
-                    })
+                    if product_name:
+                        pass_fields["headerFields"].append({
+                            "key": "product",
+                            "label": "product-label",
+                            "value": product_name
+                        })
 
             if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
                 passenger = ticket_data.flex.data["travelerDetail"]["traveler"][0]
@@ -702,6 +712,10 @@ RICS_LOGO = {
     1186: "pass/logo-dsb.png",
     1251: "pass/logo-pkp-ic.png",
     9901: "pass/logo-interrail.png",
+}
+
+UIC_NAME_LOGO = {
+    "BMK": "pass/logo-kt.png",
 }
 
 VDV_ORG_ID_LOGO = {

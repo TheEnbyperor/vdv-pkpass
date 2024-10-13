@@ -52,6 +52,7 @@ def create_user_profile(instance, created, **kwargs):
 
 class Ticket(models.Model):
     TYPE_DEUTCHLANDTICKET = "deutschlandticket"
+    TYPE_KLIMATICKET = "deutschlandticket"
     TYPE_BAHNCARD = "bahncard"
     TYPE_FAHRKARTE = "fahrkarte"
     TYPE_RESERVIERUNG = "reservierung"
@@ -60,6 +61,7 @@ class Ticket(models.Model):
 
     TICKET_TYPES = (
         (TYPE_DEUTCHLANDTICKET, "Deutschlandticket"),
+        (TYPE_KLIMATICKET, "Klimaticket"),
         (TYPE_BAHNCARD, "Bahncard"),
         (TYPE_FAHRKARTE, "Fahrkarte"),
         (TYPE_RESERVIERUNG, "Reservierung"),

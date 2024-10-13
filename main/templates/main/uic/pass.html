@@ -32,6 +32,12 @@
             </dd>
         </div>
     {% endif %}
+    {% if pass.passDescription %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Description</dt>
+            <dd class="govuk-summary-list__value">{{ pass.passDescription }}</dd>
+        </div>
+    {% endif %}
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Valid from</dt>
         <dd class="govuk-summary-list__value">
@@ -44,6 +50,12 @@
             {{ pass|rics_valid_until:flex.issuing_time|utc|date:"F d, Y H:i" }} UTC
         </dd>
     </div>
+    {% if pass.classCode %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Travel class</dt>
+            <dd class="govuk-summary-list__value"><code>{{ pass.classCode }}</code></dd>
+        </div>
+    {% endif %}
     {% if pass.countries %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Countries</dt>
@@ -56,5 +68,5 @@
             </dd>
         </div>
     {% endif %}
-    {% include "main/uic/extension.html" with obj=card %}
+    {% include "main/uic/extension.html" with obj=pass %}
 </dl>

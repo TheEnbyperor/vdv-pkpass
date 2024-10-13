@@ -37,6 +37,11 @@
                 </div>
             {% endif %}
         {% endwith %}
+    {% elif flex.data.issuingDetail.issuerName %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Issuer</dt>
+            <dd class="govuk-summary-list__value">{{ flex.data.issuingDetail.issuerName }}</dd>
+        </div>
     {% endif %}
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Issuing time</dt>
@@ -143,5 +148,15 @@
             </div>
         {% endfor %}
     {% endif %}
+    {% include "main/uic/extension.html" with obj=flex.data %}
     </div>
 </dl>
+
+<details class="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">Raw data</span>
+    </summary>
+    <div class="govuk-details__text">
+        <pre>{{ flex|pprint }}</pre>
+    </div>
+</details>

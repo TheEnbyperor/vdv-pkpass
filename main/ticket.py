@@ -76,6 +76,7 @@ class UICTicket:
     def type(self) -> str:
         if self.flex:
             issuer_num = self.flex.data["issuingDetail"].get("issuerNum")
+            issuer_name = self.flex.data["issuingDetail"].get("issuerName")
             if len(self.flex.data.get("transportDocument", [])) >= 1:
                 ticket_type, ticket = self.flex.data["transportDocument"][0]["ticket"]
                 if ticket_type == "openTicket":
@@ -96,6 +97,8 @@ class UICTicket:
                 elif ticket_type == "pass":
                     if issuer_num == 9901:
                         return models.Ticket.TYPE_INTERRAIL
+                    elif issuer_name == "BMK":
+                        return models.Ticket.TYPE_KLIMATICKET
                 elif ticket_type == "customerCard":
                     return models.Ticket.TYPE_BAHNCARD
                 elif ticket_type == "reservation":
@@ -157,6 +160,15 @@ class UICTicket:
                 hd.update(interrail_pass["referenceIA5"].encode("utf-8"))
             else:
                 hd.update(str(interrail_pass.get("referenceNum", 0)).encode("utf-8"))
+            return base64.b32hexencode(hd.digest()).decode("utf-8")
+
+        elif ticket_type == models.Ticket.TYPE_KLIMATICKET:
+            klimaticket_pass = self.flex.data["transportDocument"][0]["ticket"][1]
+            hd.update(b"klimaticket")
+            if "referenceIA5" in klimaticket_pass:
+                hd.update(klimaticket_pass["referenceIA5"].encode("utf-8"))
+            else:
+                hd.update(str(klimaticket_pass.get("referenceNum", 0)).encode("utf-8"))
             return base64.b32hexencode(hd.digest()).decode("utf-8")
 
         else:
