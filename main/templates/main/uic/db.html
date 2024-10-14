@@ -1,0 +1,111 @@
+{% load tz rics %}
+<h2 class="govuk-heading-m">Deutsche Bahn data</h2>
+<dl class="govuk-summary-list">
+    {% if db.product %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Product</dt>
+            <dd class="govuk-summary-list__value">{{ db.product }}</dd>
+        </div>
+    {% endif %}
+    {% if db.validity_start %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Validity start</dt>
+            <dd class="govuk-summary-list__value">{{ db.validity_start|date:"F d, Y" }}</dd>
+        </div>
+    {% endif %}
+    {% if db.validity_end %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Validity end</dt>
+            <dd class="govuk-summary-list__value">{{ db.validity_end|date:"F d, Y" }}</dd>
+        </div>
+    {% endif %}
+    {% if db.from_station_uic %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">From station number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ db.from_station_uic }}</code></dd>
+        </div>
+    {% endif %}
+    {% if db.from_station_name %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">From station name</dt>
+            <dd class="govuk-summary-list__value">{{ db.from_station_name }}</dd>
+        </div>
+    {% endif %}
+    {% with station=db.from_station_uic|get_station:"db" %}
+        {% if station %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">From station</dt>
+                <dd class="govuk-summary-list__value">
+                    {% include "main/uic/station.html" with station=station %}
+                </dd>
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% if db.to_station_uic %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">To station number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ db.to_station_uic }}</code>
+            </dd>
+        </div>
+    {% endif %}
+    {% if db.to_station_name %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">To station name</dt>
+            <dd class="govuk-summary-list__value">{{ db.to_station_name }}</dd>
+        </div>
+    {% endif %}
+    {% with station=db.to_station_uic|get_station:"db" %}
+        {% if station %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">To station</dt>
+                <dd class="govuk-summary-list__value">
+                    {% include "main/uic/station.html" with station=station %}
+                </dd>
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% if db.route %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Route</dt>
+            <dd class="govuk-summary-list__value">{{ db.route }}</dd>
+        </div>
+    {% endif %}
+    {% if db.traveller_forename or db.traveller_surname %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Traveler</dt>
+            <dd class="govuk-summary-list__value">
+                <dl class="govuk-summary-list">
+                    {% if db.traveller_forename %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Forename</dt>
+                            <dd class="govuk-summary-list__value">{{ db.traveller_forename }}</dd>
+                        </div>
+                    {% endif %}
+                    {% if db.traveller_surname %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Surname</dt>
+                            <dd class="govuk-summary-list__value">{{ db.traveller_surname }}</dd>
+                        </div>
+                    {% endif %}
+                </dl>
+            </dd>
+        </div>
+    {% endif %}
+    {% if db.other_blocks %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Unknown blocks</dt>
+            <dd class="govuk-summary-list__value">
+                {% for block_id, value in db.other_blocks.items %}
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">Block <code>{{ block_id }}</code></h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <code>{{ value }}</code>
+                        </div>
+                    </div>
+                {% endfor %}
+            </dd>
+        </div>
+    {% endif %}
+</dl>

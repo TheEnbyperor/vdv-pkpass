@@ -127,7 +127,7 @@ def registration(request, device_id, ticket_obj):
 @condition(last_modified_func=ticket_updated_date)
 @check_pass_auth
 def pass_document(_, ticket_obj):
-    return views.make_pkpass(ticket_obj)
+    return views.passes.make_pkpass(ticket_obj)
 
 
 @csrf_exempt

@@ -67,6 +67,7 @@ class UICTicket:
     head: uic.HeadV1
     layout: typing.Optional[uic.LayoutV1]
     flex: typing.Optional[uic.Flex]
+    db_bl: typing.Optional[uic.db.DBRecordBL]
     other_records: typing.List[uic.envelope.Record]
 
     @property
@@ -103,6 +104,8 @@ class UICTicket:
                     return models.Ticket.TYPE_BAHNCARD
                 elif ticket_type == "reservation":
                     return models.Ticket.TYPE_RESERVIERUNG
+        elif self.db_bl:
+            return models.Ticket.TYPE_FAHRKARTE
 
         return models.Ticket.TYPE_UNKNOWN
 
@@ -134,13 +137,17 @@ class UICTicket:
             return base64.b32hexencode(hd.digest()).decode("utf-8")
 
         elif ticket_type == models.Ticket.TYPE_FAHRKARTE:
-            ticket = self.flex.data["transportDocument"][0]["ticket"][1]
             hd.update(b"fahrkarte")
-            hd.update(self.flex.data["issuingDetail"].get("issuerNum", 0).to_bytes(8, "big"))
-            if "referenceIA5" in ticket:
-                hd.update(ticket["referenceIA5"].encode("utf-8"))
+            if self.flex:
+                ticket = self.flex.data["transportDocument"][0]["ticket"][1]
+                hd.update(self.flex.data["issuingDetail"].get("issuerNum", 0).to_bytes(8, "big"))
+                if "referenceIA5" in ticket:
+                    hd.update(ticket["referenceIA5"].encode("utf-8"))
+                else:
+                    hd.update(str(ticket.get("referenceNum", 0)).encode("utf-8"))
             else:
-                hd.update(str(ticket.get("referenceNum", 0)).encode("utf-8"))
+                hd.update(self.issuing_rics().to_bytes(8, "big"))
+                hd.update(self.ticket_id().encode("utf-8"))
             return base64.b32hexencode(hd.digest()).decode("utf-8")
 
         elif ticket_type == models.Ticket.TYPE_RESERVIERUNG:
@@ -449,6 +456,21 @@ def parse_ticket_uic_flex(ticket_envelope: uic.Envelope) -> typing.Optional[uic.
         )
 
 
+def parse_ticket_uic_db_bl(ticket_envelope: uic.Envelope) -> typing.Optional[uic.Flex]:
+    bl_record = next(filter(lambda r: r.id == "0080BL" and r.version == 3, ticket_envelope.records), None)
+    if not bl_record:
+        return None
+
+    try:
+        return uic.db.DBRecordBL.parse(bl_record.data, bl_record.version)
+    except uic.db.DBException:
+        raise TicketError(
+            title="Invalid DB BL record",
+            message="The DB BL record is invalid - the ticket is likely invalid.",
+            exception=traceback.format_exc()
+        )
+
+
 def parse_ticket_uic(ticket_bytes: bytes) -> UICTicket:
     try:
         ticket_envelope = uic.Envelope.parse(ticket_bytes)
@@ -466,7 +488,8 @@ def parse_ticket_uic(ticket_bytes: bytes) -> UICTicket:
         head=parse_ticket_uic_head(ticket_envelope),
         layout=parse_ticket_uic_layout(ticket_envelope),
         flex=parse_ticket_uic_flex(ticket_envelope),
-        other_records=[r for r in ticket_envelope.records if not r.id.startswith("U_")]
+        db_bl=parse_ticket_uic_db_bl(ticket_envelope),
+        other_records=[r for r in ticket_envelope.records if not (r.id.startswith("U_") or r.id == "0080BL")]
     )
 
 def parse_ticket(ticket_bytes: bytes, account: typing.Optional["models.Account"]) -> typing.Union[VDVTicket, UICTicket]:

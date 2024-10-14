@@ -1,3 +1,4 @@
+import datetime
 import json
 import urllib.parse
 import pytz
@@ -352,6 +353,8 @@ def make_pkpass(ticket_obj: models.Ticket):
                     validity_start = templatetags.rics.rics_valid_from_date(document)
                     validity_end = templatetags.rics.rics_valid_until_date(document)
 
+                    pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+
                     if "cardTypeDescr" in document:
                         pass_fields["headerFields"].append({
                             "key": "product",
@@ -400,6 +403,8 @@ def make_pkpass(ticket_obj: models.Ticket):
                 elif document_type == "pass":
                     validity_start = templatetags.rics.rics_valid_from(document, issued_at)
                     validity_end = templatetags.rics.rics_valid_until(document, issued_at)
+
+                    pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
 
                     if "passType" in document:
                         if document["passType"] == 1:
@@ -513,6 +518,162 @@ def make_pkpass(ticket_obj: models.Ticket):
                         "label": "passport-number-label",
                         "value": passenger["passportId"],
                     })
+        elif ticket_data.db_bl:
+            tz = pytz.timezone("Europe/Berlin")
+            if ticket_data.db_bl.product:
+                pass_fields["headerFields"].append({
+                    "key": "product",
+                    "label": "product-label",
+                    "value": ticket_data.db_bl.product,
+                })
+
+            if ticket_data.db_bl.from_station_uic and ticket_data.db_bl.to_station_uic:
+                pass_type = "boardingPass"
+                pass_fields["transitType"] = "PKTransitTypeTrain"
+
+                from_station = templatetags.rics.get_station(ticket_data.db_bl.from_station_uic, "db")
+                to_station = templatetags.rics.get_station(ticket_data.db_bl.to_station_uic, "db")
+
+                if from_station:
+                    pass_fields["primaryFields"].append({
+                        "key": "from-station",
+                        "label": "from-station-label",
+                        "value": from_station["name"],
+                        "semantics": {
+                            "departureLocation": {
+                                "latitude": float(from_station["latitude"]),
+                                "longitude": float(from_station["longitude"]),
+                            },
+                            "departureStationName": from_station["name"]
+                        }
+                    })
+                    pass_json["locations"].append({
+                        "latitude": float(from_station["latitude"]),
+                        "longitude": float(from_station["longitude"]),
+                        "relevantText": from_station["name"]
+                    })
+                    maps_link = urllib.parse.urlencode({
+                        "q": from_station["name"],
+                        "ll": f"{from_station['latitude']},{from_station['longitude']}"
+                    })
+                    pass_fields["backFields"].append({
+                        "key": "from-station-back",
+                        "label": "from-station-label",
+                        "value": from_station["name"],
+                        "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{from_station['name']}</a>",
+                    })
+                elif ticket_data.db_bl.from_station_name:
+                    pass_fields["primaryFields"].append({
+                        "key": "from-station",
+                        "label": "from-station-label",
+                        "value": ticket_data.db_bl.from_station_name,
+                        "semantics": {
+                            "departureStationName": ticket_data.db_bl.from_station_name
+                        }
+                    })
+
+                if to_station:
+                    pass_fields["primaryFields"].append({
+                        "key": "to-station",
+                        "label": "to-station-label",
+                        "value": to_station["name"],
+                        "semantics": {
+                            "destinationLocation": {
+                                "latitude": float(from_station["latitude"]),
+                                "longitude": float(from_station["longitude"]),
+                            },
+                            "destinationStationName": to_station["name"]
+                        }
+                    })
+                    pass_json["locations"].append({
+                        "latitude": float(to_station["latitude"]),
+                        "longitude": float(to_station["longitude"]),
+                        "relevantText": to_station["name"]
+                    })
+                    maps_link = urllib.parse.urlencode({
+                        "q": to_station["name"],
+                        "ll": f"{to_station['latitude']},{to_station['longitude']}"
+                    })
+                    pass_fields["backFields"].append({
+                        "key": "to-station-back",
+                        "label": "to-station-label",
+                        "value": to_station["name"],
+                        "attributedValue": f"<a href=\"https://maps.apple.com/?{maps_link}\">{to_station['name']}</a>",
+                    })
+                elif ticket_data.db_bl.to_station_name:
+                    pass_fields["primaryFields"].append({
+                        "key": "to-station",
+                        "label": "to-station-label",
+                        "value": ticket_data.db_bl.to_station_name,
+                        "semantics": {
+                            "destinationStationName": ticket_data.db_bl.to_station_name
+                        }
+                    })
+
+            if ticket_data.db_bl.validity_start:
+                validity_start = tz.localize(datetime.datetime.combine(ticket_data.db_bl.validity_start, datetime.time.min))\
+                    .astimezone(pytz.utc)
+                pass_fields["secondaryFields"].append({
+                    "key": "validity-start",
+                    "label": "validity-start-label",
+                    "dateStyle": "PKDateStyleMedium",
+                    "timeStyle": "PKDateStyleNone",
+                    "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                })
+                pass_fields["backFields"].append({
+                    "key": "validity-start-back",
+                    "label": "validity-start-label",
+                    "dateStyle": "PKDateStyleFull",
+                    "timeStyle": "PKDateStyleFull",
+                    "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                })
+
+            if ticket_data.db_bl.validity_end:
+                validity_end = tz.localize(datetime.datetime.combine(ticket_data.db_bl.validity_end, datetime.time.max))\
+                    .astimezone(pytz.utc)
+                pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+                pass_fields["secondaryFields"].append({
+                    "key": "validity-end",
+                    "label": "validity-end-label",
+                    "dateStyle": "PKDateStyleMedium",
+                    "timeStyle": "PKDateStyleNone",
+                    "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "changeMessage": "validity-end-change"
+                })
+                pass_fields["backFields"].append({
+                    "key": "validity-end-back",
+                    "label": "validity-end-label",
+                    "dateStyle": "PKDateStyleFull",
+                    "timeStyle": "PKDateStyleFull",
+                    "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                })
+
+            if ticket_data.db_bl.route:
+                pass_fields["backFields"].append({
+                    "key": "valid-region",
+                    "label": "valid-region-label",
+                    "value": ticket_data.db_bl.route,
+                })
+
+            if ticket_data.db_bl.traveller_forename or ticket_data.db_bl.traveller_surname:
+                field_data = {
+                    "key": "passenger",
+                    "label": "passenger-label",
+                    "value": f"{ticket_data.db_bl.traveller_forename}\n{ticket_data.db_bl.traveller_surname}"
+                    if pass_type == "generic" else
+                    f"{ticket_data.db_bl.traveller_forename} {ticket_data.db_bl.traveller_surname}",
+                    "semantics": {
+                        "passengerName": {
+                            "familyName": ticket_data.db_bl.traveller_surname,
+                            "givenName": ticket_data.db_bl.traveller_forename,
+                        }
+                    }
+                }
+                if pass_type == "generic":
+                    pass_fields["primaryFields"].append(field_data)
+                else:
+                    pass_fields["auxiliaryFields"].append(field_data)
+
 
         if distributor := ticket_data.distributor():
             pass_json["organizationName"] = distributor["full_name"]
@@ -541,106 +702,107 @@ def make_pkpass(ticket_obj: models.Ticket):
         ticket_instance: models.VDVTicketInstance = ticket_obj.vdv_instances.filter(
             Q(validity_start__lt=now) | Q(validity_start__isnull=True)
         ).first()
-        ticket_data: ticket.VDVTicket = ticket_instance.as_ticket()
+        if ticket_instance:
+            ticket_data: ticket.VDVTicket = ticket_instance.as_ticket()
 
-        validity_start = ticket_data.ticket.validity_start.as_datetime().astimezone(pytz.utc)
-        validity_end = ticket_data.ticket.validity_end.as_datetime().astimezone(pytz.utc)
-        issued_at = ticket_data.ticket.transaction_time.as_datetime().astimezone(pytz.utc)
+            validity_start = ticket_data.ticket.validity_start.as_datetime().astimezone(pytz.utc)
+            validity_end = ticket_data.ticket.validity_end.as_datetime().astimezone(pytz.utc)
+            issued_at = ticket_data.ticket.transaction_time.as_datetime().astimezone(pytz.utc)
 
-        pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-        pass_fields = {
-            "headerFields": [{
-                "key": "product",
-                "label": "product-label",
-                "value": ticket_data.ticket.product_name()
-            }],
-            "primaryFields": [],
-            "secondaryFields": [{
-                "key": "validity-start",
-                "label": "validity-start-label",
-                "dateStyle": "PKDateStyleMedium",
-                "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            }, {
-                "key": "validity-end",
-                "label": "validity-end-label",
-                "dateStyle": "PKDateStyleMedium",
-                "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "changeMessage": "validity-end-change"
-            }],
-            "backFields": [{
-                "key": "validity-start-back",
-                "label": "validity-start-label",
-                "dateStyle": "PKDateStyleFull",
-                "timeStyle": "PKDateStyleFull",
-                "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            }, {
-                "key": "validity-end-back",
-                "label": "validity-end-label",
-                "dateStyle": "PKDateStyleFull",
-                "timeStyle": "PKDateStyleFull",
-                "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            }, {
-                "key": "product-back",
-                "label": "product-label",
-                "value": ticket_data.ticket.product_name()
-            }, {
-                "key": "product-org-back",
-                "label": "product-organisation-label",
-                "value": ticket_data.ticket.product_org_name()
-            }, {
-                "key": "ticket-id",
-                "label": "ticket-id-label",
-                "value": str(ticket_data.ticket.ticket_id),
-            }, {
-                "key": "ticket-org",
-                "label": "ticketing-organisation-label",
-                "value": ticket_data.ticket.ticket_org_name(),
-            }, {
-                "key": "issued-date",
-                "label": "issued-at-label",
-                "dateStyle": "PKDateStyleFull",
-                "timeStyle": "PKDateStyleFull",
-                "value": issued_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            }, {
-                "key": "issuing-org",
-                "label": "issuing-organisation-label",
-                "value": ticket_data.ticket.kvp_org_name(),
-            }]
-        }
-        pass_json["organizationName"] = ticket_data.ticket.kvp_org_name()
-        pass_json["barcodes"] = [{
-            "format": "PKBarcodeFormatAztec",
-            "message": bytes(ticket_instance.barcode_data).decode("iso-8859-1"),
-            "messageEncoding": "iso-8859-1",
-            "altText": str(ticket_data.ticket.ticket_id),
-        }]
-
-        for elm in ticket_data.ticket.product_data:
-            if isinstance(elm, vdv.ticket.PassengerData):
-                pass_fields["primaryFields"].append({
-                    "key": "passenger",
-                    "label": "passenger-label",
-                    "value": f"{elm.forename}\n{elm.surname}",
-                    "semantics": {
-                        "passengerName": {
-                            "familyName": elm.surname,
-                            "givenName": elm.forename
-                        }
-                    }
-                })
-                pass_fields["secondaryFields"].append({
-                    "key": "date-of-birth",
-                    "label": "date-of-birth-label",
+            pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+            pass_fields = {
+                "headerFields": [{
+                    "key": "product",
+                    "label": "product-label",
+                    "value": ticket_data.ticket.product_name()
+                }],
+                "primaryFields": [],
+                "secondaryFields": [{
+                    "key": "validity-start",
+                    "label": "validity-start-label",
                     "dateStyle": "PKDateStyleMedium",
-                    "value": elm.date_of_birth.as_date().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                })
+                    "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                }, {
+                    "key": "validity-end",
+                    "label": "validity-end-label",
+                    "dateStyle": "PKDateStyleMedium",
+                    "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "changeMessage": "validity-end-change"
+                }],
+                "backFields": [{
+                    "key": "validity-start-back",
+                    "label": "validity-start-label",
+                    "dateStyle": "PKDateStyleFull",
+                    "timeStyle": "PKDateStyleFull",
+                    "value": validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                }, {
+                    "key": "validity-end-back",
+                    "label": "validity-end-label",
+                    "dateStyle": "PKDateStyleFull",
+                    "timeStyle": "PKDateStyleFull",
+                    "value": validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                }, {
+                    "key": "product-back",
+                    "label": "product-label",
+                    "value": ticket_data.ticket.product_name()
+                }, {
+                    "key": "product-org-back",
+                    "label": "product-organisation-label",
+                    "value": ticket_data.ticket.product_org_name()
+                }, {
+                    "key": "ticket-id",
+                    "label": "ticket-id-label",
+                    "value": str(ticket_data.ticket.ticket_id),
+                }, {
+                    "key": "ticket-org",
+                    "label": "ticketing-organisation-label",
+                    "value": ticket_data.ticket.ticket_org_name(),
+                }, {
+                    "key": "issued-date",
+                    "label": "issued-at-label",
+                    "dateStyle": "PKDateStyleFull",
+                    "timeStyle": "PKDateStyleFull",
+                    "value": issued_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                }, {
+                    "key": "issuing-org",
+                    "label": "issuing-organisation-label",
+                    "value": ticket_data.ticket.kvp_org_name(),
+                }]
+            }
+            pass_json["organizationName"] = ticket_data.ticket.kvp_org_name()
+            pass_json["barcodes"] = [{
+                "format": "PKBarcodeFormatAztec",
+                "message": bytes(ticket_instance.barcode_data).decode("iso-8859-1"),
+                "messageEncoding": "iso-8859-1",
+                "altText": str(ticket_data.ticket.ticket_id),
+            }]
 
-        if ticket_data.ticket.product_org_id in VDV_ORG_ID_LOGO:
-            add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.product_org_id], "logo.png")
-            have_logo = True
-        elif ticket_data.ticket.product_org_id == 3000 and ticket_data.ticket.ticket_org_id in VDV_ORG_ID_LOGO:
-            add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.ticket_org_id], "logo.png")
-            have_logo = True
+            for elm in ticket_data.ticket.product_data:
+                if isinstance(elm, vdv.ticket.PassengerData):
+                    pass_fields["primaryFields"].append({
+                        "key": "passenger",
+                        "label": "passenger-label",
+                        "value": f"{elm.forename}\n{elm.surname}",
+                        "semantics": {
+                            "passengerName": {
+                                "familyName": elm.surname,
+                                "givenName": elm.forename
+                            }
+                        }
+                    })
+                    pass_fields["secondaryFields"].append({
+                        "key": "date-of-birth",
+                        "label": "date-of-birth-label",
+                        "dateStyle": "PKDateStyleMedium",
+                        "value": elm.date_of_birth.as_date().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    })
+
+            if ticket_data.ticket.product_org_id in VDV_ORG_ID_LOGO:
+                add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.product_org_id], "logo.png")
+                have_logo = True
+            elif ticket_data.ticket.product_org_id == 3000 and ticket_data.ticket.ticket_org_id in VDV_ORG_ID_LOGO:
+                add_pkp_img(pkp, VDV_ORG_ID_LOGO[ticket_data.ticket.ticket_org_id], "logo.png")
+                have_logo = True
 
     ticket_url = reverse('ticket', kwargs={"pk": ticket_obj.pk})
     pass_fields["backFields"].append({
