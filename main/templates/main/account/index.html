@@ -49,5 +49,17 @@
                 </dd>
             </div>
         </dl>
+        <h2 class="govuk-heading-l">Tickets</h2>
+        {% if tickets.count %}
+            <ul class="govuk-list govuk-list--spaced">
+                {% for ticket in tickets.all %}
+                    <li>
+                        <a href="{% url 'ticket' ticket.pk %}" class="govuk-link">#{{ ticket.public_id }} - {{ ticket.get_ticket_type_display }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="govuk-body">No tickets</p>
+        {% endif %}
     </div>
 {% endblock %}
