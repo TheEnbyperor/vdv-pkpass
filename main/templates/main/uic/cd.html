@@ -1,0 +1,39 @@
+{% load tz rics %}
+<h2 class="govuk-heading-m">České dráhy data</h2>
+<dl class="govuk-summary-list">
+    {% if cd.name %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Traveller name</dt>
+            <dd class="govuk-summary-list__value">{{ cd.name }}</dd>
+        </div>
+    {% endif %}
+    {% if cd.validity_start %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Validity start</dt>
+            <dd class="govuk-summary-list__value">{{ cd.validity_start|date:"F d, Y H:i" }}</dd>
+        </div>
+    {% endif %}
+    {% if cd.validity_end %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Validity end</dt>
+            <dd class="govuk-summary-list__value">{{ cd.validity_end|date:"F d, Y H:i" }}</dd>
+        </div>
+    {% endif %}
+    {% if cd.other_blocks %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Unknown blocks</dt>
+            <dd class="govuk-summary-list__value">
+                {% for block_id, value in cd.other_blocks.items %}
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">Block <code>{{ block_id }}</code></h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <code>{{ value }}</code>
+                        </div>
+                    </div>
+                {% endfor %}
+            </dd>
+        </div>
+    {% endif %}
+</dl>

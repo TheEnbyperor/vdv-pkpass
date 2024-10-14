@@ -518,6 +518,7 @@ def make_pkpass(ticket_obj: models.Ticket):
                         "label": "passport-number-label",
                         "value": passenger["passportId"],
                     })
+
         elif ticket_data.db_bl:
             tz = pytz.timezone("Europe/Berlin")
             if ticket_data.db_bl.product:
@@ -673,6 +674,49 @@ def make_pkpass(ticket_obj: models.Ticket):
                     pass_fields["primaryFields"].append(field_data)
                 else:
                     pass_fields["auxiliaryFields"].append(field_data)
+
+        elif ticket_data.cd_ut:
+            if ticket_data.cd_ut.validity_start:
+                pass_fields["secondaryFields"].append({
+                    "key": "validity-start",
+                    "label": "validity-start-label",
+                    "dateStyle": "PKDateStyleMedium",
+                    "timeStyle": "PKDateStyleNone",
+                    "value": ticket_data.cd_ut.validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                })
+                pass_fields["backFields"].append({
+                    "key": "validity-start-back",
+                    "label": "validity-start-label",
+                    "dateStyle": "PKDateStyleFull",
+                    "timeStyle": "PKDateStyleFull",
+                    "value": ticket_data.cd_ut.validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                })
+
+            if ticket_data.cd_ut.validity_end:
+                pass_json["expirationDate"] = ticket_data.cd_ut.validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+                pass_fields["secondaryFields"].append({
+                    "key": "validity-end",
+                    "label": "validity-end-label",
+                    "dateStyle": "PKDateStyleMedium",
+                    "timeStyle": "PKDateStyleNone",
+                    "value": ticket_data.cd_ut.validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "changeMessage": "validity-end-change"
+                })
+                pass_fields["backFields"].append({
+                    "key": "validity-end-back",
+                    "label": "validity-end-label",
+                    "dateStyle": "PKDateStyleFull",
+                    "timeStyle": "PKDateStyleFull",
+                    "value": ticket_data.cd_ut.validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                })
+
+            if ticket_data.cd_ut.name:
+                field_data = {
+                    "key": "passenger",
+                    "label": "passenger-label",
+                    "value": ticket_data.cd_ut.name,
+                }
+                pass_fields["primaryFields"].append(field_data)
 
 
         if distributor := ticket_data.distributor():
@@ -904,6 +948,7 @@ RICS_LOGO = {
     1088: "pass/logo-sncb.png",
     1181: "pass/logo-oebb.png",
     1084: "pass/logo-ns.png",
+    1154: "pass/logo-cd.png",
     1184: "pass/logo-ns.png",
     1186: "pass/logo-dsb.png",
     1251: "pass/logo-pkp-ic.png",

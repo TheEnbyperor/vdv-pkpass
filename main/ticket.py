@@ -68,6 +68,7 @@ class UICTicket:
     layout: typing.Optional[uic.LayoutV1]
     flex: typing.Optional[uic.Flex]
     db_bl: typing.Optional[uic.db.DBRecordBL]
+    cd_ut: typing.Optional[uic.cd.CDRecordUT]
     other_records: typing.List[uic.envelope.Record]
 
     @property
@@ -76,6 +77,7 @@ class UICTicket:
 
     def type(self) -> str:
         if self.flex:
+            security_num = self.flex.data["issuingDetail"].get("securityProviderNum")
             issuer_num = self.flex.data["issuingDetail"].get("issuerNum")
             issuer_name = self.flex.data["issuingDetail"].get("issuerName")
             if len(self.flex.data.get("transportDocument", [])) >= 1:
@@ -96,7 +98,7 @@ class UICTicket:
                     else:
                         return models.Ticket.TYPE_FAHRKARTE
                 elif ticket_type == "pass":
-                    if issuer_num == 9901:
+                    if issuer_num == 9901 or security_num == 9901:
                         return models.Ticket.TYPE_INTERRAIL
                     elif issuer_name == "BMK":
                         return models.Ticket.TYPE_KLIMATICKET
@@ -105,6 +107,8 @@ class UICTicket:
                 elif ticket_type == "reservation":
                     return models.Ticket.TYPE_RESERVIERUNG
         elif self.db_bl:
+            return models.Ticket.TYPE_FAHRKARTE
+        elif self.cd_ut:
             return models.Ticket.TYPE_FAHRKARTE
 
         return models.Ticket.TYPE_UNKNOWN
@@ -471,6 +475,21 @@ def parse_ticket_uic_db_bl(ticket_envelope: uic.Envelope) -> typing.Optional[uic
         )
 
 
+def parse_ticket_uic_cd_ut(ticket_envelope: uic.Envelope) -> typing.Optional[uic.Flex]:
+    ut_record = next(filter(lambda r: r.id == "1154UT" and r.version == 1, ticket_envelope.records), None)
+    if not ut_record:
+        return None
+
+    try:
+        return uic.cd.CDRecordUT.parse(ut_record.data, ut_record.version)
+    except uic.cd.CDException:
+        raise TicketError(
+            title="Invalid CD UT record",
+            message="The CD UT record is invalid - the ticket is likely invalid.",
+            exception=traceback.format_exc()
+        )
+
+
 def parse_ticket_uic(ticket_bytes: bytes) -> UICTicket:
     try:
         ticket_envelope = uic.Envelope.parse(ticket_bytes)
@@ -489,7 +508,10 @@ def parse_ticket_uic(ticket_bytes: bytes) -> UICTicket:
         layout=parse_ticket_uic_layout(ticket_envelope),
         flex=parse_ticket_uic_flex(ticket_envelope),
         db_bl=parse_ticket_uic_db_bl(ticket_envelope),
-        other_records=[r for r in ticket_envelope.records if not (r.id.startswith("U_") or r.id == "0080BL")]
+        cd_ut=parse_ticket_uic_cd_ut(ticket_envelope),
+        other_records=[r for r in ticket_envelope.records if not (
+                r.id.startswith("U_") or r.id == "0080BL" or r.id == "1154UT"
+        )]
     )
 
 def parse_ticket(ticket_bytes: bytes, account: typing.Optional["models.Account"]) -> typing.Union[VDVTicket, UICTicket]:

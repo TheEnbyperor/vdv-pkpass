@@ -155,7 +155,10 @@ class UICTicketInstance(models.Model):
             layout=t.parse_ticket_uic_layout(ticket_envelope),
             flex=t.parse_ticket_uic_flex(ticket_envelope),
             db_bl=t.parse_ticket_uic_db_bl(ticket_envelope),
-            other_records=[r for r in ticket_envelope.records if not (r.id.startswith("U_") or r.id == "0080BL")]
+            cd_ut=t.parse_ticket_uic_cd_ut(ticket_envelope),
+            other_records=[r for r in ticket_envelope.records if not (
+                    r.id.startswith("U_") or r.id == "0080BL" or r.id == "1154UT"
+            )]
         )
 
 
