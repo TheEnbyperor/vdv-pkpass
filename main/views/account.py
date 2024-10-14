@@ -7,11 +7,10 @@ from . import db
 
 @login_required
 def index(request):
-    context = {
+    return render(request, "main/account/index.html", {
         "user": request.user,
-    }
-
-    return render(request, "main/account/index.html", context)
+        "tickets": request.user.account.tickets,
+    })
 
 @login_required
 def db_account(request):
