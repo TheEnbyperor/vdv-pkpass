@@ -737,6 +737,7 @@ PASS_STRINGS = {
 }
 
 RICS_LOGO = {
+    80: "pass/logo-db.png",
     1080: "pass/logo-db.png",
     1088: "pass/logo-sncb.png",
     1181: "pass/logo-oebb.png",

@@ -21,6 +21,34 @@ class AppleRegistrationInline(admin.StackedInline):
     ]
 
 
+class TicketAccountInline(admin.StackedInline):
+    extra = 0
+    model = models.Ticket
+    fk_name = "account"
+    readonly_fields = [
+        "pkpass_authentication_token",
+        "last_updated",
+    ]
+
+
+class TicketDBSubscriptionInline(admin.StackedInline):
+    extra = 0
+    model = models.Ticket
+    fk_name = "db_subscription"
+    readonly_fields = [
+        "pkpass_authentication_token",
+        "last_updated",
+    ]
+
+
+class DBSubscriptionInline(admin.StackedInline):
+    extra = 0
+    model = models.DBSubscription
+    readonly_fields = [
+        "device_token"
+    ]
+
+
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
     readonly_fields = [
@@ -68,10 +96,17 @@ class AccountAdmin(admin.ModelAdmin):
         "saarvv_token",
         "saarvv_device_id",
     ]
+    inlines = [
+        TicketAccountInline,
+        DBSubscriptionInline,
+    ]
 
 
 @admin.register(models.DBSubscription)
 class DBSubscriptionAdmin(admin.ModelAdmin):
     readonly_fields = [
         "device_token"
+    ]
+    inlines = [
+        TicketDBSubscriptionInline
     ]
