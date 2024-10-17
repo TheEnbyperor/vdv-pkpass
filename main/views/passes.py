@@ -236,8 +236,8 @@ def make_pkpass(ticket_obj: models.Ticket):
                                 "value": to_station["name"],
                                 "semantics": {
                                     "destinationLocation": {
-                                        "latitude": float(from_station["latitude"]),
-                                        "longitude": float(from_station["longitude"]),
+                                        "latitude": float(to_station["latitude"]),
+                                        "longitude": float(to_station["longitude"]),
                                     },
                                     "destinationStationName": to_station["name"]
                                 }
