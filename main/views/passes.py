@@ -961,10 +961,12 @@ UIC_NAME_LOGO = {
 
 VDV_ORG_ID_LOGO = {
     36: "pass/logo-rmv.png",
+    57: "pass/logo-dsw.png",
     77: "pass/logo-wt.png",
     102: "pass/logo-vrs.png",
     103: "pass/logo-swb.png",
     6234: "pass/logo-vvs.png",
     6310: "pass/logo-svv.png",
+    6441: "pass/logo-kvg.png",
     6496: "pass/logo-naldo.png",
 }
