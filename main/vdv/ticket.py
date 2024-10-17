@@ -5,7 +5,7 @@ import ber_tlv.tlv
 import re
 from . import util, org_id
 
-NAME_TYPE_1_RE = re.compile(r"^(?P<start>\w*)(?P<len>\d+)(?P<end>\w*)$")
+NAME_TYPE_1_RE = re.compile(r"(?P<start>\w?)(?P<len>\d+)(?P<end>\w?)")
 
 @dataclasses.dataclass
 class Context:
@@ -240,26 +240,35 @@ class PassengerData:
                 surname = context.account_surname
         elif "@" in name:
             forename, surname = name.split("@", 1)
-            if forename_match := NAME_TYPE_1_RE.fullmatch(forename):
+            new_forename = []
+            new_surname = []
+            while forename_match := NAME_TYPE_1_RE.match(forename):
+                forename = forename[forename_match.end():]
                 forename_start = forename_match.group("start")
                 forename_end = forename_match.group("end")
                 forename_len = int(forename_match.group("len"))
-                forename = f"{forename_start}{'_'*forename_len}{forename_end}"
-                if context.account_forename and len(context.account_forename) == \
-                    forename_len + len(forename_start) + len(forename_end):
-                    if context.account_forename.startswith(forename_start) and \
-                            context.account_forename.endswith(forename_end):
-                        original_forename = forename
-                        forename = context.account_forename
-            if surname_match := NAME_TYPE_1_RE.fullmatch(surname):
+                new_forename.append(f"{forename_start}{'_'*forename_len}{forename_end}")
+                
+            while surname_match := NAME_TYPE_1_RE.match(surname):
+                surname = surname[surname_match.end():]
                 surname_start = surname_match.group("start")
                 surname_end = surname_match.group("end")
                 surname_len = int(surname_match.group("len"))
-                surname = f"{surname_start}{'_'*surname_len}{surname_end}"
-                if context.account_surname and len(context.account_surname) == \
-                    surname_len + len(surname_start) + len(surname_end):
-                    if context.account_surname.startswith(surname_start) and \
-                            context.account_surname.endswith(surname_end):
+                new_surname.append(f"{surname_start}{'_'*surname_len}{surname_end}")
+                
+            if new_forename:
+                forename = " ".join(new_forename)
+                if context.account_forename and len(context.account_forename) == len(forename):
+                    if context.account_forename.startswith(forename[0]) and \
+                            context.account_forename.endswith(forename[-1]):
+                        original_forename = forename
+                        forename = context.account_forename
+                
+            if new_surname:
+                surname = " ".join(new_surname)
+                if context.account_surname and len(context.account_surname) == len(surname):
+                    if context.account_surname.startswith(surname[0]) and \
+                            context.account_surname.endswith(surname[-1]):
                         original_surname = surname
                         surname = context.account_surname
         else:
