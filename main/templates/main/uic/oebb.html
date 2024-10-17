@@ -1,0 +1,18 @@
+{% load tz rics %}
+<h2 class="govuk-heading-m">ÖBB data</h2>
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Validity start</dt>
+        <dd class="govuk-summary-list__value">{{ oebb.validity_start|date:"F d, Y H:i" }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Validity end</dt>
+        <dd class="govuk-summary-list__value">{{ oebb.validity_end|date:"F d, Y H:i" }}</dd>
+    </div>
+    {% if oebb.train_number %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Train number</dt>
+            <dd class="govuk-summary-list__value"><code>{{ oebb.train_number }}</code></dd>
+        </div>
+    {% endif %}
+</dl>

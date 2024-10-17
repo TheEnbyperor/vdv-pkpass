@@ -69,6 +69,7 @@ class UICTicket:
     flex: typing.Optional[uic.Flex]
     db_bl: typing.Optional[uic.db.DBRecordBL]
     cd_ut: typing.Optional[uic.cd.CDRecordUT]
+    oebb_99: typing.Optional[uic.oebb.OeBBRecord99]
     other_records: typing.List[uic.envelope.Record]
 
     @property
@@ -109,6 +110,8 @@ class UICTicket:
         elif self.db_bl:
             return models.Ticket.TYPE_FAHRKARTE
         elif self.cd_ut:
+            return models.Ticket.TYPE_FAHRKARTE
+        elif self.oebb_99:
             return models.Ticket.TYPE_FAHRKARTE
 
         return models.Ticket.TYPE_UNKNOWN
@@ -460,7 +463,7 @@ def parse_ticket_uic_flex(ticket_envelope: uic.Envelope) -> typing.Optional[uic.
         )
 
 
-def parse_ticket_uic_db_bl(ticket_envelope: uic.Envelope) -> typing.Optional[uic.Flex]:
+def parse_ticket_uic_db_bl(ticket_envelope: uic.Envelope) -> typing.Optional[uic.db.DBRecordBL]:
     bl_record = next(filter(lambda r: r.id == "0080BL" and r.version == 3, ticket_envelope.records), None)
     if not bl_record:
         return None
@@ -475,7 +478,7 @@ def parse_ticket_uic_db_bl(ticket_envelope: uic.Envelope) -> typing.Optional[uic
         )
 
 
-def parse_ticket_uic_cd_ut(ticket_envelope: uic.Envelope) -> typing.Optional[uic.Flex]:
+def parse_ticket_uic_cd_ut(ticket_envelope: uic.Envelope) -> typing.Optional[uic.cd.CDRecordUT]:
     ut_record = next(filter(lambda r: r.id == "1154UT" and r.version == 1, ticket_envelope.records), None)
     if not ut_record:
         return None
@@ -486,6 +489,21 @@ def parse_ticket_uic_cd_ut(ticket_envelope: uic.Envelope) -> typing.Optional[uic
         raise TicketError(
             title="Invalid CD UT record",
             message="The CD UT record is invalid - the ticket is likely invalid.",
+            exception=traceback.format_exc()
+        )
+
+
+def parse_ticket_uic_oebb_99(ticket_envelope: uic.Envelope) -> typing.Optional[uic.oebb.OeBBRecord99]:
+    oebb_record = next(filter(lambda r: r.id == "118199" and r.version == 1, ticket_envelope.records), None)
+    if not oebb_record:
+        return None
+
+    try:
+        return uic.oebb.OeBBRecord99.parse(oebb_record.data, oebb_record.version)
+    except uic.oebb.OeBBException:
+        raise TicketError(
+            title="Invalid OeBB 99 record",
+            message="The OeBB 99 record is invalid - the ticket is likely invalid.",
             exception=traceback.format_exc()
         )
 
@@ -509,6 +527,7 @@ def parse_ticket_uic(ticket_bytes: bytes) -> UICTicket:
         flex=parse_ticket_uic_flex(ticket_envelope),
         db_bl=parse_ticket_uic_db_bl(ticket_envelope),
         cd_ut=parse_ticket_uic_cd_ut(ticket_envelope),
+        oebb_99=parse_ticket_uic_oebb_99(ticket_envelope),
         other_records=[r for r in ticket_envelope.records if not (
                 r.id.startswith("U_") or r.id == "0080BL" or r.id == "1154UT"
         )]

@@ -718,6 +718,38 @@ def make_pkpass(ticket_obj: models.Ticket):
                 }
                 pass_fields["primaryFields"].append(field_data)
 
+        elif ticket_data.oebb_99:
+            pass_json["expirationDate"] = ticket_data.oebb_99.validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+            pass_fields["secondaryFields"].append({
+                "key": "validity-start",
+                "label": "validity-start-label",
+                "dateStyle": "PKDateStyleMedium",
+                "timeStyle": "PKDateStyleNone",
+                "value": ticket_data.oebb_99.validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            })
+            pass_fields["backFields"].append({
+                "key": "validity-start-back",
+                "label": "validity-start-label",
+                "dateStyle": "PKDateStyleFull",
+                "timeStyle": "PKDateStyleFull",
+                "value": ticket_data.oebb_99.validity_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            })
+            pass_fields["secondaryFields"].append({
+                "key": "validity-end",
+                "label": "validity-end-label",
+                "dateStyle": "PKDateStyleMedium",
+                "timeStyle": "PKDateStyleNone",
+                "value": ticket_data.oebb_99.validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "changeMessage": "validity-end-change"
+            })
+            pass_fields["backFields"].append({
+                "key": "validity-end-back",
+                "label": "validity-end-label",
+                "dateStyle": "PKDateStyleFull",
+                "timeStyle": "PKDateStyleFull",
+                "value": ticket_data.oebb_99.validity_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            })
+
 
         if distributor := ticket_data.distributor():
             pass_json["organizationName"] = distributor["full_name"]

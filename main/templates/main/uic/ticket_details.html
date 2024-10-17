@@ -93,6 +93,10 @@
     {% include "main/uic/cd.html" with cd=ticket.cd_ut %}
 {% endif %}
 
+{% if ticket.oebb_99 %}
+    {% include "main/uic/oebb.html" with oebb=ticket.oebb_99 %}
+{% endif %}
+
 {% for record in ticket.other_records %}
     <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
