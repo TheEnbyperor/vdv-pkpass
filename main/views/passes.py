@@ -99,6 +99,8 @@ def make_pkpass(ticket_obj: models.Ticket):
     ticket_instance: models.UICTicketInstance = ticket_obj.uic_instances.filter(
         ~Q(validity_end__lt=now) | Q(validity_end__isnull=True),
     ).order_by("validity_start").first()
+    if not ticket_instance:
+        ticket_instance = ticket_obj.uic_instances.order_by("-validity_end").first()
     pkp = pkpass.PKPass()
     have_logo = False
 
@@ -778,6 +780,8 @@ def make_pkpass(ticket_obj: models.Ticket):
         ticket_instance: models.VDVTicketInstance = ticket_obj.vdv_instances.filter(
             ~Q(validity_end__lt=now) | Q(validity_end__isnull=True),
         ).order_by("validity_start").first()
+        if not ticket_instance:
+            ticket_instance = ticket_obj.vdv_instances.order_by("-validity_end").first()
         if ticket_instance:
             ticket_data: ticket.VDVTicket = ticket_instance.as_ticket()
 

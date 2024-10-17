@@ -158,7 +158,7 @@ class UICTicketInstance(models.Model):
             cd_ut=t.parse_ticket_uic_cd_ut(ticket_envelope),
             oebb_99=t.parse_ticket_uic_oebb_99(ticket_envelope),
             other_records=[r for r in ticket_envelope.records if not (
-                    r.id.startswith("U_") or r.id == "0080BL" or r.id == "1154UT"
+                    r.id.startswith("U_") or r.id == "0080BL" or r.id == "1154UT" or r.id == "118199"
             )]
         )
 
