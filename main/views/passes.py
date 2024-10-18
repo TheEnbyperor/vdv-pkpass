@@ -169,6 +169,7 @@ def make_pkpass(ticket_obj: models.Ticket):
                     validity_end = templatetags.rics.rics_valid_until(document, issued_at)
 
                     pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
 
                     if "fromStationNum" in document and "toStationNum" in document:
                         pass_type = "boardingPass"
@@ -356,6 +357,7 @@ def make_pkpass(ticket_obj: models.Ticket):
                     validity_end = templatetags.rics.rics_valid_until_date(document)
 
                     pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
 
                     if "cardTypeDescr" in document:
                         pass_fields["headerFields"].append({
@@ -385,6 +387,7 @@ def make_pkpass(ticket_obj: models.Ticket):
                         })
 
                     if validity_start:
+                        pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
                         pass_fields["backFields"].append({
                             "key": "validity-start-back",
                             "label": "validity-start-label",
@@ -407,6 +410,7 @@ def make_pkpass(ticket_obj: models.Ticket):
                     validity_end = templatetags.rics.rics_valid_until(document, issued_at)
 
                     pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
 
                     if "passType" in document:
                         if document["passType"] == 1:
@@ -616,6 +620,7 @@ def make_pkpass(ticket_obj: models.Ticket):
             if ticket_data.db_bl.validity_start:
                 validity_start = tz.localize(datetime.datetime.combine(ticket_data.db_bl.validity_start, datetime.time.min))\
                     .astimezone(pytz.utc)
+                pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
                 pass_fields["secondaryFields"].append({
                     "key": "validity-start",
                     "label": "validity-start-label",
@@ -679,6 +684,7 @@ def make_pkpass(ticket_obj: models.Ticket):
 
         elif ticket_data.cd_ut:
             if ticket_data.cd_ut.validity_start:
+                pass_json["relevantDate"] = ticket_data.cd_ut.validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
                 pass_fields["secondaryFields"].append({
                     "key": "validity-start",
                     "label": "validity-start-label",
@@ -722,6 +728,7 @@ def make_pkpass(ticket_obj: models.Ticket):
 
         elif ticket_data.oebb_99:
             pass_json["expirationDate"] = ticket_data.oebb_99.validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+            pass_json["relevantDate"] = ticket_data.oebb_99.validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
             pass_fields["secondaryFields"].append({
                 "key": "validity-start",
                 "label": "validity-start-label",
@@ -790,6 +797,7 @@ def make_pkpass(ticket_obj: models.Ticket):
             issued_at = ticket_data.ticket.transaction_time.as_datetime().astimezone(pytz.utc)
 
             pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+            pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
             pass_fields = {
                 "headerFields": [{
                     "key": "product",
