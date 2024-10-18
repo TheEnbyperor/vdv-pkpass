@@ -192,7 +192,7 @@ def rics_valid_from(value, issuing_time: typing.Optional[datetime.datetime]=None
         issuing_time = datetime.datetime(value["validFromYear"], 1, 1, 0, 0, 0)
         issuing_time += datetime.timedelta(days=value["validFromDay"]-1, minutes=value.get("validFromTime", 0))
     if "validFromUTCOffset" in value:
-        issuing_time -= datetime.timedelta(minutes=15 * value["validFromUTCOffset"])
+        issuing_time += datetime.timedelta(minutes=15 * value["validFromUTCOffset"])
         issuing_time = issuing_time.replace(tzinfo=pytz.utc)
     return issuing_time
 
@@ -211,7 +211,10 @@ def rics_valid_until(value, issuing_time: typing.Optional[datetime.datetime]=Non
         )
     valid_from += datetime.timedelta(days=value["validUntilDay"], minutes=value.get("validUntilTime", 0))
     if "validUntilUTCOffset" in value:
-        valid_from -= datetime.timedelta(minutes=15 * value["validUntilUTCOffset"])
+        valid_from += datetime.timedelta(minutes=15 * value["validUntilUTCOffset"])
+        valid_from = valid_from.replace(tzinfo=pytz.utc)
+    elif "validFromUTCOffset" in value:
+        valid_from += datetime.timedelta(minutes=15 * value["validFromUTCOffset"])
         valid_from = valid_from.replace(tzinfo=pytz.utc)
     return valid_from
 
