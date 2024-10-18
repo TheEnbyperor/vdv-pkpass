@@ -7,6 +7,7 @@ from . import util, org_id
 
 NAME_TYPE_1_RE = re.compile(r"(?P<start>\w?)(?P<len>\d+)(?P<end>\w?)")
 
+
 @dataclasses.dataclass
 class Context:
     account_forename: typing.Optional[str]
@@ -98,7 +99,7 @@ class VDVTicket:
         product_data = ber_tlv.tlv.Tlv.parse(product_data[1], False, False)
 
         offset_1 = parser.get_offset()
-        common_transaction_data, data = data[offset_1:offset_1+17], data[offset_1+17:]
+        common_transaction_data, data = data[offset_1:offset_1 + 17], data[offset_1 + 17:]
 
         try:
             parser = ber_tlv.tlv.Tlv.Parser(data, [], 0)
@@ -112,7 +113,7 @@ class VDVTicket:
         product_transaction_data = ber_tlv.tlv.Tlv.parse(product_transaction_data[1], False, False)
 
         offset_2 = parser.get_offset()
-        ticket_issue_data, data = data[offset_2:offset_2+12], data[offset_2+12:]
+        ticket_issue_data, data = data[offset_2:offset_2 + 12], data[offset_2 + 12:]
 
         trailer = data[-5:]
 
@@ -203,11 +204,13 @@ class VDVTicket:
     def location_org_name_opt(self):
         return map_org_id(self.location_org_id, True)
 
+
 class Gender(enum.Enum):
     Unspecified = 0
     Male = 1
     Female = 2
     Diverse = 3
+
 
 @dataclasses.dataclass
 class PassengerData:
@@ -247,28 +250,44 @@ class PassengerData:
                 forename_start = forename_match.group("start")
                 forename_end = forename_match.group("end")
                 forename_len = int(forename_match.group("len"))
-                new_forename.append(f"{forename_start}{'_'*forename_len}{forename_end}")
-                
+                new_forename.append(f"{forename_start}{'_' * forename_len}{forename_end}")
+
             while surname_match := NAME_TYPE_1_RE.match(surname):
                 surname = surname[surname_match.end():]
                 surname_start = surname_match.group("start")
                 surname_end = surname_match.group("end")
                 surname_len = int(surname_match.group("len"))
-                new_surname.append(f"{surname_start}{'_'*surname_len}{surname_end}")
-                
+                new_surname.append(f"{surname_start}{'_' * surname_len}{surname_end}")
+
             if new_forename:
                 forename = " ".join(new_forename)
                 if context.account_forename and len(context.account_forename) == len(forename):
-                    if context.account_forename.startswith(forename[0]) and \
-                            context.account_forename.endswith(forename[-1]):
+                    if (
+                            context.account_forename.startswith(forename[0]) and
+                            context.account_forename.endswith(forename[-1])
+                    ) or (
+                            (context.account_forename.startswith(forename[0]) or
+                             context.account_forename.endswith(forename[-1])) and
+                            len(forename) == 2
+                    ) or (
+                            len(forename) == 1
+                    ):
                         original_forename = forename
                         forename = context.account_forename
-                
+
             if new_surname:
                 surname = " ".join(new_surname)
                 if context.account_surname and len(context.account_surname) == len(surname):
-                    if context.account_surname.startswith(surname[0]) and \
-                            context.account_surname.endswith(surname[-1]):
+                    if (
+                            context.account_surname.startswith(surname[0]) and
+                            context.account_surname.endswith(surname[-1])
+                    ) or (
+                            (context.account_surname.startswith(surname[0]) or
+                             context.account_surname.endswith(surname[-1])) and
+                            len(surname) == 2
+                    ) or (
+                            len(surname) == 1
+                    ):
                         original_surname = surname
                         surname = context.account_surname
         else:
@@ -282,6 +301,7 @@ class PassengerData:
             original_forename=original_forename,
             original_surname=original_surname
         )
+
 
 @dataclasses.dataclass
 class SpacialValidity:
@@ -300,7 +320,7 @@ class SpacialValidity:
             return cls(
                 definition_type=data[0],
                 organization_id=int.from_bytes(data[1:3], 'big'),
-                area_ids=[int.from_bytes(data[i:i+2], 'big') for i in range(3, len(data), 2)]
+                area_ids=[int.from_bytes(data[i:i + 2], 'big') for i in range(3, len(data), 2)]
             )
         else:
             return UnknownSpacialValidity(
@@ -313,6 +333,7 @@ class SpacialValidity:
 
     def organization_name_opt(self):
         return map_org_id(self.organization_id, True)
+
 
 @dataclasses.dataclass
 class UnknownSpacialValidity:
