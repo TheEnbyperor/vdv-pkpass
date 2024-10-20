@@ -617,10 +617,10 @@ def update_from_subscription_barcode(barcode_data: bytes, account: typing.Option
         ticket_obj = models.Ticket.objects.create(
             pk=ticket_pk,
             last_updated=timezone.now(),
-            account=account,
         )
 
     ticket_obj.ticket_type = decoded_ticket.type()
+    ticket_obj.account = account
     if create_ticket_obj(ticket_obj, barcode_data, decoded_ticket):
         should_update = True
 
