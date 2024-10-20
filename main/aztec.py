@@ -76,7 +76,10 @@ def decode_boofcv(data: bytes) -> bytes:
     return get_encoded_data_from_bits(bits, num_bits)
 
 def decode_zxing(data: bytes) -> bytes:
-    img = PIL.Image.open(io.BytesIO(data))
+    try:
+        img = PIL.Image.open(io.BytesIO(data))
+    except PIL.UnidentifiedImageError as e:
+        raise AztecError("Invalid image data") from e
     code = zxingcpp.read_barcode(img, zxingcpp.Aztec)
     if not code:
         raise AztecError("Failed to decode Aztec")
@@ -85,7 +88,7 @@ def decode_zxing(data: bytes) -> bytes:
 def decode(data: bytes) -> bytes:
     try:
         return decode_boofcv(data)
-    except AztecError as e:
+    except AztecError:
         return decode_zxing(data)
 
 

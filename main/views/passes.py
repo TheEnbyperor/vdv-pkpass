@@ -2,6 +2,7 @@ import datetime
 import json
 import urllib.parse
 import pytz
+import pymupdf
 from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
@@ -22,21 +23,42 @@ def index(request):
             except ValueError:
                 pass
 
-            image_form = forms.TicketImageForm()
+            image_form = forms.TicketUploadForm()
         else:
-            image_form = forms.TicketImageForm(request.POST, request.FILES)
+            image_form = forms.TicketUploadForm(request.POST, request.FILES)
             if image_form.is_valid():
-                image = image_form.cleaned_data["ticket"]
-                if image.size > 16 * 1024 * 1024:
-                    image_form.add_error("ticket", "The image must be less than 16MB")
+                ticket_file = image_form.cleaned_data["ticket"]
+                if ticket_file.size > 16 * 1024 * 1024:
+                    image_form.add_error("ticket", "The ticket must be less than 16MB")
                 else:
-                    image_data = image.read()
-                    try:
-                        ticket_bytes = aztec.decode(image_data)
-                    except aztec.AztecError as e:
-                        image_form.add_error("ticket", str(e))
+                    if ticket_file.content_type != "application/pdf":
+                        try:
+                            ticket_bytes = aztec.decode(ticket_file.read())
+                        except aztec.AztecError as e:
+                            image_form.add_error("ticket", str(e))
+                    else:
+                        try:
+                            pdf = pymupdf.open(stream=ticket_file.read(), filetype=ticket_file.content_type)
+                        except RuntimeError as e:
+                            image_form.add_error("ticket", f"Error opening PDF: {e}")
+                        else:
+                            for page_index in range(len(pdf)):
+                                if ticket_bytes:
+                                    break
+                                for pdf_image in pdf.get_page_images(page_index):
+                                    pdf_image = pdf.extract_image(pdf_image[0])
+                                    try:
+                                        ticket_bytes = aztec.decode(pdf_image["image"])
+                                    except aztec.AztecError:
+                                        continue
+                                    else:
+                                        break
+
+                            if not ticket_bytes:
+                                image_form.add_error("ticket", f"Failed to find any Aztec codes in the PDF")
+
     else:
-        image_form = forms.TicketImageForm()
+        image_form = forms.TicketUploadForm()
 
     if ticket_bytes:
         try:
@@ -467,9 +489,6 @@ def make_pkpass(ticket_obj: models.Ticket):
 
             if len(ticket_data.flex.data.get("travelerDetail", {}).get("traveler", [])) >= 1:
                 passenger = ticket_data.flex.data["travelerDetail"]["traveler"][0]
-                dob_year = passenger.get("yearOfBirth", 0)
-                dob_month = passenger.get("monthOfBirth", 0)
-                dob_day = passenger.get("dayOfBirthInMonth", 0)
                 first_name = passenger.get('firstName', "").strip()
                 last_name = passenger.get('lastName', "").strip()
 
@@ -489,25 +508,30 @@ def make_pkpass(ticket_obj: models.Ticket):
                 else:
                     pass_fields["auxiliaryFields"].append(field_data)
 
-                if dob_year != 0 and dob_month != 0 and dob_day != 0:
+                dob = templatetags.rics.rics_traveler_dob(passenger)
+                if dob:
+                    dob = datetime.datetime.combine(dob, datetime.time.min)
                     pass_fields["secondaryFields"].append({
                         "key": "date-of-birth",
                         "label": "date-of-birth-label",
                         "dateStyle": "PKDateStyleMedium",
-                        "value": f"{dob_year:04d}-{dob_month:02d}-{dob_day:02d}T00:00:00Z",
+                        "value": dob.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     })
-                elif dob_year != 0 and dob_month != 0:
-                    pass_fields["secondaryFields"].append({
-                        "key": "month-of-birth",
-                        "label": "month-of-birth-label",
-                        "value": f"{dob_month:02d}.{dob_year:04d}",
-                    })
-                elif dob_year != 0:
-                    pass_fields["secondaryFields"].append({
-                        "key": "year-of-birth",
-                        "label": "year-of-birth-label",
-                        "value": f"{dob_year:04d}",
-                    })
+                else:
+                    dob_year = passenger.get("yearOfBirth", 0)
+                    dob_month = passenger.get("monthOfBirth", 0)
+                    if dob_year != 0 and dob_month != 0:
+                        pass_fields["secondaryFields"].append({
+                            "key": "month-of-birth",
+                            "label": "month-of-birth-label",
+                            "value": f"{dob_month:02d}.{dob_year:04d}",
+                        })
+                    elif dob_year != 0:
+                        pass_fields["secondaryFields"].append({
+                            "key": "year-of-birth",
+                            "label": "year-of-birth-label",
+                            "value": f"{dob_year:04d}",
+                        })
 
                 if "countryOfResidence" in passenger:
                     pass_fields["secondaryFields"].append({

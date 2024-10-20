@@ -21,3 +21,4 @@ pyjwt
 django-magiclink
 BeautifulSoup4
 zxing-cpp
+PyMuPDF

@@ -4,11 +4,11 @@ from crispy_forms_gds.helper import FormHelper
 from crispy_forms_gds.layout import Submit
 
 
-class TicketImageForm(forms.Form):
-    ticket = forms.ImageField(
+class TicketUploadForm(forms.Form):
+    ticket = forms.FileField(
         label="Your ticket",
         error_messages={
-            "required": "Please upload a ticket image",
+            "required": "Please upload a ticket image or PDF",
         }
     )
 

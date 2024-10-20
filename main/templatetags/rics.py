@@ -172,6 +172,7 @@ def rics_traveler_dob(value):
         if "dayOfBirth" in value:
             birthdate = datetime.date(value.get("yearOfBirth", 0), 1, 1)
             birthdate += datetime.timedelta(days=value["dayOfBirth"]-1)
+            return birthdate
         else:
             return datetime.date(
                 value.get("yearOfBirth", 0),
