@@ -46,7 +46,7 @@ def update_abo_tickets(abo: models.DBSubscription):
     for t in tickets["tickets"]:
         ticket_data = base64.urlsafe_b64decode(t["payload"] + '==')
         ticket_data = json.loads(ticket_data.decode('utf-8'))
-        if "barcode" in ticket_data:
+        if "barcode" in ticket_data and ticket_data["barcode"]:
             barcode_url = ticket_data["barcode"]
         else:
             ticket_layout = bs4.BeautifulSoup(ticket_data["ticketLayoutTemplate"], 'html.parser')
