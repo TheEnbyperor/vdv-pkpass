@@ -357,7 +357,6 @@ def make_pkpass(ticket_obj: models.Ticket):
                     validity_end = templatetags.rics.rics_valid_until_date(document)
 
                     pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-                    pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
 
                     if "cardTypeDescr" in document:
                         pass_fields["headerFields"].append({
@@ -410,7 +409,6 @@ def make_pkpass(ticket_obj: models.Ticket):
                     validity_end = templatetags.rics.rics_valid_until(document, issued_at)
 
                     pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-                    pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
 
                     if "passType" in document:
                         if document["passType"] == 1:
@@ -797,7 +795,6 @@ def make_pkpass(ticket_obj: models.Ticket):
             issued_at = ticket_data.ticket.transaction_time.as_datetime().astimezone(pytz.utc)
 
             pass_json["expirationDate"] = validity_end.strftime("%Y-%m-%dT%H:%M:%SZ")
-            pass_json["relevantDate"] = validity_start.strftime("%Y-%m-%dT%H:%M:%SZ")
             pass_fields = {
                 "headerFields": [{
                     "key": "product",
