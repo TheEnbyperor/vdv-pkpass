@@ -162,10 +162,14 @@ Pass Contents</code></pre>
             const dataInput = document.getElementById("data");
 
             var Barkoder = await BarkoderSDK.initialize("PEmBIohr9EZXgCkySoetbwP4gvOfMcGzgxKPL2X6uqOYS_kq3Dg29ETQUylj0B7tX0Qjf7OADh49UOuXd3lLay9853Akr1i-RGjOaTUVnYXgcwJWDlQCw_hdEoq8mlpW6kE-OCxLu1sGWWMK2cxflKL4Dgvjdq1BbCIZxwsuRb2EqVTF0JY2DkwXSr4Fi565lAIMd6_gBbiQyuOnj_zXYTFyR4N1z9k_1kB2PBw_12mdDPzmCvSLqq4Qsi6d3qX8HzYwjSmZ7zXXusyhtoTqo1imBWSoXlGEyRJPij4cdKr9frbzqPZ-EOdcHopW_YhN0LOjJOKc4ugS9gVtjgSZTQ..");
-            
+
             Barkoder.setEnabledDecoders(
                 Barkoder.constants.Decoders.Aztec,
                 Barkoder.constants.Decoders.AztecCompact,
+                Barkoder.constants.Decoders.QR,
+                Barkoder.constants.Decoders.QRMicro,
+                Barkoder.constants.Decoders.PDF417,
+                Barkoder.constants.Decoders.PDF417Micro,
             );
             Barkoder.setCameraResolution(Barkoder.constants.CameraResolution.FHD);
             Barkoder.setDecodingSpeed(Barkoder.constants.DecodingSpeed.Normal);

@@ -19,6 +19,10 @@ def decode(img_data: bytes):
     decoders = [
         BarkoderSDK.constants["Decoders"]["Aztec"],
         BarkoderSDK.constants["Decoders"]["AztecCompact"],
+        BarkoderSDK.constants["Decoders"]["QR"],
+        BarkoderSDK.constants["Decoders"]["QRMicro"],
+        BarkoderSDK.constants["Decoders"]["PDF417"],
+        BarkoderSDK.constants["Decoders"]["PDF417Micro"],
     ]
     BarkoderSDK.setEnabledDecoders(decoders, len(decoders))
     BarkoderSDK.setDecodingSpeed(BarkoderSDK.constants["DecodingSpeed"]["Normal"])
