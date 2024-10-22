@@ -1017,6 +1017,7 @@ RICS_LOGO = {
     1184: "pass/logo-ns.png",
     1186: "pass/logo-dsb.png",
     1251: "pass/logo-pkp-ic.png",
+    3509: "pass/logo-ret.png",
     9901: "pass/logo-interrail.png",
 }
 
@@ -1025,6 +1026,7 @@ UIC_NAME_LOGO = {
 }
 
 VDV_ORG_ID_LOGO = {
+    35: "pass/logo-hvv.png",
     36: "pass/logo-rmv.png",
     57: "pass/logo-dsw.png",
     77: "pass/logo-wt.png",
