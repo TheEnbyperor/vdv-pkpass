@@ -28,7 +28,7 @@ def decode(img_data: bytes):
     BarkoderSDK.setDecodingSpeed(BarkoderSDK.constants["DecodingSpeed"]["Normal"])
 
     img = cv2.imdecode(np.asarray(bytearray(img_data), dtype="uint8"), cv2.IMREAD_GRAYSCALE)
-    if not img:
+    if img is None:
         raise AztecError("Unable to read image")
 
     height, width = img.shape[:2]
