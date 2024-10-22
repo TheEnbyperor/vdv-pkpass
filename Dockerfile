@@ -3,7 +3,8 @@ FROM python:3.12
 RUN mkdir /app
 RUN useradd app
 WORKDIR /app
-RUN apt-get update && apt-get install -y openjdk-17-jre-headless libldap2-dev libssl-dev libsasl2-dev pkg-config && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openjdk-17-jre-headless libldap2-dev libssl-dev libsasl2-dev libgl1 pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 RUN pip install -U pip
 
 COPY requirements.txt /app/
