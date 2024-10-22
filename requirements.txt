@@ -20,5 +20,5 @@ iso3166
 pyjwt
 django-magiclink
 BeautifulSoup4
-zxing-cpp
 PyMuPDF
+opencv-python
