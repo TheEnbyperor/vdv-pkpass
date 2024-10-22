@@ -204,6 +204,8 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = "VDV PKPass <noreply@magicalcodewit.ch>"
 
+BARKODER_LICENSE = "0MHXR8cuvoJT62F-vUCcqMQR74K0988ixUjSf_DnucZlrv_DJTneGfAh1avJBr72P0VecEQGK5JHDH0FmfI_Lp8PdEdFGLDlQzT_axGBusQQWRt4-vYYaAyxrCvqtGWZIVN6jhCiyvQ7fndQ7oDAwhdpufGp1KH2tYFeNfif84DE8anuMEXfTOGUjN3jfEu1"
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
