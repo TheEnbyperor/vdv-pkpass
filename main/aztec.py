@@ -10,32 +10,32 @@ class AztecError(Exception):
 
 def decode(img_data: bytes):
     try:
-        from Barkoder import BarkoderSDK
+        import Barkoder
     except ImportError:
         raise AztecError("Barkoder SDK not available")
 
-    BarkoderSDK.initialize(settings.BARKODER_LICENSE)
+    cfg_response = Barkoder.Config.InitializeWithLicenseKey(settings.BARKODER_LICENSE)
+    assert cfg_response.get_result() == Barkoder.ConfigResult.OK
+    config = cfg_response.get_config()
 
-    decoders = [
-        BarkoderSDK.constants["Decoders"]["Aztec"],
-        BarkoderSDK.constants["Decoders"]["AztecCompact"],
-        BarkoderSDK.constants["Decoders"]["QR"],
-        BarkoderSDK.constants["Decoders"]["QRMicro"],
-        BarkoderSDK.constants["Decoders"]["PDF417"],
-        BarkoderSDK.constants["Decoders"]["PDF417Micro"],
-    ]
-    BarkoderSDK.setEnabledDecoders(decoders, len(decoders))
-    BarkoderSDK.setDecodingSpeed(BarkoderSDK.constants["DecodingSpeed"]["Normal"])
+    config.decodingSpeed = Barkoder.DecodingSpeed.Normal
+    assert config.set_enabled_decoders([
+        Barkoder.DecoderType.Aztec,
+        Barkoder.DecoderType.AztecCompact,
+        Barkoder.DecoderType.QR,
+        Barkoder.DecoderType.QRMicro,
+        Barkoder.DecoderType.PDF417,
+        Barkoder.DecoderType.PDF417Micro,
+    ]).get_result() == Barkoder.ConfigResult.OK
 
     img = cv2.imdecode(np.asarray(bytearray(img_data), dtype="uint8"), cv2.IMREAD_GRAYSCALE)
     if img is None:
         raise AztecError("Unable to read image")
 
     height, width = img.shape[:2]
-    result_json = BarkoderSDK.decodeImage(img, width, height)
-    result = json.loads(result_json)
+    results = Barkoder.Barkoder.DecodeImageMemory(config, img, height, width)
 
-    if result["resultsCount"] > 0:
-        return bytes(result["binaryData"])
+    if len(results) > 0:
+        return bytes(results[0].binaryData)
     else:
         raise AztecError("No barcodes found")
