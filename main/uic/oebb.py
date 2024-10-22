@@ -19,7 +19,7 @@ class OeBBRecord99:
         if version != 1:
             raise OeBBException(f"Unsupported record version {version}")
 
-        tz = pytz.timezone("Europe/Vienna")
+        tz = pytz.UTC
 
         try:
             data = json.loads(data.decode("utf-8"))
