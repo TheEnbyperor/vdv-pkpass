@@ -73,8 +73,8 @@
         </svg>
     </button>
 
-    <div id="video-container" style="display: none;">
-        <video id="video" width="100%" height="300" style="border: 1px solid gray"></video>
+    <div id="video-container" style="display: none;" class="govuk-!-margin-bottom-4">
+        <div id="barkoder-container" style="width: 100%; height: 450px;"></div>
     </div>
 
     <form action="" method="post" style="display: none" id="scan-form">
@@ -155,114 +155,40 @@ Pass Contents</code></pre>
     </div>
 
     <script>
-        function ready() {
-            const codeReader = new ZXing.BrowserAztecCodeReader();
-
+        async function barkoderInit() {
             const scanButton = document.getElementById("scan-button");
             const videoContainer = document.getElementById("video-container");
             const scanForm = document.getElementById("scan-form");
             const dataInput = document.getElementById("data");
 
-            let videoDeviceId = null;
+            var Barkoder = await BarkoderSDK.initialize("0MHXR8cuvoJT62F-vUCcqMQR74K0988ixUjSf_DnucZlrv_DJTneGfAh1avJBr72P0VecEQGK5JHDH0FmfI_Lp8PdEdFGLDlQzT_axGBusQQWRt4-vYYaAyxrCvqtGWZIVN6jhCiyvQ7fndQ7oDAwhdpufGp1KH2tYFeNfif84DE8anuMEXfTOGUjN3jfEu1");
 
-            codeReader.listVideoInputDevices()
-                .then((videoInputDevices) => {
-                    console.log("Detected " + videoInputDevices.length + " video sources");
-                    if (videoInputDevices.length >= 1) {
-                        videoDeviceId = videoInputDevices[0].deviceId;
-                        scanButton.disabled = false;
-                    }
-                });
+            Barkoder.setEnabledDecoders(
+                Barkoder.constants.Decoders.Aztec,
+                Barkoder.constants.Decoders.AztecCompact,
+            );
+            Barkoder.setCameraResolution(Barkoder.constants.CameraResolution.FHD);
+            Barkoder.setDecodingSpeed(Barkoder.constants.DecodingSpeed.Normal);
+            Barkoder.setCloseEnabled(false);
+            Barkoder.setContinuous(false);
 
-            scanButton.addEventListener('click', () => {
-                codeReader.decodeFromVideoDevice(videoDeviceId, 'video', (result) => {
-                    if (result) {
-                        console.log(result);
-                        codeReader.stopContinuousDecode();
-                        videoContainer.style.display = "none";
-                        const rawBytes = getEncodedData(result)
-                        const hexOctets = new Array(rawBytes.length * 2);
-                        for (let i = 0; i < rawBytes.length; ++i)
-                            hexOctets.push(("0" + rawBytes[i].toString(16)).slice(-2));
-                        dataInput.value = hexOctets.join("");
-                        console.log(dataInput.value);
-                        scanForm.submit();
-                    }
-                })
+            scanButton.addEventListener('click', function () {
                 videoContainer.style.display = "block";
+                Barkoder.startScanner(function (result) {
+                    videoContainer.style.display = "none";
+                    const rawBytes = result.binaryData;
+                    const hexOctets = new Array(rawBytes.length * 2);
+                    for (let i = 0; i < rawBytes.length; ++i)
+                        hexOctets.push(("0" + rawBytes[i].toString(16)).slice(-2));
+                    dataInput.value = hexOctets.join("");
+                    console.log(dataInput.value);
+                    scanForm.submit();
+                });
             });
+
+            scanButton.disabled = false;
         }
 
-        window.addEventListener('load', ready);
-
-        UPPER = 0;
-        LOWER = 1;
-        MIXED = 2;
-        DIGIT = 3;
-        PUNCT = 4;
-        BINARY = 5;
-
-        function getEncodedData(result) {
-            let correctedBits = [];
-            let endIndex = result.getNumBits();
-            for (let i = 0; i < endIndex; i++) {
-                let byte = result.rawBytes[Math.floor(i / 8)];
-                correctedBits.push((byte >> (7 - (i % 8)) & 1) === 1);
-            }
-            return getEncodedDataBits(correctedBits)
-        }
-
-        function getEncodedDataBits(correctedBits) {
-            let latchTable = UPPER;
-            let shiftTable = UPPER;
-            let output = [];
-            let index = 0;
-            let endIndex = correctedBits.length;
-            while (index < endIndex) {
-                if (shiftTable === BINARY) {
-                    if (endIndex - index < 5) {
-                        break;
-                    }
-                    let length = ZXing.AztecDecoder.readCode(correctedBits, index, 5);
-                    index += 5;
-                    if (length === 0) {
-                        if (endIndex - index < 11) {
-                            break;
-                        }
-                        length = ZXing.AztecDecoder.readCode(correctedBits, index, 11) + 31;
-                        index += 11;
-                    }
-                    for (let charCount = 0; charCount < length; charCount++) {
-                        if (endIndex - index < 8) {
-                            index = endIndex;
-                            break;
-                        }
-                        const code = ZXing.AztecDecoder.readCode(correctedBits, index, 8);
-                        output.push(code);
-                        index += 8;
-                    }
-                    shiftTable = latchTable;
-                } else {
-                    let size = shiftTable === DIGIT ? 4 : 5;
-                    if (endIndex - index < size) {
-                        break;
-                    }
-                    let code = ZXing.AztecDecoder.readCode(correctedBits, index, size);
-                    index += size;
-                    let str = ZXing.AztecDecoder.getCharacter(shiftTable, code);
-                    if (str.startsWith('CTRL_')) {
-                        latchTable = shiftTable;
-                        shiftTable = ZXing.AztecDecoder.getTable(str.charAt(5));
-                        if (str.charAt(6) === 'L') {
-                            latchTable = shiftTable;
-                        }
-                    } else {
-                        output.push(str.charCodeAt(0));
-                        shiftTable = latchTable;
-                    }
-                }
-            }
-            return output;
-        }
+        window.addEventListener('load', barkoderInit);
     </script>
 {% endblock content %}
