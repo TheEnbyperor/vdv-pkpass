@@ -138,16 +138,6 @@
                                                         </dd>
                                                     </div>
                                                     <div class="govuk-summary-list__row">
-                                                        <dt class="govuk-summary-list__key">Key agreement</dt>
-                                                        <dd class="govuk-summary-list__value">
-                                                            {% if ext.value.key_agreement %}
-                                                                <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
-                                                            {% else %}
-                                                                <strong class="govuk-tag govuk-tag--red">{% trans "No" %}</strong>
-                                                            {% endif %}
-                                                        </dd>
-                                                    </div>
-                                                    <div class="govuk-summary-list__row">
                                                         <dt class="govuk-summary-list__key">Certificate signing</dt>
                                                         <dd class="govuk-summary-list__value">
                                                             {% if ext.value.key_cert_sign %}
@@ -168,25 +158,37 @@
                                                         </dd>
                                                     </div>
                                                     <div class="govuk-summary-list__row">
-                                                        <dt class="govuk-summary-list__key">Encipher only</dt>
+                                                        <dt class="govuk-summary-list__key">Key agreement</dt>
                                                         <dd class="govuk-summary-list__value">
-                                                            {% if ext.value.encipher_only %}
+                                                            {% if ext.value.key_agreement %}
                                                                 <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
                                                             {% else %}
                                                                 <strong class="govuk-tag govuk-tag--red">{% trans "No" %}</strong>
                                                             {% endif %}
                                                         </dd>
                                                     </div>
-                                                    <div class="govuk-summary-list__row">
-                                                        <dt class="govuk-summary-list__key">Decipher only</dt>
-                                                        <dd class="govuk-summary-list__value">
-                                                            {% if ext.value.decipher_only %}
-                                                                <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
-                                                            {% else %}
-                                                                <strong class="govuk-tag govuk-tag--red">{% trans "No" %}</strong>
-                                                            {% endif %}
-                                                        </dd>
-                                                    </div>
+                                                    {% if ext.value.key_agreement %}
+                                                        <div class="govuk-summary-list__row">
+                                                            <dt class="govuk-summary-list__key">Encipher only</dt>
+                                                            <dd class="govuk-summary-list__value">
+                                                                {% if ext.value.encipher_only %}
+                                                                    <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
+                                                                {% else %}
+                                                                    <strong class="govuk-tag govuk-tag--red">{% trans "No" %}</strong>
+                                                                {% endif %}
+                                                            </dd>
+                                                        </div>
+                                                        <div class="govuk-summary-list__row">
+                                                            <dt class="govuk-summary-list__key">Decipher only</dt>
+                                                            <dd class="govuk-summary-list__value">
+                                                                {% if ext.value.decipher_only %}
+                                                                    <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
+                                                                {% else %}
+                                                                    <strong class="govuk-tag govuk-tag--red">{% trans "No" %}</strong>
+                                                                {% endif %}
+                                                            </dd>
+                                                        </div>
+                                                    {% endif %}
                                                 </dl>
                                             </dd>
                                         </div>
@@ -373,31 +375,41 @@
                                                         {% if stmt.0 == "qc_compliance" %}
                                                             <div class="govuk-summary-list__row">
                                                                 <dt class="govuk-summary-list__key">
-                                                                    Qualified Certificate per Regulation (EU) No 910/2014
+                                                                    Qualified Certificate per Regulation (EU) No
+                                                                    910/2014
                                                                 </dt>
                                                                 <dd class="govuk-summary-list__value"></dd>
                                                             </div>
                                                         {% elif stmt.0 == "qc_monetary_value" %}
                                                             <div class="govuk-summary-list__row">
-                                                                <dt class="govuk-summary-list__key">Maximum Monetary Value</dt>
+                                                                <dt class="govuk-summary-list__key">Maximum Monetary
+                                                                    Value
+                                                                </dt>
                                                                 <dd class="govuk-summary-list__value">
                                                                     {{ stmt.1.value }} {{ stmt.1.currency_code }}
                                                                 </dd>
                                                             </div>
                                                         {% elif stmt.0 == "qc_pds_loc" %}
                                                             <div class="govuk-summary-list__row">
-                                                                <dt class="govuk-summary-list__key">PKI Disclosure Statements</dt>
+                                                                <dt class="govuk-summary-list__key">PKI Disclosure
+                                                                    Statements
+                                                                </dt>
                                                                 <dd class="govuk-summary-list__value">
                                                                     <ul>
                                                                         {% for loc in stmt.1 %}
-                                                                            <li><a href="{{ loc.url }}">{{ loc.url }}</a> ({{ loc.language }})</li>
+                                                                            <li>
+                                                                                <a href="{{ loc.url }}">{{ loc.url }}</a>
+                                                                                ({{ loc.language }})
+                                                                            </li>
                                                                         {% endfor %}
                                                                     </ul>
                                                                 </dd>
                                                             </div>
                                                         {% elif stmt.0 == "qc_legislation" %}
                                                             <div class="govuk-summary-list__row">
-                                                                <dt class="govuk-summary-list__key">Issued under the legislation of</dt>
+                                                                <dt class="govuk-summary-list__key">Issued under the
+                                                                    legislation of
+                                                                </dt>
                                                                 <dd class="govuk-summary-list__value">
                                                                     <ul>
                                                                         {% for cc in stmt.1 %}
@@ -408,7 +420,8 @@
                                                             </div>
                                                         {% elif stmt.0 == "rfc3739_semantics" %}
                                                             <div class="govuk-summary-list__row">
-                                                                <dt class="govuk-summary-list__key">RFC3739 Semantics</dt>
+                                                                <dt class="govuk-summary-list__key">RFC3739 Semantics
+                                                                </dt>
                                                                 <dd class="govuk-summary-list__value">
                                                                     {% if stmt.1.id %}
                                                                         {{ stmt.1.id|oid }}
@@ -417,7 +430,9 @@
                                                             </div>
                                                         {% elif stmt.0 == "ua_digital_sig_law" %}
                                                             <div class="govuk-summary-list__row">
-                                                                <dt class="govuk-summary-list__key">Issued under the Ukrainian Digital Signature Law</dt>
+                                                                <dt class="govuk-summary-list__key">Issued under the
+                                                                    Ukrainian Digital Signature Law
+                                                                </dt>
                                                                 <dd class="govuk-summary-list__value"></dd>
                                                             </div>
                                                         {% else %}
