@@ -1,8 +1,8 @@
 {% load i18n rics %}
-<h2 class="govuk-heading-m">České dráhy ticket</h2>
+<h2 class="govuk-heading-m">{% trans "České dráhy ticket" %}</h2>
 <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">PNR</dt>
+        <dt class="govuk-summary-list__key">{% trans "PNR" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.pnr }}</dd>
     </div>
     <div class="govuk-summary-list__row">

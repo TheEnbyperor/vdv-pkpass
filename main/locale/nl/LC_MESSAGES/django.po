@@ -1597,7 +1597,7 @@ msgstr "versie"
 
 #: templates/main/uic_ndef_read.html:4
 msgid "Read UIC NDEF"
-msgstr ""
+msgstr "UIC NDEF lezen"
 
 #: templates/main/vdv_elements.html:7
 msgid "Basic data"

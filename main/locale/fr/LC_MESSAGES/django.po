@@ -904,15 +904,15 @@ msgstr "Valide jusqu'au"
 #: templates/main/mav.html:153 templates/main/mav.html:222
 #: templates/main/mav.html:259
 msgid "Number of passengers"
-msgstr ""
+msgstr "Nombre de passagers"
 
 #: templates/main/mav.html:157
 msgid "Passengers type"
-msgstr ""
+msgstr "Type de passagers"
 
 #: templates/main/mav.html:167
 msgid "Seat reservation"
-msgstr ""
+msgstr "Réservation de siège"
 
 #: templates/main/mav.html:201
 msgid "Operator"
@@ -920,15 +920,15 @@ msgstr ""
 
 #: templates/main/mav.html:208
 msgid "Operator RICS"
-msgstr ""
+msgstr "RICS de l'opérateur"
 
 #: templates/main/mav.html:214
 msgid "Train"
-msgstr ""
+msgstr "Train"
 
 #: templates/main/mav.html:218
 msgid "Departure"
-msgstr ""
+msgstr "Départ"
 
 #: templates/main/mav.html:227 templates/main/ssb/irt.html:88
 msgid "Coach"
@@ -1082,7 +1082,7 @@ msgstr "Données SNCF"
 
 #: templates/main/ssb/nrt.html:200
 msgid "Network"
-msgstr ""
+msgstr "Réseau"
 
 #: templates/main/ssb/nrt.html:232
 msgid "Contract provider"
@@ -1098,11 +1098,11 @@ msgstr ""
 
 #: templates/main/ssb/nrt.html:251
 msgid "Via"
-msgstr ""
+msgstr "Via"
 
 #: templates/main/ssb/nrt.html:265
 msgid "Validity zones"
-msgstr ""
+msgstr "Zones de validité"
 
 #: templates/main/ssb/nrt.html:282
 msgid "Payment method"
@@ -1432,7 +1432,7 @@ msgstr "Signataire"
 
 #: templates/main/uic/cd.html:193
 msgid "Travel type"
-msgstr ""
+msgstr "Type de déplacement"
 
 #: templates/main/uic/cd.html:207
 msgid "Linked validation required"
@@ -1444,7 +1444,7 @@ msgstr ""
 
 #: templates/main/uic/delay_confirmation.html:43
 msgid "Train cancelled"
-msgstr ""
+msgstr "Train annulé"
 
 #: templates/main/uic/fpd.html:6 templates/main/vdv_ticket_details.html:14
 #: templates/main/vdv_ticket_details.html:252
@@ -1453,7 +1453,7 @@ msgstr "Identifiant"
 
 #: templates/main/uic/fpd.html:22
 msgid "Issuer organisation code"
-msgstr ""
+msgstr "Code d'organisation émettrice"
 
 #: templates/main/uic/fpd.html:29
 msgid "Issuer ERA code"
@@ -1461,7 +1461,7 @@ msgstr ""
 
 #: templates/main/uic/fpd.html:34
 msgid "Issuer code"
-msgstr ""
+msgstr "Code d'émetteur"
 
 #: templates/main/uic/fpd.html:53
 msgid "Affixed to"
@@ -1469,7 +1469,7 @@ msgstr ""
 
 #: templates/main/uic/fpd.html:59
 msgid "Vehicle"
-msgstr ""
+msgstr "Véhicule"
 
 #: templates/main/uic/fpd.html:65
 msgid "European Vehicle Number"
@@ -1559,7 +1559,7 @@ msgstr "Billet non signé"
 
 #: templates/main/uic/ticket_details.html:211
 msgid "Level 2 key algorithm"
-msgstr "Algorithme de clé de niveau 1"
+msgstr "Algorithme de clé de niveau 2"
 
 #: templates/main/uic/ticket_details.html:217
 msgid "Level 2 signature algorithm"
@@ -1584,11 +1584,11 @@ msgstr "Billet international"
 
 #: templates/main/uic/ticket_details.html:307
 msgid "Edited by agent"
-msgstr "Modifié par un agent"
+msgstr "Modifié par un&middot;e agent&middot;e"
 
 #: templates/main/uic/ticket_details.html:336
 msgid "Second language"
-msgstr "Seconde langue"
+msgstr "Langue secondaire"
 
 #: templates/main/uic/ticket_details.html:425
 #: templates/main/uic/ticket_details.html:439
@@ -1601,7 +1601,7 @@ msgstr "version"
 
 #: templates/main/uic_ndef_read.html:4
 msgid "Read UIC NDEF"
-msgstr ""
+msgstr "Lire le NDEF UIC"
 
 #: templates/main/vdv_elements.html:7
 msgid "Basic data"
@@ -1691,7 +1691,9 @@ msgstr "Genre"
 msgid ""
 "Spatial validity - variant\n"
 "                            %(variant)s"
-msgstr "Zone de validité - variante %(variant)s"
+msgstr ""
+"Zone de validité - variante\n"
+"                            %(variant)s"
 
 #: templates/main/vdv_elements.html:242 templates/main/vdv_elements.html:352
 #: templates/main/vdv_elements.html:427
