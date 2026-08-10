@@ -1,29 +1,29 @@
 <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Name</dt>
+        <dt class="govuk-summary-list__key">{% trans "Name" %}</dt>
         <dd class="govuk-summary-list__value">{{ airline.Airline_Name }}</dd>
     </div>
     {% if airline.IATA_Code %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">IATA Code</dt>
+            <dt class="govuk-summary-list__key">{% trans "IATA Code" %}</dt>
             <dd class="govuk-summary-list__value"><code>{{ airline.IATA_Code }}</code></dd>
         </div>
     {% endif %}
     {% if airline.ICAO_Code %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">ICAO Code</dt>
+            <dt class="govuk-summary-list__key">{% trans "ICAO Code" %}</dt>
             <dd class="govuk-summary-list__value"><code>{{ airline.ICAO_Code }}</code></dd>
         </div>
     {% endif %}
     {% if airline.Callsign %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Callsign</dt>
+            <dt class="govuk-summary-list__key">{% trans "Callsign" %}</dt>
             <dd class="govuk-summary-list__value">{{ airline.Callsign }}</dd>
         </div>
     {% endif %}
     {% if airline.Country %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Country</dt>
+            <dt class="govuk-summary-list__key">{% trans "Country" %}</dt>
             <dd class="govuk-summary-list__value">{{ airline.Country }}</dd>
         </div>
     {% endif %}

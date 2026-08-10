@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 13:00+0000\n"
+"POT-Creation-Date: 2026-08-09 13:12-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,9 +138,15 @@ msgstr "BahnBonus"
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: templates/main/404.html:4
+#: templates/main/404.html:4 templates/main/404.html:10
 msgid "Page not found"
 msgstr "Seite nicht gefunden"
+
+#: templates/main/404.html:12
+msgid ""
+"If you typed the web address, check it is correct. If you pasted the web "
+"address, check you copied the entire address."
+msgstr ""
 
 #: templates/main/account/avv.html:4 templates/main/account/index.html:99
 #: templates/main/base.html:162
@@ -414,6 +420,7 @@ msgid "Ticket ID"
 msgstr "Ticket-ID"
 
 #: templates/main/adif.html:24 templates/main/ssb/irt.html:82
+#: templates/main/ssb/sz.html:212
 msgid "Train number"
 msgstr "Zugnummer"
 
@@ -550,8 +557,8 @@ msgstr ""
 #: templates/main/x509/cert.html:114 templates/main/x509/cert.html:124
 #: templates/main/x509/cert.html:134 templates/main/x509/cert.html:144
 #: templates/main/x509/cert.html:154 templates/main/x509/cert.html:164
-#: templates/main/x509/cert.html:174 templates/main/x509/cert.html:184
-#: templates/main/x509/cert.html:211
+#: templates/main/x509/cert.html:175 templates/main/x509/cert.html:185
+#: templates/main/x509/cert.html:213
 msgid "Yes"
 msgstr "Ja"
 
@@ -583,8 +590,8 @@ msgstr "Ja"
 #: templates/main/x509/cert.html:116 templates/main/x509/cert.html:126
 #: templates/main/x509/cert.html:136 templates/main/x509/cert.html:146
 #: templates/main/x509/cert.html:156 templates/main/x509/cert.html:166
-#: templates/main/x509/cert.html:176 templates/main/x509/cert.html:186
-#: templates/main/x509/cert.html:213
+#: templates/main/x509/cert.html:177 templates/main/x509/cert.html:187
+#: templates/main/x509/cert.html:215
 msgid "No"
 msgstr "Nein"
 
@@ -837,7 +844,8 @@ msgid "Issuing time"
 msgstr "Ausgabezeit"
 
 #: templates/main/mav.html:32 templates/main/ssb/nrt.html:158
-#: templates/main/ssb/nrt.html:276 templates/main/vdv_elements.html:125
+#: templates/main/ssb/nrt.html:276 templates/main/ssb/sz.html:175
+#: templates/main/vdv_elements.html:125
 msgid "Price"
 msgstr "Preis"
 
@@ -894,16 +902,19 @@ msgstr ""
 
 #: templates/main/mav.html:141 templates/main/ssb/cd.html:42
 #: templates/main/ssb/irt.html:46 templates/main/ssb/nrt.html:42
+#: templates/main/ssb/sz.html:21
 msgid "Travel class"
 msgstr "Klasse"
 
 #: templates/main/mav.html:145 templates/main/mav.html:251
 #: templates/main/ssb/cd.html:59 templates/main/ssb/nrt.html:59
+#: templates/main/ssb/sz.html:51
 msgid "Valid from"
 msgstr "Gültig vom"
 
 #: templates/main/mav.html:149 templates/main/mav.html:255
 #: templates/main/ssb/cd.html:63 templates/main/ssb/nrt.html:63
+#: templates/main/ssb/sz.html:55
 msgid "Valid until"
 msgstr "Gültig bis"
 
@@ -966,6 +977,14 @@ msgstr "Fahrgasttyp"
 
 #: templates/main/nfc_index.html:4
 msgid "NFC Bridge"
+msgstr ""
+
+#: templates/main/ssb/cd.html:2
+msgid "České dráhy ticket"
+msgstr ""
+
+#: templates/main/ssb/cd.html:5
+msgid "PNR"
 msgstr ""
 
 #: templates/main/ssb/cd.html:9 templates/main/ssb/irt.html:9
@@ -1080,7 +1099,8 @@ msgstr ""
 "link\">Fügen Sie Ihren Namen zu Ihrem Konto hinzu</a>, um Ihren "
 "vollständigen Namen auf Ihrem Ticket anzuzeigen"
 
-#: templates/main/ssb/nrt.html:111 templates/main/vdv_ticket_details.html:52
+#: templates/main/ssb/nrt.html:111 templates/main/ssb/sz.html:13
+#: templates/main/vdv_ticket_details.html:52
 msgid "Product"
 msgstr "Produkt"
 
@@ -1092,7 +1112,7 @@ msgstr "Produkt"
 msgid "ČD Data"
 msgstr "ČD-Daten"
 
-#: templates/main/ssb/nrt.html:166
+#: templates/main/ssb/nrt.html:166 templates/main/ssb/sz.html:114
 msgid "Distance"
 msgstr ""
 
@@ -1142,6 +1162,132 @@ msgstr ""
 
 #: templates/main/ssb/nrt.html:306
 msgid "Route constraint"
+msgstr ""
+
+#: templates/main/ssb/sz.html:2
+msgid "Slovenske železnice ticket"
+msgstr ""
+
+#: templates/main/ssb/sz.html:5
+#, fuzzy
+#| msgid "Passenger Type"
+msgid "Format type"
+msgstr "Fahrgasttyp"
+
+#: templates/main/ssb/sz.html:9
+#, fuzzy
+#| msgid "Tariff points"
+msgid "Tariff location ID"
+msgstr "Tarifpunkte"
+
+#: templates/main/ssb/sz.html:17
+#, fuzzy
+#| msgid "Price Level"
+msgid "Price level"
+msgstr "Preisstufe"
+
+#: templates/main/ssb/sz.html:25 templates/main/ssb/sz.html:151
+msgid "Unique ID"
+msgstr ""
+
+#: templates/main/ssb/sz.html:29
+#, fuzzy
+#| msgid "Booking number"
+msgid "Bill number"
+msgstr "Buchungsnummer"
+
+#: templates/main/ssb/sz.html:33
+msgid "Unit price"
+msgstr ""
+
+#: templates/main/ssb/sz.html:37
+msgid "Total price"
+msgstr ""
+
+#: templates/main/ssb/sz.html:41
+#, fuzzy
+#| msgid "Number of adults"
+msgid "Number of travellers"
+msgstr "Erwachsene"
+
+#: templates/main/ssb/sz.html:46
+#, fuzzy
+#| msgid "Ticket ID"
+msgid "Discount ID"
+msgstr "Ticket-ID"
+
+#: templates/main/ssb/sz.html:59
+#, fuzzy
+#| msgid "Security provider"
+msgid "Service provider"
+msgstr "Sicherheitsanbieter"
+
+#: templates/main/ssb/sz.html:64
+#, fuzzy
+#| msgid "Salutation"
+msgid "Stations"
+msgstr "Anrede"
+
+#: templates/main/ssb/sz.html:94
+#, fuzzy
+#| msgid "Station code table"
+msgid "Station type"
+msgstr "Haltestellen Code Tabelle"
+
+#: templates/main/ssb/sz.html:100 templates/main/uic/fpd.html:6
+#: templates/main/vdv_ticket_details.html:14
+#: templates/main/vdv_ticket_details.html:252
+msgid "ID"
+msgstr "ID"
+
+#: templates/main/ssb/sz.html:118
+msgid "One way"
+msgstr ""
+
+#: templates/main/ssb/sz.html:128
+#, fuzzy
+#| msgid "Train number"
+msgid "Reprint number"
+msgstr "Zugnummer"
+
+#: templates/main/ssb/sz.html:133
+#, fuzzy
+#| msgid "Extra text"
+msgid "Extras"
+msgstr "Weiterer Text"
+
+#: templates/main/ssb/sz.html:145
+#, fuzzy
+#| msgid "Type Code"
+msgid "Type of addon"
+msgstr "Typencode"
+
+#: templates/main/ssb/sz.html:157
+msgid "Extension type"
+msgstr ""
+
+#: templates/main/ssb/sz.html:163
+msgid "Extension train type"
+msgstr ""
+
+#: templates/main/ssb/sz.html:169
+#, fuzzy
+#| msgid "Product"
+msgid "Product ID"
+msgstr "Produkt"
+
+#: templates/main/ssb/sz.html:181 templates/main/vdv_elements.html:258
+msgid "Start station"
+msgstr "Starthaltestelle"
+
+#: templates/main/ssb/sz.html:193
+#, fuzzy
+#| msgid "End stations"
+msgid "End station"
+msgstr "Endhaltestelle"
+
+#: templates/main/ssb/sz.html:205
+msgid "Date"
 msgstr ""
 
 #: templates/main/ssb_ticket_details.html:3
@@ -1319,6 +1465,7 @@ msgid "No instances found for this ticket."
 msgstr "Für dieses Ticket wurden keine Instanzen gefunden"
 
 #: templates/main/ticket.html:268
+#, python-format
 msgid "VDV Ticket #%(id)s"
 msgstr "VDV-Ticket #%(id)s"
 
@@ -1359,6 +1506,7 @@ msgid "Type"
 msgstr "Typ"
 
 #: templates/main/ticket.html:342
+#, python-format
 msgid ""
 "FlexiTicket #\n"
 "                                        %(id)s"
@@ -1367,6 +1515,7 @@ msgstr ""
 "                                        %(id)s"
 
 #: templates/main/ticket.html:358
+#, python-format
 msgid "SNCF Ticket #%(id)s"
 msgstr "SNCF-Ticket #%(id)s"
 
@@ -1386,34 +1535,42 @@ msgstr ""
 "                                        %(seq)s"
 
 #: templates/main/ticket.html:394
+#, python-format
 msgid "SSB Ticket #%(id)s"
 msgstr "SSB-Ticket #%(id)s"
 
 #: templates/main/ticket.html:413
+#, python-format
 msgid "SSBv1 Ticket #%(id)s"
 msgstr "SSBv1-Ticket #%(id)s"
 
 #: templates/main/ticket.html:432
+#, python-format
 msgid "HŽPP Ticket #%(id)s"
 msgstr "HŽPP-Ticket #%(id)s"
 
 #: templates/main/ticket.html:446
+#, python-format
 msgid "SwissPass Ticket #%(id)s"
 msgstr "SwissPass-Ticket #%(id)s"
 
 #: templates/main/ticket.html:460
+#, python-format
 msgid "IATA Ticket #%(id)s"
 msgstr "IATA-Ticket #%(id)s"
 
 #: templates/main/ticket.html:489
+#, python-format
 msgid "TS2 Ticket #%(id)s"
 msgstr "TS2-Ticket #%(id)s"
 
 #: templates/main/ticket.html:519
+#, python-format
 msgid "ADIF Ticket #%(id)s"
 msgstr "ADIF-Ticket #%(id)s"
 
 #: templates/main/ticket.html:536
+#, python-format
 msgid "MÁV Ticket #%(id)s"
 msgstr "MÁV-Ticket #%(id)s"
 
@@ -1472,11 +1629,6 @@ msgstr "Tarifpunkte"
 #: templates/main/uic/delay_confirmation.html:43
 msgid "Train cancelled"
 msgstr ""
-
-#: templates/main/uic/fpd.html:6 templates/main/vdv_ticket_details.html:14
-#: templates/main/vdv_ticket_details.html:252
-msgid "ID"
-msgstr "ID"
 
 #: templates/main/uic/fpd.html:22
 msgid "Issuer organisation code"
@@ -1628,9 +1780,26 @@ msgstr "Unbekannte Datei"
 msgid "version"
 msgstr "Version"
 
-#: templates/main/uic_ndef_read.html:4
+#: templates/main/uic_ndef_read.html:4 templates/main/uic_ndef_read.html:9
 msgid "Read UIC NDEF"
 msgstr ""
+
+#: templates/main/uic_ndef_read.html:12
+msgid "You'll need the \\"
+msgstr ""
+
+#: templates/main/uic_ndef_read.html:15
+msgid "Add source to AltStore"
+msgstr ""
+
+#: templates/main/uic_ndef_read.html:18
+msgid "Install from AltStore"
+msgstr ""
+
+#: templates/main/uic_ndef_read.html:22
+#: templates/main/vdv_ticket_details.html:96
+msgid "Start"
+msgstr "Von"
 
 #: templates/main/vdv_elements.html:7
 msgid "Basic data"
@@ -1738,10 +1907,6 @@ msgstr "Organisation"
 msgid "Organisation ID"
 msgstr "Organisations-ID"
 
-#: templates/main/vdv_elements.html:258
-msgid "Start station"
-msgstr "Starthaltestelle"
-
 #: templates/main/vdv_elements.html:266
 msgid "End stations"
 msgstr "Endhaltestelle"
@@ -1828,10 +1993,6 @@ msgstr "Ticketdaten"
 #: templates/main/vdv_ticket_details.html:274
 msgid "Version"
 msgstr "Version"
-
-#: templates/main/vdv_ticket_details.html:96
-msgid "Start"
-msgstr "Von"
 
 #: templates/main/vdv_ticket_details.html:102
 msgid "End"
@@ -1969,7 +2130,3 @@ msgstr "Ihr Passwort wurde aktualisiert"
 #: views/account.py:82
 msgid "Invalid username or password"
 msgstr "Ungültiger Benutzername oder Passwort"
-
-#, python-format
-#~ msgid "sequence #%(seq)s"
-#~ msgstr "Laufnummer #%(seq)s"

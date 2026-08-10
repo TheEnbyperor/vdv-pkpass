@@ -59,49 +59,49 @@
             </div>
         {% endif %}
     </dl>
-    <h2 class="govuk-heading-m">Data</h2>
+    <h2 class="govuk-heading-m">{% trans "Data" %}</h2>
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Ticket type</dt>
+            <dt class="govuk-summary-list__key">{% trans "Ticket type" %}</dt>
             <dd class="govuk-summary-list__value"><code>{{ ticket.data.ticket_type }}</code></dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">ÖBB Ticket ID</dt>
+            <dt class="govuk-summary-list__key">{% trans "ÖBB Ticket ID" %}</dt>
             <dd class="govuk-summary-list__value">{{ ticket.data.ticket_id }}</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">VVT Ticket ID</dt>
+            <dt class="govuk-summary-list__key">{% trans "VVT Ticket ID" %}</dt>
             <dd class="govuk-summary-list__value">{{ ticket.data.vvt_ticket_id }}</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Card issue</dt>
+            <dt class="govuk-summary-list__key">{% trans "Card issue" %}</dt>
             <dd class="govuk-summary-list__value">{{ ticket.data.card_issue }}</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Traveller</dt>
+            <dt class="govuk-summary-list__key">{% trans "Traveller" %}</dt>
             <dd class="govuk-summary-list__value">
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Forename</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Forename" %}</dt>
                         <dd class="govuk-summary-list__value">{{ ticket.data.customer_forename }}</dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Surname</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Surname" %}</dt>
                         <dd class="govuk-summary-list__value">{{ ticket.data.customer_surname }}</dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Date of birth</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Date of birth" %}</dt>
                         <dd class="govuk-summary-list__value">{{ ticket.data.customer_dob|date:"F d, Y" }}</dd>
                     </div>
                 </dl>
             </dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Validity start</dt>
+            <dt class="govuk-summary-list__key">{% trans "Validity start" %}</dt>
             <dd class="govuk-summary-list__value">{{ ticket.data.valid_from|date:"F d, Y" }}</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Validity end</dt>
+            <dt class="govuk-summary-list__key">{% trans "Validity end" %}</dt>
             <dd class="govuk-summary-list__value">{{ ticket.data.valid_to|date:"F d, Y" }}</dd>
         </div>
     </dl>

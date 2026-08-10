@@ -5,26 +5,26 @@
 
 {% block content %}
     <div class="govuk-width-container">
-        <h1 class="govuk-heading-xl">MVV Account</h1>
+        <h1 class="govuk-heading-xl">{% trans "MVV Account" %}</h1>
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Salutation</dt>
+                <dt class="govuk-summary-list__key">{% trans "Salutation" %}</dt>
                 <dd class="govuk-summary-list__value">{{ fields.salutation }}</dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Forename</dt>
+                <dt class="govuk-summary-list__key">{% trans "Forename" %}</dt>
                 <dd class="govuk-summary-list__value">{{ fields.first_name }}</dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Surname</dt>
+                <dt class="govuk-summary-list__key">{% trans "Surname" %}</dt>
                 <dd class="govuk-summary-list__value">{{ fields.last_name }}</dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Birthday</dt>
+                <dt class="govuk-summary-list__key">{% trans "Birthday" %}</dt>
                 <dd class="govuk-summary-list__value">{{ fields.birthday|date:"F d, Y" }}</dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Address</dt>
+                <dt class="govuk-summary-list__key">{% trans "Address" %}</dt>
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body">
                         {{ fields.street }} {{ fields.street_number }}<br/>
@@ -34,7 +34,7 @@
                 </dd>
             </div>
         </dl>
-        <h2 class="govuk-heading-l">Tickets</h2>
+        <h2 class="govuk-heading-l">{% trans "Tickets" %}</h2>
         {% if tickets.count %}
             <ul class="govuk-list govuk-list--spaced">
                 {% for ticket in tickets.all %}
@@ -44,7 +44,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p class="govuk-body">No tickets</p>
+            <p class="govuk-body">{% trans "No tickets" %}</p>
         {% endif %}
     </div>
 {% endblock %}
