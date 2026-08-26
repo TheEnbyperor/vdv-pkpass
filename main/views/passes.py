@@ -744,8 +744,9 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                                 lambda e: e["key"] not in ("validity-start", "validity-end"),
                                 pass_fields[f]
                             ))
-                            departure_time_str = departure_time.isoformat() if departure_time.tzinfo else departure_time.strftime(
-                                "%Y-%m-%dT%H:%M:%SZ")
+                            if from_station and "time_zone" in from_station and departure_time.tzinfo:
+                                departure_time = departure_time.astimezone(pytz.timezone(from_station["time_zone"]))
+                            departure_time_str = departure_time.isoformat() if departure_time.tzinfo else departure_time.strftime("%Y-%m-%dT%H:%M:%SZ")
                             pass_json["relevantDates"].append({"date": departure_time_str})
                             pass_fields["headerFields"] = [{
                                 "key": "train-number",
@@ -904,6 +905,8 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                                 train_link = return_document["validReturnRegion"][0][1]
                                 departure_time = templatetags.rics.rics_departure_time(train_link, issued_at)
                                 train_number = train_link.get("trainIA5") or str(train_link.get("trainNum"))
+                                if from_station and "time_zone" in from_station and departure_time.tzinfo:
+                                    departure_time = departure_time.astimezone(pytz.timezone(from_station["time_zone"]))
                                 departure_time_str = departure_time.isoformat() if departure_time.tzinfo else departure_time.strftime(
                                     "%Y-%m-%dT%H:%M:%SZ")
                                 return_pass_json["relevantDates"].append({"date": departure_time_str})
@@ -981,14 +984,16 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                             pass_json["expirationDate"] = arrival_time.isoformat()
 
                             if "fromStationNum" in reservation_document:
-                                from_station = templatetags.rics.get_station(reservation_document["fromStationNum"],
-                                                                             reservation_document)
+                                from_station = templatetags.rics.get_station(
+                                    reservation_document["fromStationNum"], reservation_document
+                                )
                             else:
                                 from_station = None
 
                             if "toStationNum" in reservation_document:
-                                to_station = templatetags.rics.get_station(reservation_document["toStationNum"],
-                                                                           reservation_document)
+                                to_station = templatetags.rics.get_station(
+                                    reservation_document["toStationNum"], reservation_document
+                                )
                             else:
                                 to_station = None
 
@@ -1112,6 +1117,11 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
 
                         pass_fields["secondaryFields"] = []
 
+                        if from_station and "time_zone" in from_station and departure_time.tzinfo:
+                            departure_time = departure_time.astimezone(pytz.timezone(from_station["time_zone"]))
+                        if to_station and "time_zone" in to_station and arrival_time.tzinfo:
+                            arrival_time = arrival_time.astimezone(pytz.timezone(to_station["time_zone"]))
+
                         one_day_ticket = departure_time.date() == arrival_time.date()
                         f = "secondaryFields" if pass_type == "boardingPass" else "auxiliaryFields"
                         pass_fields[f] = list(filter(
@@ -1123,7 +1133,8 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                             "label": "departure-time-label",
                             "dateStyle": "PKDateStyleNone" if one_day_ticket else "PKDateStyleMedium",
                             "timeStyle": "PKDateStyleShort",
-                            "value": departure_time.isoformat(),
+                            "value": departure_time.isoformat() if departure_time.tzinfo else departure_time.strftime(
+                                "%Y-%m-%dT%H:%M:%SZ"),
                             "ignoresTimeZone": True
                         })
                         pass_fields["secondaryFields"].append({
@@ -1131,7 +1142,8 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                             "label": "arrival-time-label",
                             "dateStyle": "PKDateStyleNone" if one_day_ticket else "PKDateStyleMedium",
                             "timeStyle": "PKDateStyleShort",
-                            "value": arrival_time.isoformat(),
+                            "value": arrival_time.isoformat() if arrival_time.tzinfo else arrival_time.strftime(
+                                "%Y-%m-%dT%H:%M:%SZ"),
                             "ignoresTimeZone": True
                         })
                         if one_day_ticket:
@@ -1140,7 +1152,8 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                                 "label": "departure-date-label",
                                 "dateStyle": "PKDateStyleMedium",
                                 "timeStyle": "PKDateStyleNone",
-                                "value": departure_time.isoformat(),
+                                "value": departure_time.isoformat() if departure_time.tzinfo else departure_time.strftime(
+                                "%Y-%m-%dT%H:%M:%SZ"),
                                 "ignoresTimeZone": True
                             })
                         pass_fields["backFields"].append({
@@ -1148,7 +1161,8 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                             "label": "departure-time-label",
                             "dateStyle": "PKDateStyleFull",
                             "timeStyle": "PKDateStyleFull",
-                            "value": departure_time.isoformat(),
+                            "value": departure_time.isoformat() if departure_time.tzinfo else departure_time.strftime(
+                                "%Y-%m-%dT%H:%M:%SZ"),
                             "ignoresTimeZone": True
                         })
                         pass_fields["backFields"].append({
@@ -1156,7 +1170,8 @@ def make_pkpass_file(ticket_obj: "models.Ticket", part: typing.Optional[str] = N
                             "label": "arrival-time-label",
                             "dateStyle": "PKDateStyleFull",
                             "timeStyle": "PKDateStyleFull",
-                            "value": arrival_time.isoformat(),
+                            "value": arrival_time.isoformat() if arrival_time.tzinfo else arrival_time.strftime(
+                                "%Y-%m-%dT%H:%M:%SZ"),
                             "ignoresTimeZone": True
                         })
 
