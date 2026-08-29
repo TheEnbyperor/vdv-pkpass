@@ -2,24 +2,24 @@
     {% with org_name=ref.org_name_opt %}
         {% if org_name %}
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Organisation</dt>
+                <dt class="govuk-summary-list__key">{% trans "Organisation" %}</dt>
                 <dd class="govuk-summary-list__value">
                     {{ org_name }} (<code>{{ ref.org_id }}</code>)
                 </dd>
             </div>
         {% else %}
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Organisation ID</dt>
+                <dt class="govuk-summary-list__key">{% trans "Organisation ID" %}</dt>
                 <dd class="govuk-summary-list__value"><code>{{ ref.org_id }}</code></dd>
             </div>
         {% endif %}
     {% endwith %}
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Application instance</dt>
+        <dt class="govuk-summary-list__key">{% trans "Application instance" %}</dt>
         <dd class="govuk-summary-list__value"><code>{{ ref.application_instance_number }}</code></dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Valid from</dt>
+        <dt class="govuk-summary-list__key">{% trans "Valid from" %}</dt>
         <dd class="govuk-summary-list__value">{{ ref.valid_from|date:"F d, Y" }}</dd>
     </div>
 </dl>

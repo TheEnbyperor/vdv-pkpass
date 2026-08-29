@@ -1,67 +1,67 @@
 {% load i18n rics %}
-<h2 class="govuk-heading-m">Slovenske železnice ticket</h2>
+<h2 class="govuk-heading-m">{% trans "Slovenske železnice ticket" %}</h2>
 <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Format type</dt>
+        <dt class="govuk-summary-list__key">{% trans "Format type" %}</dt>
         <dd class="govuk-summary-list__value"><code>{{ ticket.data.format_type }}</code></dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Tariff location ID</dt>
+        <dt class="govuk-summary-list__key">{% trans "Tariff location ID" %}</dt>
         <dd class="govuk-summary-list__value"><code>{{ ticket.data.tariff_location_id }}</code></dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Product</dt>
+        <dt class="govuk-summary-list__key">{% trans "Product" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.product_str }}</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Price level</dt>
+        <dt class="govuk-summary-list__key">{% trans "Price level" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.status_str }}</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Travel class</dt>
+        <dt class="govuk-summary-list__key">{% trans "Travel class" %}</dt>
         <dd class="govuk-summary-list__value"><code>{{ ticket.data.travel_class }}</code></dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Unique ID</dt>
+        <dt class="govuk-summary-list__key">{% trans "Unique ID" %}</dt>
         <dd class="govuk-summary-list__value"><code>{{ ticket.data.unique_ticket_id }}</code></dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Bill number</dt>
+        <dt class="govuk-summary-list__key">{% trans "Bill number" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.bill_number }}</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Unit price</dt>
+        <dt class="govuk-summary-list__key">{% trans "Unit price" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.price_str }}</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Total price</dt>
+        <dt class="govuk-summary-list__key">{% trans "Total price" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.total_price_str }}</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Number of travellers</dt>
+        <dt class="govuk-summary-list__key">{% trans "Number of travellers" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.num_travellers }}</dd>
     </div>
     {% if ticket.data.discount_id %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Discount ID</dt>
+            <dt class="govuk-summary-list__key">{% trans "Discount ID" %}</dt>
             <dd class="govuk-summary-list__value">{{ ticket.data.discount_id }}</dd>
         </div>
     {% endif %}
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Valid from</dt>
+        <dt class="govuk-summary-list__key">{% trans "Valid from" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.valid_from|date:"F d, Y H:i:s e" }}</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Valid until</dt>
+        <dt class="govuk-summary-list__key">{% trans "Valid until" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.valid_to|date:"F d, Y H:i:s e" }}</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Service provider</dt>
+        <dt class="govuk-summary-list__key">{% trans "Service provider" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.service_provider }}</dd>
     </div>
     {% if ticket.data.stations %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Stations</dt>
+            <dt class="govuk-summary-list__key">{% trans "Stations" %}</dt>
             <dd class="govuk-summary-list__value">
                 {% for station in ticket.data.stations %}
                     {% if station.station_type == 1 %}
@@ -91,13 +91,13 @@
                             <div class="govuk-summary-card__content">
                                 <dl class="govuk-summary-list">
                                     <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key">Station type</dt>
+                                        <dt class="govuk-summary-list__key">{% trans "Station type" %}</dt>
                                         <dd class="govuk-summary-list__value">
                                             {{ station.station_type }}
                                         </dd>
                                     </div>
                                     <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key">ID</dt>
+                                        <dt class="govuk-summary-list__key">{% trans "ID" %}</dt>
                                         <dd class="govuk-summary-list__value">
                                             {{ station.station_id }}
                                         </dd>
@@ -111,11 +111,11 @@
         </div>
     {% endif %}
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Distance</dt>
+        <dt class="govuk-summary-list__key">{% trans "Distance" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.distance }} km</dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">One way</dt>
+        <dt class="govuk-summary-list__key">{% trans "One way" %}</dt>
         <dd class="govuk-summary-list__value">
             {% if ticket.data.one_way %}
                 <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
@@ -125,12 +125,12 @@
         </dd>
     </div>
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Reprint number</dt>
+        <dt class="govuk-summary-list__key">{% trans "Reprint number" %}</dt>
         <dd class="govuk-summary-list__value">{{ ticket.data.reprint_number }}</dd>
     </div>
     {% if ticket.data.extras %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Extras</dt>
+            <dt class="govuk-summary-list__key">{% trans "Extras" %}</dt>
             <dd class="govuk-summary-list__value">
                 {% for extra in ticket.data.extras %}
                     <div class="govuk-summary-card">
@@ -142,43 +142,43 @@
                         <div class="govuk-summary-card__content">
                             <dl class="govuk-summary-list">
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Type of addon</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Type of addon" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ extra.type_of_addon }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Unique ID</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Unique ID" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ extra.unique_extra_id }}</code>
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Extension type</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Extension type" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ extra.extension_type }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Extension train type</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Extension train type" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ extra.extension_train_type }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Product ID</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Product ID" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ extra.product_id }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Price</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Price" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ extra.price_str }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Start station</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Start station" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {% with s=extra.start_station|get_station:"sz" %}
                                             {% if s %}
@@ -190,7 +190,7 @@
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">End station</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "End station" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {% with s=extra.end_station|get_station:"sz" %}
                                             {% if s %}
@@ -202,14 +202,14 @@
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Date</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Date" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ extra.validity_date|date:"F d, Y" }}
                                     </dd>
                                 </div>
                                 {% if extra.train_number %}
                                     <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key">Train number</dt>
+                                        <dt class="govuk-summary-list__key">{% trans "Train number" %}</dt>
                                         <dd class="govuk-summary-list__value">
                                             {{ extra.train_number }}
                                         </dd>

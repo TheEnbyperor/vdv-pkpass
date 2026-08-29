@@ -1,109 +1,109 @@
-{% load rics %}
+{% load rics i18n %}
 <dl class="govuk-summary-list">
     {% if traveler.firstName %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Forename</dt>
+            <dt class="govuk-summary-list__key">{% trans "Forename" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.firstName }}</dd>
         </div>
     {% endif %}
     {% if traveler.secondName %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Middle name</dt>
+            <dt class="govuk-summary-list__key">{% trans "Middle name" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.secondName }}</dd>
         </div>
     {% endif %}
     {% if traveler.lastName %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Surname</dt>
+            <dt class="govuk-summary-list__key">{% trans "Surname" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.lastName }}</dd>
         </div>
     {% endif %}
     {% if traveler.title %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Title</dt>
+            <dt class="govuk-summary-list__key">{% trans "Title" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.title }}</dd>
         </div>
     {% endif %}
     {% if traveler.gender %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Gender</dt>
+            <dt class="govuk-summary-list__key">{% trans "Gender" %}</dt>
             <dd class="govuk-summary-list__value"><code>{{ traveler.gender }}</code></dd>
         </div>
     {% endif %}
     {% if traveler.idCard %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">ID card number</dt>
+            <dt class="govuk-summary-list__key">{% trans "ID card number" %}</dt>
             <dd class="govuk-summary-list__value"><code>{{ traveler.idCard }}</code></dd>
         </div>
     {% endif %}
     {% if traveler.countryOfPassport %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">ID card country</dt>
+            <dt class="govuk-summary-list__key">{% trans "ID card country" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.countryOfIdCard|iso3166 }}</dd>
         </div>
     {% endif %}
     {% if traveler.passportId %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Passport number</dt>
+            <dt class="govuk-summary-list__key">{% trans "Passport number" %}</dt>
             <dd class="govuk-summary-list__value"><code>{{ traveler.passportId }}</code></dd>
         </div>
     {% endif %}
     {% if traveler.countryOfPassport %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Passport country</dt>
+            <dt class="govuk-summary-list__key">{% trans "Passport country" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.countryOfPassport|iso3166 }}</dd>
         </div>
     {% endif %}
     {% with dob=traveler|rics_traveler_dob %}
         {% if dob %}
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Date of birth</dt>
+                <dt class="govuk-summary-list__key">{% trans "Date of birth" %}</dt>
                 <dd class="govuk-summary-list__value">{{ dob|date:"F d, Y" }}</dd>
             </div>
         {% endif %}
     {% endwith %}
     {% if traveler.passengerType %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Passenger type</dt>
+            <dt class="govuk-summary-list__key">{% trans "Passenger type" %}</dt>
             <dd class="govuk-summary-list__value"><code>{{ traveler.passengerType }}</code></dd>
         </div>
     {% endif %}
     {% if traveler.countryOfResidence %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Country of residence</dt>
+            <dt class="govuk-summary-list__key">{% trans "Country of residence" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.countryOfResidence|iso3166 }}</dd>
         </div>
     {% endif %}
     {% if traveler.customerIdNum %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Customer ID</dt>
+            <dt class="govuk-summary-list__key">{% trans "Customer ID" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.customerIdNum }}</dd>
         </div>
     {% endif %}
     {% if traveler.customerIdIA5 %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Customer ID</dt>
+            <dt class="govuk-summary-list__key">{% trans "Customer ID" %}</dt>
             <dd class="govuk-summary-list__value">{{ traveler.customerIdIA5 }}</dd>
         </div>
     {% endif %}
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Ticket holder</dt>
+        <dt class="govuk-summary-list__key">{% trans "Ticket holder" %}</dt>
         <dd class="govuk-summary-list__value">
             {% if traveler.ticketHolder %}
-                <strong class="govuk-tag govuk-tag--green">Yes</strong>
+            <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
             {% else %}
-                <strong class="govuk-tag govuk-tag--red">No</strong>
+            <strong class="govuk-tag govuk-tag--red">{% trans "No" %}</strong>
             {% endif %}
         </dd>
     </div>
     {% if traveler.passengerWithReducedMobility is not None %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Reduced mobility</dt>
+            <dt class="govuk-summary-list__key">{% trans "Reduced mobility" %}</dt>
             <dd class="govuk-summary-list__value">
                 {% if traveler.passengerWithReducedMobility %}
-                    <strong class="govuk-tag govuk-tag--green">Yes</strong>
+                <strong class="govuk-tag govuk-tag--green">{% trans "Yes" %}</strong>
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--red">No</strong>
+                <strong class="govuk-tag govuk-tag--red">{% trans "No" %}</strong>
                 {% endif %}
             </dd>
         </div>
@@ -115,14 +115,14 @@
             <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title">
-                        Customer status #{{ forloop.counter }}
+                        {% trans "Customer status" %} #{{ forloop.counter }}
                     </h2>
                 </div>
                 <div class="govuk-summary-card__content">
                     <dl class="govuk-summary-list">
                         {% if status.customerStatus %}
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Status</dt>
+                                <dt class="govuk-summary-list__key">{% trans "Status" %}</dt>
                                 <dd class="govuk-summary-list__value">
                                     <code>{{ status.customerStatus }}</code>
                                 </dd>
@@ -130,13 +130,13 @@
                         {% endif %}
                         {% if status.customerStatusDescr %}
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Status</dt>
+                                <dt class="govuk-summary-list__key">{% trans "Status" %}</dt>
                                 <dd class="govuk-summary-list__value">{{ status.customerStatusDescr }}</dd>
                             </div>
                         {% endif %}
                         {% if status.statusProviderNum %}
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Status provider RICS</dt>
+                                <dt class="govuk-summary-list__key">{% trans "Status provider RICS" %}</dt>
                                 <dd class="govuk-summary-list__value">
                                     <code>{{ status.statusProviderNum }}</code>
                                 </dd>
@@ -144,14 +144,14 @@
                         {% endif %}
                         {% if status.statusProviderIA5 %}
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Status provider ID</dt>
+                                <dt class="govuk-summary-list__key">{% trans "Status provider ID" %}</dt>
                                 <dd class="govuk-summary-list__value">{{ status.statusProviderIA5 }}</dd>
                             </div>
                         {% endif %}
                         {% with org=status.statusProviderNum|rics %}
                             {% if org %}
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Status provider</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Status provider" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {% include 'main/rics.html' with org=org %}
                                     </dd>

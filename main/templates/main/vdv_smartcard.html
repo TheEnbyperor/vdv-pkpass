@@ -1,7 +1,7 @@
 {% extends "main/base.html" %}
 {% load static tz rics i18n %}
 
-{% block title %}Smartcard {{ smartcard.public_id }}{% endblock title %}
+{% block title %}{% trans "Smartcard" %} {{ smartcard.public_id }}{% endblock title %}
 
 {% block content %}
     {% localtime off %}
@@ -9,31 +9,31 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds-from-desktop">
                     <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">
-                        Smartcard #{{ smartcard.public_id }}
+                        {% trans "Smartcard" %} #{{ smartcard.public_id }}
                     </h1>
                 </div>
                 <div class="govuk-grid-column-one-third-from-desktop">
                     {#                <a href="{% url 'delete_ticket' ticket.id %}" class="govuk-button govuk-button--warning">#}
-                    {#                    Delete#}
+                    {#                    {% trans "Delete" %} #}
                     {#                </a>#}
                 </div>
             </div>
-            <p class="govuk-body">Quote the above smartcard number when asking for help.</p>
+            <p class="govuk-body">{% trans "Quote the above smartcard number when asking for help." %}</p>
         </div>
 
         <div class="govuk-!-margin-7">
-            <h2 class="govuk-heading-l">Smartcard details</h2>
+            <h2 class="govuk-heading-l">{% trans "Smartcard details" %}</h2>
             {% with card=smartcard.as_card %}
-                <h3 class="govuk-heading-m">File Control Information</h3>
+            <h3 class="govuk-heading-m">{% trans "File Control Information" %}</h3>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">AID</dt>
+                        <dt class="govuk-summary-list__key">{% trans "AID" %}</dt>
                         <dd class="govuk-summary-list__value">
                             <code>{{ card.fci.aid|as_hex }}</code>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Version</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Version" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ card.fci.spec_version }}
                         </dd>
@@ -41,14 +41,14 @@
                     {% with org_name=card.fci.manufacturer_org_name_opt %}
                         {% if org_name %}
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Manufacturer organisation</dt>
+                                <dt class="govuk-summary-list__key">{% trans "Manufacturer organisation" %}</dt>
                                 <dd class="govuk-summary-list__value">
                                     {{ org_name }} (<code>{{ card.fci.manufacturer_org_id }}</code>)
                                 </dd>
                             </div>
                         {% else %}
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Manufacturer organisation ID</dt>
+                                <dt class="govuk-summary-list__key">{% trans "Manufacturer organisation ID" %}</dt>
                                 <dd class="govuk-summary-list__value">
                                     <code>{{ card.fci.manufacturer_org_id }}</code>
                                 </dd>
@@ -56,27 +56,27 @@
                         {% endif %}
                     {% endwith %}
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Manufacturer version number</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Manufacturer version number" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ card.fci.manufacturer_version_number|as_hex }}
                         </dd>
                     </div>
                 </dl>
 
-                <h3 class="govuk-heading-m">Application Directory</h3>
+                <h3 class="govuk-heading-m">{% trans "Application Directory" %}</h3>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Application Data</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Application Data" %}</dt>
                         <dd class="govuk-summary-list__value">
                             <dl class="govuk-summary-list">
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Data File Pointer</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Data File Pointer" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.application_data.data_pointer }}</code>
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Instance number</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Instance number" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.application_data.application_instance_number }}</code>
                                     </dd>
@@ -84,7 +84,7 @@
                                 {% with org_name=card.application_directory.application_data.application_instance_org_name_opt %}
                                     {% if org_name %}
                                         <div class="govuk-summary-list__row">
-                                            <dt class="govuk-summary-list__key">Instance organisation</dt>
+                                            <dt class="govuk-summary-list__key">{% trans "Instance organisation" %}</dt>
                                             <dd class="govuk-summary-list__value">
                                                 {{ org_name }}
                                                 (<code>{{ card.application_directory.application_data.application_instance_org_id }}</code>)
@@ -92,7 +92,7 @@
                                         </div>
                                     {% else %}
                                         <div class="govuk-summary-list__row">
-                                            <dt class="govuk-summary-list__key">Instance organisation ID</dt>
+                                            <dt class="govuk-summary-list__key">{% trans "Instance organisation ID" %}</dt>
                                             <dd class="govuk-summary-list__value">
                                                 <code>{{ card.application_directory.application_data.application_instance_org_id }}</code>
                                             </dd>
@@ -114,31 +114,31 @@
                                     </div>
                                 {% endif %}
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Version</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Version" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.application_data.app_version }}</code>
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Valid from</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Valid from" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ card.application_directory.application_data.valid_from.as_datetime|date:"F d, Y" }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Valid until</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Valid until" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ card.application_directory.application_data.valid_to.as_datetime|date:"F d, Y" }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Status</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Status" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.application_data.app_status }}</code>
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Synchronization number</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Synchronization number" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ card.application_directory.application_data.app_synchronization_number }}
                                     </dd>
@@ -147,17 +147,17 @@
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Application Logbook</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Application Logbook" %}</dt>
                         <dd class="govuk-summary-list__value">
                             <dl class="govuk-summary-list">
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Data File Pointer</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Data File Pointer" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.application_logbook.data_pointer }}</code>
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Sequence</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Sequence" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ card.application_directory.application_logbook.sequence_number }}
                                     </dd>
@@ -166,11 +166,11 @@
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Customer data</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Customer data" %}</dt>
                         <dd class="govuk-summary-list__value">
                             <dl class="govuk-summary-list">
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Data File Pointer</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Data File Pointer" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.customer_data.data_pointer }}</code>
                                     </dd>
@@ -179,17 +179,17 @@
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Last transaction</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Last transaction" %}</dt>
                         <dd class="govuk-summary-list__value">
                             <dl class="govuk-summary-list">
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Data File Pointer</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Data File Pointer" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.last_transaction.data_pointer }}</code>
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Transaction type</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Transaction type" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         <code>{{ card.application_directory.last_transaction.transaction_type }}</code>
                                     </dd>
@@ -199,26 +199,26 @@
                     </div>
 
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Authorizations</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Authorizations" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {% if card.application_directory.authorizations %}
                                 {% for auth in card.application_directory.authorizations %}
                                     <div class="govuk-summary-card">
                                         <div class="govuk-summary-card__title-wrapper">
                                             <h2 class="govuk-summary-card__title">
-                                                Authorization #{{ forloop.counter }}
+                                                {% trans "Authorization" %} #{{ forloop.counter }}
                                             </h2>
                                         </div>
                                         <div class="govuk-summary-card__content">
                                             <dl class="govuk-summary-list">
                                                 <div class="govuk-summary-list__row">
-                                                    <dt class="govuk-summary-list__key">Data File Pointer</dt>
+                                                    <dt class="govuk-summary-list__key">{% trans "Data File Pointer" %}</dt>
                                                     <dd class="govuk-summary-list__value">
                                                         {{ auth.data_pointer }}
                                                     </dd>
                                                 </div>
                                                 <div class="govuk-summary-list__row">
-                                                    <dt class="govuk-summary-list__key">ID</dt>
+                                                    <dt class="govuk-summary-list__key">{% trans "ID" %}</dt>
                                                     <dd class="govuk-summary-list__value">
                                                         <code>{{ auth.authorization_id }}</code>
                                                     </dd>
@@ -226,7 +226,7 @@
                                                 {% with org_name=auth.authorization_org_name_opt %}
                                                     {% if org_name %}
                                                         <div class="govuk-summary-list__row">
-                                                            <dt class="govuk-summary-list__key">Organisation</dt>
+                                                            <dt class="govuk-summary-list__key">{% trans "Organisation" %}</dt>
                                                             <dd class="govuk-summary-list__value">
                                                                 {{ org_name }}
                                                                 (<code>{{ auth.authorization_org_id }}</code>)
@@ -234,7 +234,7 @@
                                                         </div>
                                                     {% else %}
                                                         <div class="govuk-summary-list__row">
-                                                            <dt class="govuk-summary-list__key">Organisation ID</dt>
+                                                            <dt class="govuk-summary-list__key">{% trans "Organisation ID" %}</dt>
                                                             <dd class="govuk-summary-list__value">
                                                                 <code>{{ auth.authorization_org_id }}</code>
                                                             </dd>
@@ -256,13 +256,13 @@
                                                     </div>
                                                 {% endif %}
                                                 <div class="govuk-summary-list__row">
-                                                    <dt class="govuk-summary-list__key">Product</dt>
+                                                    <dt class="govuk-summary-list__key">{% trans "Product" %}</dt>
                                                     <dd class="govuk-summary-list__value">
                                                         <dl class="govuk-summary-list">
                                                             {% with product_name=auth.product_name_opt %}
                                                                 {% if product_name %}
                                                                     <div class="govuk-summary-list__row">
-                                                                        <dt class="govuk-summary-list__key">Name</dt>
+                                                                        <dt class="govuk-summary-list__key">{% trans "Name" %}</dt>
                                                                         <dd class="govuk-summary-list__value">
                                                                             {{ product_name }}
                                                                             (<code>{{ auth.product_id }}</code>)
@@ -270,7 +270,7 @@
                                                                     </div>
                                                                 {% else %}
                                                                     <div class="govuk-summary-list__row">
-                                                                        <dt class="govuk-summary-list__key">Number</dt>
+                                                                        <dt class="govuk-summary-list__key">{% trans "Number" %}</dt>
                                                                         <dd class="govuk-summary-list__value">
                                                                             <code>{{ auth.product_id }}</code>
                                                                         </dd>
@@ -281,7 +281,7 @@
                                                                 {% if org_name %}
                                                                     <div class="govuk-summary-list__row">
                                                                         <dt class="govuk-summary-list__key">
-                                                                            Organisation
+                                                                            {% trans "Organisation" %}
                                                                         </dt>
                                                                         <dd class="govuk-summary-list__value">
                                                                             {{ org_name }}
@@ -291,7 +291,7 @@
                                                                 {% else %}
                                                                     <div class="govuk-summary-list__row">
                                                                         <dt class="govuk-summary-list__key">
-                                                                            Organisation ID
+                                                                            {% trans "Organisation ID" %}
                                                                         </dt>
                                                                         <dd class="govuk-summary-list__value">
                                                                             <code>{{ auth.product_org_id }}</code>
@@ -304,7 +304,7 @@
                                                 </div>
                                                 {% if auth.valid_from %}
                                                     <div class="govuk-summary-list__row">
-                                                        <dt class="govuk-summary-list__key">Valid from</dt>
+                                                        <dt class="govuk-summary-list__key">{% trans "Valid from" %}</dt>
                                                         <dd class="govuk-summary-list__value">
                                                             {{ auth.valid_from.as_datetime|date:"F d, Y H:i:s e" }}
                                                         </dd>
@@ -312,20 +312,20 @@
                                                 {% endif %}
                                                 {% if auth.valid_to %}
                                                     <div class="govuk-summary-list__row">
-                                                        <dt class="govuk-summary-list__key">Valid until</dt>
+                                                        <dt class="govuk-summary-list__key">{% trans "Valid until" %}</dt>
                                                         <dd class="govuk-summary-list__value">
                                                             {{ auth.valid_to.as_datetime|date:"F d, Y H:i:s e" }}
                                                         </dd>
                                                     </div>
                                                 {% endif %}
                                                 <div class="govuk-summary-list__row">
-                                                    <dt class="govuk-summary-list__key">Status</dt>
+                                                    <dt class="govuk-summary-list__key">{% trans "Status" %}</dt>
                                                     <dd class="govuk-summary-list__value">
                                                         {{ auth.status }}
                                                     </dd>
                                                 </div>
                                                 <div class="govuk-summary-list__row">
-                                                    <dt class="govuk-summary-list__key">Synchronization number</dt>
+                                                    <dt class="govuk-summary-list__key">{% trans "Synchronization number" %}</dt>
                                                     <dd class="govuk-summary-list__value">
                                                         {{ auth.synchronization_number }}
                                                     </dd>
@@ -335,93 +335,93 @@
                                     </div>
                                 {% endfor %}
                             {% else %}
-                                No authorizations
+                                {% trans "No authorizations" %}
                             {% endif %}
                         </dd>
                     </div>
                 </dl>
 
-                <h3 class="govuk-heading-m">Application Data</h3>
+                <h3 class="govuk-heading-m">{% trans "Application Data" %}</h3>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">PV Key Version</dt>
+                        <dt class="govuk-summary-list__key">{% trans "PV Key Version" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ card.application_data.pv_key_version }}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">KVP Key Version</dt>
+                        <dt class="govuk-summary-list__key">{% trans "KVP Key Version" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ card.application_data.kvp_key_version }}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Auth Key Version</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Auth Key Version" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ card.application_data.auth_key_version }}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Issuing transaction SAM sequence</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Issuing transaction SAM sequence" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ card.application_data.issuing_transaction_sam_sequence_number }}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Issuing transaction SAM ID</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Issuing transaction SAM ID" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ card.application_data.issuing_transaction_sam_id }}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Issuance</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Issuance" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {% include "main/vdv_log_entry.html" with log=card.application_data.issuance %}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Info text</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Info text" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ smartcard.application_info_text }}
                         </dd>
                     </div>
                 </dl>
 
-                <h3 class="govuk-heading-m">Customer data</h3>
+                <h3 class="govuk-heading-m">{% trans "Customer data" %}</h3>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Info text</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Info text" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {{ smartcard.customer_info_text }}
                         </dd>
                     </div>
                 </dl>
 
-                <h2 class="govuk-heading-m">Logbook</h2>
+                <h2 class="govuk-heading-m">{% trans "Logbook" %}</h2>
                 {% for log in smartcard.logs.all %}
                     {% with log=log.as_log %}
                         {% include "main/vdv_log_entry.html" %}
                     {% endwith %}
                 {% endfor %}
 
-                <h2 class="govuk-heading-m">Key Register</h2>
+                <h2 class="govuk-heading-m">{% trans "Key Register" %}</h2>
                 {% for key in card.key_register.keys %}
                     <div class="govuk-summary-card">
                         <div class="govuk-summary-card__title-wrapper">
                             <h2 class="govuk-summary-card__title">
-                                Key #{{ forloop.counter }}
+                                {% trans "Key" %} #{{ forloop.counter }}
                             </h2>
                         </div>
                         <div class="govuk-summary-card__content">
                             <dl class="govuk-summary-list">
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Key ID</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Key ID" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ key.key_id_hex }}
                                     </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">Key Version</dt>
+                                    <dt class="govuk-summary-list__key">{% trans "Key Version" %}</dt>
                                     <dd class="govuk-summary-list__value">
                                         {{ key.key_version }}
                                     </dd>
@@ -429,14 +429,14 @@
                                 {% with org_name=key.org_name_opt %}
                                     {% if org_name %}
                                         <div class="govuk-summary-list__row">
-                                            <dt class="govuk-summary-list__key">Organisation</dt>
+                                            <dt class="govuk-summary-list__key">{% trans "Organisation" %}</dt>
                                             <dd class="govuk-summary-list__value">
                                                 {{ org_name }} (<code>{{ key.org_id }}</code>)
                                             </dd>
                                         </div>
                                     {% else %}
                                         <div class="govuk-summary-list__row">
-                                            <dt class="govuk-summary-list__key">Organisation ID</dt>
+                                            <dt class="govuk-summary-list__key">{% trans "Organisation ID" %}</dt>
                                             <dd class="govuk-summary-list__value">
                                                 <code>{{ key.org_id }}</code>
                                             </dd>
@@ -448,48 +448,48 @@
                     </div>
                 {% endfor %}
 
-                <h2 class="govuk-heading-m">Certificate chain</h2>
+                <h2 class="govuk-heading-m">{% trans "Certificate chain" %}</h2>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Root CA verification</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Root CA verification" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {% if card.verify_root_ca %}
-                                <strong class="govuk-tag govuk-tag--green">Valid</strong>
+                            <strong class="govuk-tag govuk-tag--green">{% trans "Valid" %}</strong>
                             {% else %}
                                 <div class="govuk-warning-text">
                                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                                     <strong class="govuk-warning-text__text">
-                                        Signature verification failed, something has gone very wrong
+                                        {% trans "Signature verification failed, something has gone very wrong" %}
                                     </strong>
                                 </div>
                             {% endif %}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Issuing CA verification</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Issuing CA verification" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {% if card.verify_ca_cert %}
-                                <strong class="govuk-tag govuk-tag--green">Valid</strong>
+                            <strong class="govuk-tag govuk-tag--green">{% trans "Valid" %}</strong>
                             {% else %}
                                 <div class="govuk-warning-text">
                                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                                     <strong class="govuk-warning-text__text">
-                                        Signature verification failed, this card is likely invalid
+                                        {% trans "Signature verification failed, this card is likely invalid" %}
                                     </strong>
                                 </div>
                             {% endif %}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Card certificate verification</dt>
+                        <dt class="govuk-summary-list__key">{% trans "Card certificate verification" %}</dt>
                         <dd class="govuk-summary-list__value">
                             {% if card.verify_application_cert %}
-                                <strong class="govuk-tag govuk-tag--green">Valid</strong>
+                            <strong class="govuk-tag govuk-tag--green">{% trans "Valid" %}</strong>
                             {% else %}
                                 <div class="govuk-warning-text">
                                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                                     <strong class="govuk-warning-text__text">
-                                        Signature verification failed, this card is likely invalid
+                                        {% trans "Signature verification failed, this card is likely invalid" %}
                                     </strong>
                                 </div>
                             {% endif %}
@@ -498,7 +498,7 @@
                 </dl>
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
-                        <h2 class="govuk-summary-card__title">Root CA</h2>
+                        <h2 class="govuk-summary-card__title">{% trans "Root CA" %}</h2>
                     </div>
                     <div class="govuk-summary-card__content">
                         {% include "main/certificate.html" with cert=card.root_ca_data %}
@@ -506,7 +506,7 @@
                 </div>
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
-                        <h2 class="govuk-summary-card__title">Issuing CA</h2>
+                        <h2 class="govuk-summary-card__title">{% trans "Issuing CA" %}</h2>
                     </div>
                     <div class="govuk-summary-card__content">
                         {% include "main/certificate.html" with cert=card.ca_cert_data %}
@@ -514,7 +514,7 @@
                 </div>
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
-                        <h2 class="govuk-summary-card__title">Card Certificate</h2>
+                        <h2 class="govuk-summary-card__title">{% trans "Card Certificate" %}</h2>
                     </div>
                     <div class="govuk-summary-card__content">
                         {% include "main/certificate.html" with cert=card.application_cert_data %}

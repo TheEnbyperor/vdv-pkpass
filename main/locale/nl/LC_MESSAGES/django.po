@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 13:00+0000\n"
+"POT-Creation-Date: 2026-08-10 02:44-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,9 +70,11 @@ msgid "Subscription Number"
 msgstr "Abonnementsnummer"
 
 #: forms.py:96 forms.py:136 templates/main/account/index.html:18
-#: templates/main/account/index.html:204
+#: templates/main/account/index.html:204 templates/main/account/mvv.html:19
 #: templates/main/account/sbahn_berlin.html:21 templates/main/ssb/nrt.html:138
-#: templates/main/vdv_elements.html:208 templates/main/vdv_elements.html:515
+#: templates/main/ts2_ticket_details.html:89
+#: templates/main/uic/traveler.html:17 templates/main/vdv_elements.html:208
+#: templates/main/vdv_elements.html:515
 msgid "Surname"
 msgstr "Achternaam"
 
@@ -144,9 +146,15 @@ msgstr "BahnBonus"
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: templates/main/404.html:4
+#: templates/main/404.html:4 templates/main/404.html:10
 msgid "Page not found"
 msgstr "Pagina niet gevonden"
+
+#: templates/main/404.html:12
+msgid ""
+"If you typed the web address, check it is correct. If you pasted the web "
+"address, check you copied the entire address."
+msgstr ""
 
 #: templates/main/account/avv.html:4 templates/main/account/index.html:99
 #: templates/main/base.html:162
@@ -168,6 +176,80 @@ msgstr "DB-account"
 
 #: templates/main/account/db_abo.html:4 templates/main/base.html:135
 msgid "DB Subscriptions"
+msgstr "DB-abonnementen"
+
+#: templates/main/account/db_abo.html:12
+#, fuzzy
+#| msgid "Add DB Subscription"
+msgid "Add subscription"
+msgstr "DB-abonnement toevoegen"
+
+#: templates/main/account/db_abo.html:20
+#, fuzzy
+#| msgid "DB Subscriptions"
+msgid "Subscription"
+msgstr "DB-abonnementen"
+
+#: templates/main/account/db_abo.html:25 templates/main/account/index.html:219
+#: templates/main/ticket.html:30 templates/main/ticket_delete.html:25
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: templates/main/account/db_abo.html:34
+#, fuzzy
+#| msgid "Subscription Number"
+msgid "Subscription number"
+msgstr "Abonnementsnummer"
+
+#: templates/main/account/db_abo.html:42
+#: templates/main/ft_ticket_details.html:139
+#: templates/main/ft_ticket_details.html:163 templates/main/ssb/nrt.html:111
+#: templates/main/ssb/sz.html:13 templates/main/vdv_smartcard.html:259
+#: templates/main/vdv_ticket_details.html:52
+msgid "Product"
+msgstr "Product"
+
+#: templates/main/account/db_abo.html:50
+#, fuzzy
+#| msgid "Validity"
+msgid "Validity area"
+msgstr "Geldigheid"
+
+#: templates/main/account/db_abo.html:59 templates/main/mav.html:145
+#: templates/main/mav.html:251 templates/main/nm_reference.html:22
+#: templates/main/ssb/cd.html:59 templates/main/ssb/nrt.html:59
+#: templates/main/ssb/sz.html:51 templates/main/vdv_smartcard.html:123
+#: templates/main/vdv_smartcard.html:307
+msgid "Valid from"
+msgstr "Geldig van"
+
+#: templates/main/account/db_abo.html:69 templates/main/mav.html:149
+#: templates/main/mav.html:255 templates/main/ssb/cd.html:63
+#: templates/main/ssb/nrt.html:63 templates/main/ssb/sz.html:55
+#: templates/main/vdv_smartcard.html:129 templates/main/vdv_smartcard.html:315
+msgid "Valid until"
+msgstr "Geldigheid tot"
+
+#: templates/main/account/db_abo.html:79 templates/main/mav.html:141
+#: templates/main/ssb/cd.html:42 templates/main/ssb/irt.html:46
+#: templates/main/ssb/nrt.html:42 templates/main/ssb/sz.html:21
+msgid "Travel class"
+msgstr "Reisklasse"
+
+#: templates/main/account/db_abo.html:93
+msgid "Warning"
+msgstr ""
+
+#: templates/main/account/db_abo.html:113 templates/main/account/mvv.html:47
+#, fuzzy
+#| msgid "Your ticket"
+msgid "No tickets"
+msgstr "Uw ticket"
+
+#: templates/main/account/db_abo.html:120
+#, fuzzy
+#| msgid "DB Subscriptions"
+msgid "No subscriptions"
 msgstr "DB-abonnementen"
 
 #: templates/main/account/db_abo_delete.html:4
@@ -222,7 +304,9 @@ msgid "New password"
 msgstr "Nieuw wachtwoord"
 
 #: templates/main/account/index.html:14 templates/main/account/index.html:203
+#: templates/main/account/mvv.html:15
 #: templates/main/account/sbahn_berlin.html:17 templates/main/ssb/nrt.html:127
+#: templates/main/ts2_ticket_details.html:85 templates/main/uic/traveler.html:5
 #: templates/main/vdv_elements.html:201 templates/main/vdv_elements.html:507
 msgid "Forename"
 msgstr "Voornaam"
@@ -275,7 +359,7 @@ msgid "Login with S-Bahn Berlin"
 msgstr "Inloggen bij S-Bahn Berlin"
 
 #: templates/main/account/index.html:84 templates/main/account/mvv.html:4
-#: templates/main/base.html:155
+#: templates/main/account/mvv.html:8 templates/main/base.html:155
 msgid "MVV Account"
 msgstr "MVV-account"
 
@@ -330,16 +414,11 @@ msgstr "Alternatieve naamuitbreidingen"
 msgid "New"
 msgstr ""
 
-#: templates/main/account/index.html:219 templates/main/ticket.html:30
-#: templates/main/ticket_delete.html:25
-msgid "Delete"
-msgstr "Verwijderen"
-
 #: templates/main/account/index.html:226
 msgid "No alternate expansions"
 msgstr "Geen alternatieve uitbreidingen"
 
-#: templates/main/account/index.html:231
+#: templates/main/account/index.html:231 templates/main/account/mvv.html:37
 #: templates/main/account/sbahn_berlin.html:44
 msgid "Tickets"
 msgstr "Tickets"
@@ -347,6 +426,20 @@ msgstr "Tickets"
 #: templates/main/account/index.html:234
 msgid "Subscribe to your trains as a calendar:"
 msgstr "Abonneer op uw treinen als kalender:"
+
+#: templates/main/account/mvv.html:11
+#: templates/main/account/sbahn_berlin.html:12
+msgid "Salutation"
+msgstr "Begroeting"
+
+#: templates/main/account/mvv.html:23
+msgid "Birthday"
+msgstr ""
+
+#: templates/main/account/mvv.html:27
+#: templates/main/account/sbahn_berlin.html:29
+msgid "Address"
+msgstr "Adres"
 
 #: templates/main/account/mvv_login.html:4
 msgid "MVV Login"
@@ -373,18 +466,12 @@ msgstr "Inloggen bij Raileasy"
 msgid "SaarVV Login"
 msgstr "Inloggen bij SaarVV"
 
-#: templates/main/account/sbahn_berlin.html:12
-msgid "Salutation"
-msgstr "Begroeting"
-
 #: templates/main/account/sbahn_berlin.html:25
-#: templates/main/vdv_elements.html:216 templates/main/vdv_elements.html:524
+#: templates/main/ts2_ticket_details.html:93
+#: templates/main/uic/traveler.html:60 templates/main/vdv_elements.html:216
+#: templates/main/vdv_elements.html:524
 msgid "Date of birth"
 msgstr "Geboortedatum"
-
-#: templates/main/account/sbahn_berlin.html:29
-msgid "Address"
-msgstr "Adres"
 
 #: templates/main/account/sbahn_berlin_login.html:4
 msgid "S-Bahn Berlin Login"
@@ -413,13 +500,14 @@ msgstr "Distribuerende RICS"
 msgid "Distributor"
 msgstr "Distributeur"
 
-#: templates/main/adif.html:20 templates/main/mav.html:24
-#: templates/main/uic/ticket_details.html:284
+#: templates/main/adif.html:20 templates/main/ft_ticket_details.html:21
+#: templates/main/mav.html:24 templates/main/uic/ticket_details.html:284
 #: templates/main/vdv_ticket_details.html:10
 msgid "Ticket ID"
 msgstr "Ticket-ID"
 
 #: templates/main/adif.html:24 templates/main/ssb/irt.html:82
+#: templates/main/ssb/sz.html:212
 msgid "Train number"
 msgstr "Treinnummer"
 
@@ -514,12 +602,152 @@ msgstr ""
 msgid "Imprint"
 msgstr ""
 
+#: templates/main/ft_ticket_details.html:3
+#, fuzzy
+#| msgid "Envelope Certificate"
+msgid "Envelope Data"
+msgstr "Envelope-certificaat"
+
+#: templates/main/ft_ticket_details.html:6
+#: templates/main/ssb_ticket_details.html:16 templates/main/uic/fpd.html:15
+msgid "Issuer"
+msgstr "Uitgever"
+
+#: templates/main/ft_ticket_details.html:27
+msgid "App ID"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:33
+#: templates/main/vdv_elements.html:326
+#: templates/main/vdv_ticket_details.html:92
+msgid "Validity"
+msgstr "Geldigheid"
+
+#: templates/main/ft_ticket_details.html:37
+msgid "From"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:41
+msgid "Until"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:48
+#, fuzzy
+#| msgid "Validity duration"
+msgid "Activation duration"
+msgstr "Geldigheidsduur"
+
 #: templates/main/ft_ticket_details.html:50
 msgid "minutes"
 msgstr "minuten"
 
+#: templates/main/ft_ticket_details.html:54
+msgid "Permitted uses"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:61 templates/main/mav.html:77
+#: templates/main/mav.html:175
+msgid "Origin station"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:66
+#: templates/main/ft_ticket_details.html:99 templates/main/iata_airline.html:3
+#: templates/main/mav.html:46 templates/main/vdv_smartcard.html:265
+#: templates/main/vdv_ticket_details.html:58
+msgid "Name"
+msgstr "Naam"
+
+#: templates/main/ft_ticket_details.html:70
+#: templates/main/ft_ticket_details.html:103
+#: templates/main/vdv_ticket_details.html:190
+msgid "Location"
+msgstr "Locatie"
+
+#: templates/main/ft_ticket_details.html:82
+#, fuzzy
+#| msgid "Organisation ID"
+msgid "Origin station ID"
+msgstr "Organisatie-ID"
+
+#: templates/main/ft_ticket_details.html:94 templates/main/mav.html:89
+#: templates/main/mav.html:187
+msgid "Destination station"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:115
+#, fuzzy
+#| msgid "Registration authority ID"
+msgid "Destination station ID"
+msgstr "ID registratie-authoriteit"
+
+#: templates/main/ft_ticket_details.html:125
+msgid "Usage period specification"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:132 templates/main/mav.html:32
+#: templates/main/ssb/nrt.html:158 templates/main/ssb/nrt.html:276
+#: templates/main/ssb/sz.html:175 templates/main/vdv_elements.html:125
+msgid "Price"
+msgstr "Prijs"
+
+#: templates/main/ft_ticket_details.html:146
+#: templates/main/ft_ticket_details.html:170 templates/main/ssb/sz.html:169
+#, fuzzy
+#| msgid "Product"
+msgid "Product ID"
+msgstr "Product"
+
+#: templates/main/ft_ticket_details.html:154
+#, fuzzy
+#| msgid "Product"
+msgid "Child product ID"
+msgstr "Product"
+
+#: templates/main/ft_ticket_details.html:179
+msgid "Customer product reference"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:186
+msgid "Number of tickets in product"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:193
+msgid "Media channel"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:202
+#: templates/main/ft_ticket_details.html:259
+#, fuzzy
+#| msgid "Random data"
+msgid "Raw data"
+msgstr "Willikeurige data"
+
 #: templates/main/ft_ticket_details.html:213
 msgid "Unknown signing key, can't read main ticket body"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:222
+#, fuzzy
+#| msgid "Barcode version"
+msgid "Schema version"
+msgstr "Barcodeversie"
+
+#: templates/main/ft_ticket_details.html:228
+msgid "Activation start"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:233
+msgid "Usage period expiry"
+msgstr ""
+
+#: templates/main/ft_ticket_details.html:238
+#, fuzzy
+#| msgid "Departure time"
+msgid "Device time"
+msgstr "Vertrektijd"
+
+#: templates/main/ft_ticket_details.html:242
+msgid "Selected for validation"
 msgstr ""
 
 #: templates/main/ft_ticket_details.html:245
@@ -544,14 +772,15 @@ msgstr ""
 #: templates/main/uic/ticket_details.html:300
 #: templates/main/uic/ticket_details.html:310
 #: templates/main/uic/ticket_details.html:320
+#: templates/main/uic/traveler.html:93 templates/main/uic/traveler.html:104
 #: templates/main/vdv_smartcard.html:108 templates/main/vdv_smartcard.html:250
 #: templates/main/vdv_ticket_details.html:43
 #: templates/main/vdv_ticket_details.html:301 templates/main/x509/cert.html:104
 #: templates/main/x509/cert.html:114 templates/main/x509/cert.html:124
 #: templates/main/x509/cert.html:134 templates/main/x509/cert.html:144
 #: templates/main/x509/cert.html:154 templates/main/x509/cert.html:164
-#: templates/main/x509/cert.html:174 templates/main/x509/cert.html:184
-#: templates/main/x509/cert.html:211
+#: templates/main/x509/cert.html:175 templates/main/x509/cert.html:185
+#: templates/main/x509/cert.html:213
 msgid "Yes"
 msgstr "Ja"
 
@@ -577,16 +806,41 @@ msgstr "Ja"
 #: templates/main/uic/ticket_details.html:302
 #: templates/main/uic/ticket_details.html:312
 #: templates/main/uic/ticket_details.html:322
+#: templates/main/uic/traveler.html:95 templates/main/uic/traveler.html:106
 #: templates/main/vdv_smartcard.html:110 templates/main/vdv_smartcard.html:252
 #: templates/main/vdv_ticket_details.html:45
 #: templates/main/vdv_ticket_details.html:303 templates/main/x509/cert.html:106
 #: templates/main/x509/cert.html:116 templates/main/x509/cert.html:126
 #: templates/main/x509/cert.html:136 templates/main/x509/cert.html:146
 #: templates/main/x509/cert.html:156 templates/main/x509/cert.html:166
-#: templates/main/x509/cert.html:176 templates/main/x509/cert.html:186
-#: templates/main/x509/cert.html:213
+#: templates/main/x509/cert.html:177 templates/main/x509/cert.html:187
+#: templates/main/x509/cert.html:215
 msgid "No"
 msgstr "Nee"
+
+#: templates/main/ft_ticket_details.html:252
+msgid "Uses"
+msgstr ""
+
+#: templates/main/iata_airline.html:8
+#, fuzzy
+#| msgid "Type Code"
+msgid "IATA Code"
+msgstr "Typecode"
+
+#: templates/main/iata_airline.html:14
+msgid "ICAO Code"
+msgstr ""
+
+#: templates/main/iata_airline.html:20
+msgid "Callsign"
+msgstr ""
+
+#: templates/main/iata_airline.html:26
+#, fuzzy
+#| msgid "Count"
+msgid "Country"
+msgstr "Aantal"
 
 #: templates/main/iata_ticket_details.html:278
 msgid "Signature"
@@ -617,6 +871,8 @@ msgstr "Onbekende ondertekeningssleutel, kan ticket niet verifiëren"
 #: templates/main/uic/ticket_details.html:39
 #: templates/main/uic/ticket_details.html:167
 #: templates/main/uic/ticket_details.html:226
+#: templates/main/vdv_smartcard.html:457 templates/main/vdv_smartcard.html:472
+#: templates/main/vdv_smartcard.html:487
 msgid "Valid"
 msgstr "Geldig"
 
@@ -840,11 +1096,6 @@ msgstr "Sleutel-ID ondertekening"
 msgid "Issuing time"
 msgstr "Uitgiftetijd"
 
-#: templates/main/mav.html:32 templates/main/ssb/nrt.html:158
-#: templates/main/ssb/nrt.html:276 templates/main/vdv_elements.html:125
-msgid "Price"
-msgstr "Prijs"
-
 #: templates/main/mav.html:36
 msgid "Ticket medium"
 msgstr ""
@@ -852,10 +1103,6 @@ msgstr ""
 #: templates/main/mav.html:41
 msgid "Passenger"
 msgstr "Passagier"
-
-#: templates/main/mav.html:46 templates/main/vdv_ticket_details.html:58
-msgid "Name"
-msgstr "Naam"
 
 #: templates/main/mav.html:58
 msgid "ID Card Number"
@@ -866,17 +1113,10 @@ msgid "Trip"
 msgstr ""
 
 #: templates/main/mav.html:72 templates/main/mav.html:171
-#: templates/main/ssb/irt.html:23 templates/main/uic/cd.html:187
+#: templates/main/ssb/irt.html:23 templates/main/ts2_ticket_details.html:65
+#: templates/main/uic/cd.html:187
 msgid "Ticket type"
 msgstr "Ticketsoort"
-
-#: templates/main/mav.html:77 templates/main/mav.html:175
-msgid "Origin station"
-msgstr ""
-
-#: templates/main/mav.html:89 templates/main/mav.html:187
-msgid "Destination station"
-msgstr ""
 
 #: templates/main/mav.html:102
 msgid "Via stations - outbound"
@@ -885,21 +1125,6 @@ msgstr ""
 #: templates/main/mav.html:122
 msgid "Via stations - return"
 msgstr ""
-
-#: templates/main/mav.html:141 templates/main/ssb/cd.html:42
-#: templates/main/ssb/irt.html:46 templates/main/ssb/nrt.html:42
-msgid "Travel class"
-msgstr "Reisklasse"
-
-#: templates/main/mav.html:145 templates/main/mav.html:251
-#: templates/main/ssb/cd.html:59 templates/main/ssb/nrt.html:59
-msgid "Valid from"
-msgstr "Geldig van"
-
-#: templates/main/mav.html:149 templates/main/mav.html:255
-#: templates/main/ssb/cd.html:63 templates/main/ssb/nrt.html:63
-msgid "Valid until"
-msgstr "Geldigheid tot"
 
 #: templates/main/mav.html:153 templates/main/mav.html:222
 #: templates/main/mav.html:259
@@ -949,6 +1174,38 @@ msgstr ""
 #: templates/main/nfc_index.html:4
 msgid "NFC Bridge"
 msgstr "NFC Bridge"
+
+#: templates/main/nm_reference.html:5 templates/main/vdv_elements.html:242
+#: templates/main/vdv_elements.html:352 templates/main/vdv_elements.html:427
+#: templates/main/vdv_smartcard.html:229 templates/main/vdv_smartcard.html:284
+#: templates/main/vdv_smartcard.html:432
+#: templates/main/vdv_ticket_details.html:20
+#: templates/main/vdv_ticket_details.html:74
+#: templates/main/vdv_ticket_details.html:130
+msgid "Organisation"
+msgstr "Organisatie"
+
+#: templates/main/nm_reference.html:12 templates/main/vdv_elements.html:249
+#: templates/main/vdv_elements.html:359 templates/main/vdv_elements.html:434
+#: templates/main/vdv_smartcard.html:237 templates/main/vdv_smartcard.html:294
+#: templates/main/vdv_smartcard.html:439
+#: templates/main/vdv_ticket_details.html:27
+#: templates/main/vdv_ticket_details.html:81
+#: templates/main/vdv_ticket_details.html:137
+msgid "Organisation ID"
+msgstr "Organisatie-ID"
+
+#: templates/main/nm_reference.html:18
+msgid "Application instance"
+msgstr ""
+
+#: templates/main/ssb/cd.html:2
+msgid "České dráhy ticket"
+msgstr ""
+
+#: templates/main/ssb/cd.html:5
+msgid "PNR"
+msgstr ""
 
 #: templates/main/ssb/cd.html:9 templates/main/ssb/irt.html:9
 #: templates/main/ssb/nrt.html:9
@@ -1060,10 +1317,6 @@ msgstr ""
 "class=\"govuk-link\">Voeg uw naam toe aan uw account</a> om uw volledige "
 "naam op uw ticket te tonen"
 
-#: templates/main/ssb/nrt.html:111 templates/main/vdv_ticket_details.html:52
-msgid "Product"
-msgstr "Product"
-
 #: templates/main/ssb/nrt.html:119
 msgid "Product code"
 msgstr "Productcode"
@@ -1072,7 +1325,7 @@ msgstr "Productcode"
 msgid "ČD Data"
 msgstr "ČD Data"
 
-#: templates/main/ssb/nrt.html:166
+#: templates/main/ssb/nrt.html:166 templates/main/ssb/sz.html:114
 msgid "Distance"
 msgstr ""
 
@@ -1124,6 +1377,127 @@ msgstr ""
 msgid "Route constraint"
 msgstr ""
 
+#: templates/main/ssb/sz.html:2
+msgid "Slovenske železnice ticket"
+msgstr ""
+
+#: templates/main/ssb/sz.html:5
+msgid "Format type"
+msgstr ""
+
+#: templates/main/ssb/sz.html:9
+#, fuzzy
+#| msgid "Tariff points"
+msgid "Tariff location ID"
+msgstr "Tariefpunten"
+
+#: templates/main/ssb/sz.html:17
+#, fuzzy
+#| msgid "Price Level"
+msgid "Price level"
+msgstr "Prijsniveau"
+
+#: templates/main/ssb/sz.html:25 templates/main/ssb/sz.html:151
+msgid "Unique ID"
+msgstr ""
+
+#: templates/main/ssb/sz.html:29
+#, fuzzy
+#| msgid "Booking number"
+msgid "Bill number"
+msgstr "Boekingsnummer"
+
+#: templates/main/ssb/sz.html:33
+msgid "Unit price"
+msgstr ""
+
+#: templates/main/ssb/sz.html:37
+msgid "Total price"
+msgstr ""
+
+#: templates/main/ssb/sz.html:41
+#, fuzzy
+#| msgid "Number of adults"
+msgid "Number of travellers"
+msgstr "Aantal volwassenen"
+
+#: templates/main/ssb/sz.html:46
+#, fuzzy
+#| msgid "Ticket ID"
+msgid "Discount ID"
+msgstr "Ticket-ID"
+
+#: templates/main/ssb/sz.html:59
+#, fuzzy
+#| msgid "Security provider"
+msgid "Service provider"
+msgstr "Beveligingsprovider"
+
+#: templates/main/ssb/sz.html:64
+#, fuzzy
+#| msgid "Salutation"
+msgid "Stations"
+msgstr "Begroeting"
+
+#: templates/main/ssb/sz.html:94
+#, fuzzy
+#| msgid "Station code table"
+msgid "Station type"
+msgstr "Stationscode-tabel"
+
+#: templates/main/ssb/sz.html:100 templates/main/uic/fpd.html:6
+#: templates/main/vdv_smartcard.html:221
+#: templates/main/vdv_ticket_details.html:14
+#: templates/main/vdv_ticket_details.html:252
+msgid "ID"
+msgstr "ID"
+
+#: templates/main/ssb/sz.html:118
+msgid "One way"
+msgstr ""
+
+#: templates/main/ssb/sz.html:128
+#, fuzzy
+#| msgid "Train number"
+msgid "Reprint number"
+msgstr "Treinnummer"
+
+#: templates/main/ssb/sz.html:133
+#, fuzzy
+#| msgid "Extra text"
+msgid "Extras"
+msgstr "Extra tekst"
+
+#: templates/main/ssb/sz.html:145
+#, fuzzy
+#| msgid "Type Code"
+msgid "Type of addon"
+msgstr "Typecode"
+
+#: templates/main/ssb/sz.html:157
+#, fuzzy
+#| msgid "End-entity type"
+msgid "Extension type"
+msgstr "Type eind-entiteit"
+
+#: templates/main/ssb/sz.html:163
+msgid "Extension train type"
+msgstr ""
+
+#: templates/main/ssb/sz.html:181 templates/main/vdv_elements.html:258
+msgid "Start station"
+msgstr "Beginstation"
+
+#: templates/main/ssb/sz.html:193
+#, fuzzy
+#| msgid "End stations"
+msgid "End station"
+msgstr "Eindstations"
+
+#: templates/main/ssb/sz.html:205
+msgid "Date"
+msgstr ""
+
 #: templates/main/ssb_ticket_details.html:3
 #: templates/main/ts2_ticket_details.html:3
 #: templates/main/uic/ticket_details.html:4
@@ -1139,10 +1513,6 @@ msgstr "Barcodeversie"
 #: templates/main/ssb_ticket_details.html:10
 msgid "Issuer RICS"
 msgstr "Uitgevende RICS"
-
-#: templates/main/ssb_ticket_details.html:16 templates/main/uic/fpd.html:15
-msgid "Issuer"
-msgstr "Uitgever"
 
 #: templates/main/ssb_ticket_details.html:50
 #: templates/main/ts2_ticket_details.html:50
@@ -1287,23 +1657,32 @@ msgstr "Uw pass downloaden"
 msgid "Add to Calendar"
 msgstr "Aan kalender toevoegen"
 
-#: templates/main/ticket.html:258
+#: templates/main/ticket.html:245
+msgid ""
+"The standards of the Rail Delivery Group do not allow a Railcard to be shown "
+"in Apple/Google Wallet. We have heard no reported issues of displaying a "
+"Railcard like this, but please be warned that you may be considered to be "
+"travelling without a valid ticket."
+msgstr ""
+
+#: templates/main/ticket.html:260
 msgid "Ticket details"
 msgstr "Ticketdetails"
 
-#: templates/main/ticket.html:260
+#: templates/main/ticket.html:262
 msgid "No instances found for this ticket."
 msgstr "Geen inhouden in dit ticket."
 
-#: templates/main/ticket.html:268
+#: templates/main/ticket.html:270
+#, python-format
 msgid "VDV Ticket #%(id)s"
 msgstr "VDV-Ticket #%(id)s"
 
-#: templates/main/ticket.html:284
+#: templates/main/ticket.html:286
 msgid "This ticket is invalid"
 msgstr "Dit ticket is ongeldig"
 
-#: templates/main/ticket.html:289
+#: templates/main/ticket.html:291
 msgid ""
 "The key used to sign this ticket has been revoked due to misuse. Travelling "
 "on this ticket is likely to result in a penalty fare. More details: <a "
@@ -1317,21 +1696,24 @@ msgstr ""
 "dodgers-against-their-will-10280040.html\" target=\"_blank\">Engelse versie</"
 "a>."
 
-#: templates/main/ticket.html:308
+#: templates/main/ticket.html:310
+#, python-format
 msgid "UIC Ticket #%(id)s"
 msgstr "UIC-Ticket #%(id)s"
 
-#: templates/main/ticket.html:327
+#: templates/main/ticket.html:329
+#, python-format
 msgid "RSP Ticket #%(id)s"
 msgstr "RSP-Ticket #%(id)s"
 
-#: templates/main/ticket.html:329 templates/main/vdv_elements.html:159
+#: templates/main/ticket.html:331 templates/main/vdv_elements.html:159
 #: templates/main/vdv_ticket_details.html:151
 #: templates/main/vdv_ticket_details.html:196
 msgid "Type"
 msgstr "Soort"
 
-#: templates/main/ticket.html:342
+#: templates/main/ticket.html:344
+#, python-format
 msgid ""
 "FlexiTicket #\n"
 "                                        %(id)s"
@@ -1339,15 +1721,17 @@ msgstr ""
 "FlexiTicket #\n"
 "                                        %(id)s"
 
-#: templates/main/ticket.html:358
+#: templates/main/ticket.html:360
+#, python-format
 msgid "SNCF Ticket #%(id)s"
 msgstr "SNCF-Ticket #%(id)s"
 
-#: templates/main/ticket.html:377
+#: templates/main/ticket.html:379
+#, python-format
 msgid "ELB Ticket #%(id)s"
 msgstr "ELB-Ticket #%(id)s"
 
-#: templates/main/ticket.html:379 templates/main/ticket.html:462
+#: templates/main/ticket.html:381 templates/main/ticket.html:464
 #, python-format
 msgid ""
 "sequence #\n"
@@ -1356,35 +1740,43 @@ msgstr ""
 "reeks #\n"
 "                                        %(seq)s"
 
-#: templates/main/ticket.html:394
+#: templates/main/ticket.html:396
+#, python-format
 msgid "SSB Ticket #%(id)s"
 msgstr "SSB-Ticket #%(id)s"
 
-#: templates/main/ticket.html:413
+#: templates/main/ticket.html:415
+#, python-format
 msgid "SSBv1 Ticket #%(id)s"
 msgstr "SSBv1-Ticket #%(id)s"
 
-#: templates/main/ticket.html:432
+#: templates/main/ticket.html:434
+#, python-format
 msgid "HŽPP Ticket #%(id)s"
 msgstr "HŽPP-Ticket #%(id)s"
 
-#: templates/main/ticket.html:446
+#: templates/main/ticket.html:448
+#, python-format
 msgid "SwissPass Ticket #%(id)s"
 msgstr "SwissPass-Ticket #%(id)s"
 
-#: templates/main/ticket.html:460
+#: templates/main/ticket.html:462
+#, python-format
 msgid "IATA Ticket #%(id)s"
 msgstr "IATA-Ticket #%(id)s"
 
-#: templates/main/ticket.html:489
+#: templates/main/ticket.html:491
+#, python-format
 msgid "TS2 Ticket #%(id)s"
 msgstr "TS2-Ticket #%(id)s"
 
-#: templates/main/ticket.html:519
+#: templates/main/ticket.html:521
+#, python-format
 msgid "ADIF Ticket #%(id)s"
 msgstr "ADIF-Ticket #%(id)s"
 
-#: templates/main/ticket.html:536
+#: templates/main/ticket.html:538
+#, python-format
 msgid "MÁV Ticket #%(id)s"
 msgstr "MÁV-Ticket #%(id)s"
 
@@ -1426,6 +1818,45 @@ msgstr "Ondertekenende RICS"
 msgid "Signer"
 msgstr "Ondertekenaar"
 
+#: templates/main/ts2_ticket_details.html:62
+#: templates/main/vdv_elements.html:367
+msgid "Data"
+msgstr "Data"
+
+#: templates/main/ts2_ticket_details.html:69
+#, fuzzy
+#| msgid "Ticket ID"
+msgid "ÖBB Ticket ID"
+msgstr "Ticket-ID"
+
+#: templates/main/ts2_ticket_details.html:73
+#, fuzzy
+#| msgid "Ticket ID"
+msgid "VVT Ticket ID"
+msgstr "Ticket-ID"
+
+#: templates/main/ts2_ticket_details.html:77
+msgid "Card issue"
+msgstr ""
+
+#: templates/main/ts2_ticket_details.html:81
+#, fuzzy
+#| msgid "Travel class"
+msgid "Traveller"
+msgstr "Reisklasse"
+
+#: templates/main/ts2_ticket_details.html:100
+#, fuzzy
+#| msgid "Validity"
+msgid "Validity start"
+msgstr "Geldigheid"
+
+#: templates/main/ts2_ticket_details.html:104
+#, fuzzy
+#| msgid "Validity"
+msgid "Validity end"
+msgstr "Geldigheid"
+
 #: templates/main/uic/cd.html:193
 msgid "Travel type"
 msgstr ""
@@ -1441,11 +1872,6 @@ msgstr ""
 #: templates/main/uic/delay_confirmation.html:43
 msgid "Train cancelled"
 msgstr ""
-
-#: templates/main/uic/fpd.html:6 templates/main/vdv_ticket_details.html:14
-#: templates/main/vdv_ticket_details.html:252
-msgid "ID"
-msgstr "ID"
 
 #: templates/main/uic/fpd.html:22
 msgid "Issuer organisation code"
@@ -1595,9 +2021,118 @@ msgstr "Onbekend record"
 msgid "version"
 msgstr "versie"
 
-#: templates/main/uic_ndef_read.html:4
-msgid "Read UIC NDEF"
+#: templates/main/uic/traveler.html:11
+#, fuzzy
+#| msgid "Edit name"
+msgid "Middle name"
+msgstr "Naam bewerken"
+
+#: templates/main/uic/traveler.html:23
+msgid "Title"
 msgstr ""
+
+#: templates/main/uic/traveler.html:29 templates/main/vdv_elements.html:222
+#: templates/main/vdv_elements.html:530
+msgid "Gender"
+msgstr "Gender"
+
+#: templates/main/uic/traveler.html:35
+#, fuzzy
+#| msgid "Train number"
+msgid "ID card number"
+msgstr "Treinnummer"
+
+#: templates/main/uic/traveler.html:41
+#, fuzzy
+#| msgid "DB Account"
+msgid "ID card country"
+msgstr "DB-account"
+
+#: templates/main/uic/traveler.html:47
+#, fuzzy
+#| msgid "Train number"
+msgid "Passport number"
+msgstr "Treinnummer"
+
+#: templates/main/uic/traveler.html:53
+msgid "Passport country"
+msgstr ""
+
+#: templates/main/uic/traveler.html:67
+#, fuzzy
+#| msgid "Passengers type"
+msgid "Passenger type"
+msgstr "Passagierstype"
+
+#: templates/main/uic/traveler.html:73
+msgid "Country of residence"
+msgstr ""
+
+#: templates/main/uic/traveler.html:79 templates/main/uic/traveler.html:85
+msgid "Customer ID"
+msgstr ""
+
+#: templates/main/uic/traveler.html:90
+#, fuzzy
+#| msgid "Ticket type"
+msgid "Ticket holder"
+msgstr "Ticketsoort"
+
+#: templates/main/uic/traveler.html:101
+msgid "Reduced mobility"
+msgstr ""
+
+#: templates/main/uic/traveler.html:118
+msgid "Customer status"
+msgstr ""
+
+#: templates/main/uic/traveler.html:125 templates/main/uic/traveler.html:133
+#: templates/main/vdv_smartcard.html:135 templates/main/vdv_smartcard.html:322
+#, fuzzy
+#| msgid "Salutation"
+msgid "Status"
+msgstr "Begroeting"
+
+#: templates/main/uic/traveler.html:139
+#, fuzzy
+#| msgid "Security provider RICS"
+msgid "Status provider RICS"
+msgstr "RICS beveilingsprovider"
+
+#: templates/main/uic/traveler.html:147
+#, fuzzy
+#| msgid "Security provider RICS"
+msgid "Status provider ID"
+msgstr "RICS beveilingsprovider"
+
+#: templates/main/uic/traveler.html:154
+#, fuzzy
+#| msgid "Security provider"
+msgid "Status provider"
+msgstr "Beveligingsprovider"
+
+#: templates/main/uic_ndef_read.html:4 templates/main/uic_ndef_read.html:9
+msgid "Read UIC NDEF"
+msgstr "UIC NDEF lezen"
+
+#: templates/main/uic_ndef_read.html:12
+msgid ""
+"You'll need the \"Golden Gate Smartcard Bridge\" app (iOS only) for this to "
+"work."
+msgstr ""
+
+#: templates/main/uic_ndef_read.html:15
+msgid "Add source to AltStore"
+msgstr ""
+
+#: templates/main/uic_ndef_read.html:18
+msgid "Install from AltStore"
+msgstr ""
+
+#: templates/main/uic_ndef_read.html:22
+#: templates/main/vdv_ticket_details.html:96
+msgid "Start"
+msgstr "Begin"
 
 #: templates/main/vdv_elements.html:7
 msgid "Basic data"
@@ -1667,7 +2202,7 @@ msgstr "Typecode"
 msgid "Phone number"
 msgstr "Telefoonnummer"
 
-#: templates/main/vdv_elements.html:178
+#: templates/main/vdv_elements.html:178 templates/main/vdv_smartcard.html:273
 #: templates/main/vdv_ticket_details.html:65
 #: templates/main/vdv_ticket_details.html:165
 #: templates/main/vdv_ticket_details.html:210
@@ -1678,10 +2213,6 @@ msgstr "Nummer"
 msgid "Passenger data"
 msgstr "Passagiersdata"
 
-#: templates/main/vdv_elements.html:222 templates/main/vdv_elements.html:530
-msgid "Gender"
-msgstr "Gender"
-
 #: templates/main/vdv_elements.html:233
 #, python-format
 msgid ""
@@ -1690,26 +2221,6 @@ msgid ""
 msgstr ""
 "Gebiedsgeldigheid - variant\n"
 "                            %(variant)s"
-
-#: templates/main/vdv_elements.html:242 templates/main/vdv_elements.html:352
-#: templates/main/vdv_elements.html:427
-#: templates/main/vdv_ticket_details.html:20
-#: templates/main/vdv_ticket_details.html:74
-#: templates/main/vdv_ticket_details.html:130
-msgid "Organisation"
-msgstr "Organisatie"
-
-#: templates/main/vdv_elements.html:249 templates/main/vdv_elements.html:359
-#: templates/main/vdv_elements.html:434
-#: templates/main/vdv_ticket_details.html:27
-#: templates/main/vdv_ticket_details.html:81
-#: templates/main/vdv_ticket_details.html:137
-msgid "Organisation ID"
-msgstr "Organisatie-ID"
-
-#: templates/main/vdv_elements.html:258
-msgid "Start station"
-msgstr "Beginstation"
 
 #: templates/main/vdv_elements.html:266
 msgid "End stations"
@@ -1735,18 +2246,9 @@ msgstr "Tariefpunten via"
 msgid "Tariff points"
 msgstr "Tariefpunten"
 
-#: templates/main/vdv_elements.html:326
-#: templates/main/vdv_ticket_details.html:92
-msgid "Validity"
-msgstr "Geldigheid"
-
 #: templates/main/vdv_elements.html:343
 msgid "Unknown spatial validity"
 msgstr "Onbekende speciale geldigheid"
-
-#: templates/main/vdv_elements.html:367
-msgid "Data"
-msgstr "Data"
 
 #: templates/main/vdv_elements.html:378
 msgid "Private-use data"
@@ -1784,23 +2286,261 @@ msgstr "Andere data"
 msgid "Read Smartcard"
 msgstr "Smartcard lezen"
 
-#: templates/main/vdv_smartcard.html:104
-msgid "Revoked application"
+#: templates/main/vdv_smartcard.html:4 templates/main/vdv_smartcard.html:12
+#, fuzzy
+#| msgid "Read Smartcard"
+msgid "Smartcard"
+msgstr "Smartcard lezen"
+
+#: templates/main/vdv_smartcard.html:21
+#, fuzzy
+#| msgid "Quote the above ticket number when asking for help."
+msgid "Quote the above smartcard number when asking for help."
+msgstr "Benoem het bovenstaande ticketnummer bij een hulpvraag."
+
+#: templates/main/vdv_smartcard.html:25
+msgid "Smartcard details"
 msgstr ""
 
-#: templates/main/vdv_ticket_details.html:3
-msgid "Ticket Data"
-msgstr "Ticketdata"
+#: templates/main/vdv_smartcard.html:27
+msgid "File Control Information"
+msgstr ""
 
+#: templates/main/vdv_smartcard.html:30
+#, fuzzy
+#| msgid "ID"
+msgid "AID"
+msgstr "ID"
+
+#: templates/main/vdv_smartcard.html:36 templates/main/vdv_smartcard.html:117
 #: templates/main/vdv_ticket_details.html:6
 #: templates/main/vdv_ticket_details.html:248
 #: templates/main/vdv_ticket_details.html:274
 msgid "Version"
 msgstr "Versie"
 
-#: templates/main/vdv_ticket_details.html:96
-msgid "Start"
-msgstr "Begin"
+#: templates/main/vdv_smartcard.html:44
+msgid "Manufacturer organisation"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:51
+#, fuzzy
+#| msgid "Organisation ID"
+msgid "Manufacturer organisation ID"
+msgstr "Organisatie-ID"
+
+#: templates/main/vdv_smartcard.html:59
+msgid "Manufacturer version number"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:66
+msgid "Application Directory"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:69 templates/main/vdv_smartcard.html:344
+#, fuzzy
+#| msgid "Transaction Data"
+msgid "Application Data"
+msgstr "Transactiedata"
+
+#: templates/main/vdv_smartcard.html:73 templates/main/vdv_smartcard.html:154
+#: templates/main/vdv_smartcard.html:173 templates/main/vdv_smartcard.html:186
+#: templates/main/vdv_smartcard.html:215
+msgid "Data File Pointer"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:79
+#, fuzzy
+#| msgid "Phone number"
+msgid "Instance number"
+msgstr "Telefoonnummer"
+
+#: templates/main/vdv_smartcard.html:87
+#, fuzzy
+#| msgid "Organisation"
+msgid "Instance organisation"
+msgstr "Organisatie"
+
+#: templates/main/vdv_smartcard.html:95
+#, fuzzy
+#| msgid "Organisation ID"
+msgid "Instance organisation ID"
+msgstr "Organisatie-ID"
+
+#: templates/main/vdv_smartcard.html:104
+msgid "Revoked application"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:141 templates/main/vdv_smartcard.html:328
+#, fuzzy
+#| msgid "Subscription Number"
+msgid "Synchronization number"
+msgstr "Abonnementsnummer"
+
+#: templates/main/vdv_smartcard.html:150
+msgid "Application Logbook"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:160
+#, fuzzy
+#| msgid "Sequence number 1"
+msgid "Sequence"
+msgstr "Eerste reeksgetal"
+
+#: templates/main/vdv_smartcard.html:169 templates/main/vdv_smartcard.html:390
+#, fuzzy
+#| msgid "Other data"
+msgid "Customer data"
+msgstr "Andere data"
+
+#: templates/main/vdv_smartcard.html:182
+#, fuzzy
+#| msgid "Organisation"
+msgid "Last transaction"
+msgstr "Organisatie"
+
+#: templates/main/vdv_smartcard.html:192
+#, fuzzy
+#| msgid "Transaction Data"
+msgid "Transaction type"
+msgstr "Transactiedata"
+
+#: templates/main/vdv_smartcard.html:202
+#, fuzzy
+#| msgid "Salutation"
+msgid "Authorizations"
+msgstr "Begroeting"
+
+#: templates/main/vdv_smartcard.html:209
+#, fuzzy
+#| msgid "Salutation"
+msgid "Authorization"
+msgstr "Begroeting"
+
+#: templates/main/vdv_smartcard.html:338
+#, fuzzy
+#| msgid "DB Subscriptions"
+msgid "No authorizations"
+msgstr "DB-abonnementen"
+
+#: templates/main/vdv_smartcard.html:347
+#, fuzzy
+#| msgid "Version"
+msgid "PV Key Version"
+msgstr "Versie"
+
+#: templates/main/vdv_smartcard.html:353
+#, fuzzy
+#| msgid "Version"
+msgid "KVP Key Version"
+msgstr "Versie"
+
+#: templates/main/vdv_smartcard.html:359
+#, fuzzy
+#| msgid "Version"
+msgid "Auth Key Version"
+msgstr "Versie"
+
+#: templates/main/vdv_smartcard.html:365
+msgid "Issuing transaction SAM sequence"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:371
+#, fuzzy
+#| msgid "Issuing SAM Data"
+msgid "Issuing transaction SAM ID"
+msgstr "SAM-uitgeverdata"
+
+#: templates/main/vdv_smartcard.html:377
+#, fuzzy
+#| msgid "Issuer"
+msgid "Issuance"
+msgstr "Uitgever"
+
+#: templates/main/vdv_smartcard.html:383 templates/main/vdv_smartcard.html:393
+msgid "Info text"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:400
+msgid "Logbook"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:407
+#, fuzzy
+#| msgid "Key identifier"
+msgid "Key Register"
+msgstr "Sleuteldentifier"
+
+#: templates/main/vdv_smartcard.html:412
+#, fuzzy
+#| msgid "Keycard"
+msgid "Key"
+msgstr "Keycard"
+
+#: templates/main/vdv_smartcard.html:418
+msgid "Key ID"
+msgstr ""
+
+#: templates/main/vdv_smartcard.html:424
+#, fuzzy
+#| msgid "Version"
+msgid "Key Version"
+msgstr "Versie"
+
+#: templates/main/vdv_smartcard.html:451
+#: templates/main/vdv_ticket_details.html:317
+msgid "Certificate chain"
+msgstr "Certificaatketen"
+
+#: templates/main/vdv_smartcard.html:454
+#, fuzzy
+#| msgid "Signature verification"
+msgid "Root CA verification"
+msgstr "Sleutelverificatie"
+
+#: templates/main/vdv_smartcard.html:462
+#, fuzzy
+#| msgid "Signature verification failed, this is likely a forged ticket"
+msgid "Signature verification failed, something has gone very wrong"
+msgstr "Sleutelverificatie mislukt, dit is waarschijnlijk een vals ticket"
+
+#: templates/main/vdv_smartcard.html:469
+#, fuzzy
+#| msgid "Signature verification"
+msgid "Issuing CA verification"
+msgstr "Sleutelverificatie"
+
+#: templates/main/vdv_smartcard.html:477 templates/main/vdv_smartcard.html:492
+#, fuzzy
+#| msgid "Signature verification failed, this is likely a forged ticket"
+msgid "Signature verification failed, this card is likely invalid"
+msgstr "Sleutelverificatie mislukt, dit is waarschijnlijk een vals ticket"
+
+#: templates/main/vdv_smartcard.html:484
+#, fuzzy
+#| msgid "Certificate chain"
+msgid "Card certificate verification"
+msgstr "Certificaatketen"
+
+#: templates/main/vdv_smartcard.html:501
+#: templates/main/vdv_ticket_details.html:320
+msgid "Root CA"
+msgstr "Root-CA"
+
+#: templates/main/vdv_smartcard.html:509
+#: templates/main/vdv_ticket_details.html:328
+msgid "Issuing CA"
+msgstr "Uitgevende CA"
+
+#: templates/main/vdv_smartcard.html:517
+#, fuzzy
+#| msgid "Certificate"
+msgid "Card Certificate"
+msgstr "Certificaat"
+
+#: templates/main/vdv_ticket_details.html:3
+msgid "Ticket Data"
+msgstr "Ticketdata"
 
 #: templates/main/vdv_ticket_details.html:102
 msgid "End"
@@ -1831,10 +2571,6 @@ msgstr "Eigenaar"
 #: templates/main/vdv_ticket_details.html:223
 msgid "Owner ID"
 msgstr "Eigenaar-ID"
-
-#: templates/main/vdv_ticket_details.html:190
-msgid "Location"
-msgstr "Locatie"
 
 #: templates/main/vdv_ticket_details.html:236
 msgid "Product Transaction Data"
@@ -1884,18 +2620,6 @@ msgstr "Handtekening gecontroleerd"
 msgid "Certificate"
 msgstr "Certificaat"
 
-#: templates/main/vdv_ticket_details.html:317
-msgid "Certificate chain"
-msgstr "Certificaatketen"
-
-#: templates/main/vdv_ticket_details.html:320
-msgid "Root CA"
-msgstr "Root-CA"
-
-#: templates/main/vdv_ticket_details.html:328
-msgid "Issuing CA"
-msgstr "Uitgevende CA"
-
 #: templates/main/vdv_ticket_details.html:336
 msgid "Envelope Certificate"
 msgstr "Envelope-certificaat"
@@ -1923,13 +2647,80 @@ msgstr "Met wachtwoord inloggen"
 msgid "Login error"
 msgstr "Inlogfout"
 
+#: templates/registration/magic_failed.html:8
+#, fuzzy
+#| msgid "Login with Raileasy"
+msgid "Login failed"
+msgstr "Inloggen bij Raileasy"
+
+#: templates/registration/magic_failed.html:9
+msgid "It was not possible to log you in due to:"
+msgstr ""
+
+#: templates/registration/magic_failed.html:11
+msgid "It might be because:"
+msgstr ""
+
+#: templates/registration/magic_failed.html:13
+msgid "The URL you are trying to use is malformed"
+msgstr ""
+
+#: templates/registration/magic_failed.html:14
+msgid "The magic link you tried to use has expired"
+msgstr ""
+
+#: templates/registration/magic_failed.html:15
+msgid "You have already used this magic link to login before"
+msgstr ""
+
+#: templates/registration/magic_failed.html:17
+msgid ""
+"You have requested another magic causing this magic link to become invalid"
+msgstr ""
+
+#: templates/registration/magic_failed.html:20
+msgid "You are using a different browser to when you requested the login link"
+msgstr ""
+
+#: templates/registration/magic_failed.html:24
+msgid ""
+"You are trying to login from a different location or machine that you "
+"requested the login link from"
+msgstr ""
+
+#: templates/registration/magic_failed.html:31
+msgid "You are a superuser or staff user"
+msgstr ""
+
+#: templates/registration/magic_failed.html:36
+msgid "Back to login"
+msgstr ""
+
 #: templates/registration/magic_sent.html:4
 msgid "Login link sent"
 msgstr "Inloglink verstuurd"
 
 #: templates/registration/magic_signup.html:4
+#: templates/registration/magic_signup.html:8
+#: templates/registration/magic_signup.html:31
 msgid "Signup"
 msgstr "Aanmelden"
+
+#: templates/registration/magic_signup.html:10
+msgid "Enter your details below to create your account"
+msgstr ""
+
+#: templates/registration/magic_signup.html:34
+#, fuzzy
+#| msgid "Don't have an account?"
+msgid "Already have an account?"
+msgstr "Nog geen account?"
+
+#: templates/registration/magic_signup.html:35
+#, fuzzy
+#| msgid "Sign up here"
+msgid "Log in here"
+msgstr "Hier aanmelden"
 
 #: views/account.py:53
 msgid "Your password has been updated"
